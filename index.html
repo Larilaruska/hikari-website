@@ -1,0 +1,4402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hikari Cheerleading — Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1C2B5E;
+    --navy-dark: #111D42;
+    --gold: #C89B2A;
+    --gold-light: #E0B84A;
+    --offwhite: #F5F3EE;
+    --white: #FFFFFF;
+    --text: #1A1A1A;
+    --muted: #666;
+    --border: #DDD;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    color: var(--text);
+    background: var(--offwhite);
+  }
+
+  /* prototype banner hidden */
+  .proto-banner { display: none; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 999;
+    background: transparent;
+    border-bottom: 1px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    height: 76px;
+    transition: background .3s ease, border-color .3s ease, box-shadow .25s ease, top .3s ease;
+  }
+  nav.solid, nav.scrolled {
+    top: 0;
+    background: var(--white);
+    border-bottom: 1px solid rgba(0,0,0,.08);
+    box-shadow: 0 2px 16px rgba(0,0,0,.07);
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 4px;
+    list-style: none;
+  }
+  .nav-links a {
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--white);
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background .15s, color .15s;
+    cursor: pointer;
+    letter-spacing: .02em;
+  }
+  nav.scrolled .nav-links a,
+  nav.solid .nav-links a { color: var(--text); }
+
+  .nav-links a:hover, .nav-links a.active {
+    background: rgba(255,255,255,.15);
+    color: var(--white);
+  }
+  nav.scrolled .nav-links a:hover,
+  nav.scrolled .nav-links a.active,
+  nav.solid .nav-links a:hover,
+  nav.solid .nav-links a.active {
+    background: var(--offwhite);
+    color: var(--navy);
+  }
+  .nav-links .nav-join {
+    background: var(--navy);
+    color: var(--white) !important;
+    font-weight: 700;
+    border-radius: 4px;
+  }
+  .nav-links .nav-join:hover {
+    background: var(--navy-dark) !important;
+    color: var(--white) !important;
+  }
+
+  /* Small icon in nav — invisible on transparent homepage, visible once solid */
+  .nav-logo {
+    opacity: 0;
+    transition: opacity .25s ease;
+    pointer-events: none;
+  }
+  nav.scrolled .nav-logo,
+  nav.solid .nav-logo {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .nav-logo img.logo-icon {
+    height: 60px;
+    width: auto;
+    display: block;
+  }
+
+  /* Big logo inside the hero — sits at very top of hero-left, left-aligned with text */
+  .hero-big-logo {
+    width: 140px;
+    margin-bottom: 24px;
+    display: block;
+  }
+
+  /* ── PAGE WRAPPER ── */
+  .page {
+    display: none;
+    padding-top: 76px; /* nav height */
+  }
+  /* Home page: hero is full-bleed — no top offset, nav floats over it */
+  #page-home { padding-top: 0; }
+  .page.active { display: block; }
+
+  /* ── SECTION HELPERS ── */
+  /* Sections handle their own vertical padding; .container handles horizontal centering */
+  .section { padding: 80px 0; }
+  .section-navy { background: var(--navy); color: var(--white); }
+  .section-white { background: var(--white); }
+  .section-offwhite { background: var(--offwhite); }
+  .container {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 48px;
+  }
+
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 14px;
+  }
+  .section-navy .eyebrow { color: var(--gold-light); }
+
+  h1, h2, h3, h4 {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: .04em;
+    line-height: 1.05;
+  }
+  .display { font-size: clamp(52px, 7vw, 88px); }
+  .title  { font-size: clamp(36px, 4vw, 54px); }
+  .subtitle { font-size: clamp(26px, 3vw, 38px); }
+
+  p { line-height: 1.7; color: var(--muted); max-width: 64ch; }
+  .section-navy p { color: rgba(255,255,255,.7); }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-block;
+    padding: 13px 28px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    border-radius: 3px;
+    transition: all .2s;
+  }
+  .btn-primary {
+    background: var(--gold);
+    color: var(--navy);
+  }
+  .btn-primary:hover { background: var(--gold-light); }
+  .btn-navy {
+    background: var(--navy);
+    color: var(--white);
+  }
+  .btn-navy:hover { background: var(--navy-dark); }
+  .btn-outline {
+    background: transparent;
+    color: var(--navy);
+    border: 2px solid var(--navy);
+  }
+  .btn-outline:hover { background: var(--navy); color: var(--white); }
+  .btn-outline-white {
+    background: transparent;
+    color: var(--white);
+    border: 2px solid rgba(255,255,255,.4);
+  }
+  .btn-outline-white:hover { border-color: var(--white); }
+
+  /* ────────────────────────────────────────────
+     HOME PAGE
+  ──────────────────────────────────────────── */
+
+  /* Hero */
+  .hero {
+    min-height: 80vh;
+    background: var(--navy-dark);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: stretch;
+  }
+  .hero-inner {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 0 0 calc(max((100vw - 1140px) / 2, 48px));
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    position: relative;
+    z-index: 2;
+  }
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 36px 48px 80px 0; /* top: just below the proto-banner, logo nearly touches top */
+    position: relative;
+    z-index: 2;
+  }
+  .hero-right {
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-right::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--navy-dark);
+    clip-path: polygon(0 0, 22% 0, 0 100%);
+    z-index: 1;
+  }
+  .hero-right::after { display: none; }
+  .hero-img-placeholder {
+    width: 100%; height: 100%;
+    background: linear-gradient(135deg, #2a3d6e 0%, #1a2a50 50%, #0e1a35 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,.15);
+    font-size: 13px;
+    letter-spacing: .1em;
+  }
+  /* Simulated cheer silhouettes */
+  .hero-img-placeholder::after {
+    content: 'YOUR VIDEO / PHOTO HERE';
+    font-weight: 500;
+    text-transform: uppercase;
+    border: 1px dashed rgba(255,255,255,.2);
+    padding: 20px 32px;
+    border-radius: 4px;
+  }
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(200,155,42,.15);
+    border: 1px solid rgba(200,155,42,.3);
+    color: var(--gold-light);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 2px;
+    margin-bottom: 24px;
+    width: fit-content;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+  }
+  .hero h1 {
+    font-size: clamp(56px, 6.5vw, 92px);
+    color: var(--white);
+    line-height: .97;
+    margin-bottom: 24px;
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: var(--gold);
+  }
+  .hero-sub {
+    font-size: 17px;
+    color: rgba(255,255,255,.6);
+    line-height: 1.6;
+    max-width: 38ch;
+    margin-bottom: 40px;
+  }
+  .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+  .hero-stats {
+    display: flex;
+    gap: 40px;
+    margin-top: 56px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(255,255,255,.1);
+  }
+  .hero-stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: var(--white);
+    letter-spacing: .04em;
+    line-height: 1;
+  }
+  .hero-stat-label {
+    font-size: 12px;
+    color: rgba(255,255,255,.45);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* Values */
+  .values-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+  }
+  .value-item {
+    padding: 40px 28px;
+    border-right: 1px solid rgba(255,255,255,.08);
+    transition: background .2s;
+  }
+  .value-item:last-child { border-right: none; }
+  .value-icon {
+    width: 120px; height: 120px;
+    margin-bottom: 20px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .value-icon img {
+    width: 120px; height: 120px;
+    object-fit: contain;
+    display: block;
+  }
+  .value-name {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: .01em;
+    margin-bottom: 10px;
+  }
+  .value-desc {
+    font-size: 13px;
+    line-height: 1.65;
+    color: rgba(255,255,255,.5);
+    max-width: none;
+  }
+
+  /* Team cards (home preview) */
+  .teams-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--border);
+  }
+  .team-card {
+    background: var(--white);
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform .2s;
+  }
+  .team-card:hover { transform: translateY(-3px); z-index: 1; box-shadow: 0 8px 32px rgba(0,0,0,.12); }
+  .team-card-img {
+    height: 220px;
+    background: var(--navy);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+  }
+  .team-card-img-bg {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 60px;
+    opacity: .3;
+  }
+  .team-badge {
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    margin: 0 16px 16px;
+    padding: 4px 10px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    border-radius: 2px;
+  }
+  .badge-competitive { background: var(--gold); color: var(--navy); }
+  .badge-recreational { background: rgba(255,255,255,.9); color: var(--navy); }
+  .team-card-body { padding: 20px 22px 24px; }
+  .team-card-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    color: var(--navy);
+    letter-spacing: .04em;
+    margin-bottom: 6px;
+  }
+  .team-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .meta-chip {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    background: var(--offwhite);
+    padding: 3px 8px;
+    border-radius: 2px;
+  }
+  .team-card-desc {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted);
+    margin-bottom: 16px;
+    max-width: none;
+  }
+  .team-link {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--navy);
+    text-decoration: none;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    border-bottom: 2px solid var(--gold);
+    padding-bottom: 2px;
+    cursor: pointer;
+  }
+
+  /* Ticker ribbon */
+  .ticker-ribbon {
+    background: #0e1218;
+    overflow: hidden;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .ticker-track {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    will-change: transform;
+  }
+  .ticker-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 20px;
+    padding: 0 20px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 15px;
+    letter-spacing: .18em;
+    color: #fff;
+  }
+  .ticker-star {
+    font-size: 18px;
+    line-height: 1;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  /* CTA band */
+  .cta-band {
+    background: var(--gold);
+    padding: 72px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .cta-band-inner {
+    max-width: 1140px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+  }
+  .cta-band h2 {
+    font-size: clamp(36px, 4vw, 56px);
+    color: var(--navy);
+  }
+  .cta-band p {
+    color: rgba(28,43,94,.7);
+    max-width: 52ch;
+    margin-top: 10px;
+  }
+
+  /* Parallax banner */
+  .parallax-banner {
+    position: relative;
+    height: 520px;
+    overflow: hidden;
+  }
+  .parallax-bg {
+    position: absolute;
+    left: 0; right: 0;
+    top: -50%;
+    height: 200%;
+    background-image: url('DSC08560.jpg');
+    background-size: cover;
+    background-position: center center;
+    will-change: transform;
+  }
+  .parallax-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to right,
+      rgba(14,18,30,.75) 0%,
+      rgba(14,18,30,.4) 50%,
+      rgba(14,18,30,.65) 100%
+    );
+  }
+  .parallax-content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 calc(max((100vw - 1140px) / 2, 48px));
+  }
+  .parallax-content .eyebrow { color: var(--gold); margin-bottom: 12px; }
+  .parallax-content h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    line-height: 1;
+    color: #fff;
+    margin: 0 0 20px;
+    max-width: 600px;
+  }
+  .parallax-content p {
+    font-size: 16px;
+    color: rgba(255,255,255,.8);
+    max-width: 480px;
+    margin: 0 0 28px;
+    line-height: 1.6;
+  }
+  @media (max-width: 700px) {
+    .parallax-banner { height: 380px; }
+    .parallax-bg { background-attachment: scroll; }
+    .parallax-content h2 { font-size: 48px; }
+    .parallax-content { padding: 0 20px; }
+  }
+
+  /* Events preview */
+  .events-list { display: flex; flex-direction: column; gap: 0; }
+  .event-row {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: 24px;
+    align-items: center;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .event-row:hover { background: var(--offwhite); margin: 0 -20px; padding: 22px 20px; }
+  .event-date-box {
+    text-align: center;
+    background: var(--navy);
+    color: var(--white);
+    border-radius: 4px;
+    padding: 10px 8px;
+  }
+  .event-date-day {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30px;
+    line-height: 1;
+    color: var(--gold);
+  }
+  .event-date-month {
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.6);
+    margin-top: 2px;
+  }
+  .event-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: var(--navy);
+    letter-spacing: .03em;
+    margin-bottom: 4px;
+  }
+  .event-meta { font-size: 13px; color: var(--muted); }
+  .event-type-chip {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .chip-competition { background: rgba(28,43,94,.08); color: var(--navy); }
+  .chip-tryout { background: rgba(200,155,42,.15); color: #8a6a10; }
+  .chip-social { background: rgba(80,180,80,.1); color: #2a6a2a; }
+
+  /* ────────────────────────────────────────────
+     TEAMS PAGE
+  ──────────────────────────────────────────── */
+  .page-hero {
+    background: var(--navy-dark);
+    padding: 64px 0;
+    color: var(--white);
+  }
+  .page-hero .container { /* always wrap page-hero content in .container */ }
+  .page-hero h1 { color: var(--white); font-size: clamp(44px, 5vw, 72px); }
+  .page-hero p { color: rgba(255,255,255,.6); margin-top: 12px; }
+
+  .filter-bar {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+  }
+  .filter-bar .container {
+    display: flex;
+    gap: 8px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    overflow-x: auto;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    padding: 7px 18px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all .15s;
+    white-space: nowrap;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    background: var(--navy);
+    color: var(--white);
+    border-color: var(--navy);
+  }
+  .teams-full-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    padding: 40px 0;
+    max-width: 1140px;
+    margin: 0 auto;
+    padding-left: 48px;
+    padding-right: 48px;
+  }
+
+  /* ────────────────────────────────────────────
+     TEAM DETAIL PAGE
+  ──────────────────────────────────────────── */
+  .team-detail-hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 380px;
+  }
+  .td-hero-photo {
+    background-size: cover;
+    background-position: center;
+    background-color: var(--navy);
+  }
+  .td-hero-info {
+    background: var(--navy-dark);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 48px 56px 48px max(48px, calc((100vw - 1140px) / 2 + 48px));
+  }
+  .td-hero-logo {
+    max-width: 100%;
+    width: 480px;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 16px rgba(0,0,0,.5));
+  }
+  .team-detail-info-strip {
+    display: flex;
+    gap: 0;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+  }
+  .info-strip-item {
+    padding: 20px 32px;
+    border-right: 1px solid var(--border);
+    flex: 1;
+  }
+  .info-strip-item:last-child { border-right: none; }
+  .info-strip-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .info-strip-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    color: var(--navy);
+    letter-spacing: .04em;
+  }
+  .team-detail-body {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 0;
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 48px 48px;
+    gap: 48px;
+  }
+  /* Team detail — Selection & Membership */
+  .td-terms-section {
+    background: var(--offwhite);
+    padding: 64px 0;
+    border-top: 1px solid var(--border);
+  }
+  .td-terms-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+  }
+  .td-terms-heading {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: var(--navy);
+    letter-spacing: .04em;
+    margin: 0 0 16px 0;
+    padding-bottom: 12px;
+    border-bottom: 3px solid var(--gold);
+    display: inline-block;
+  }
+  .td-terms-block p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--muted);
+    margin: 0 0 12px 0;
+  }
+  .td-terms-block p:last-child { margin-bottom: 0; }
+  .td-membership-list {
+    margin: 12px 0 16px 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .td-membership-list li {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--muted);
+    padding-left: 18px;
+    position: relative;
+  }
+  .td-membership-list li::before {
+    content: '–';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    font-weight: 700;
+  }
+  .td-membership-note {
+    font-size: 13px !important;
+    font-weight: 600;
+    color: var(--navy) !important;
+  }
+  @media (max-width: 720px) {
+    .td-terms-grid { grid-template-columns: 1fr; gap: 40px; }
+  }
+
+  .pricing-box {
+    background: var(--navy);
+    color: var(--white);
+    padding: 32px;
+    border-radius: 4px;
+    height: fit-content;
+  }
+  .pricing-box h3 {
+    font-size: 28px;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+  .price-amount {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    color: var(--gold);
+    letter-spacing: .02em;
+    line-height: 1;
+  }
+  .price-period { font-size: 13px; color: rgba(255,255,255,.5); margin-bottom: 24px; }
+  .pricing-includes {
+    list-style: none;
+    margin-bottom: 24px;
+  }
+  .pricing-includes li {
+    font-size: 13px;
+    color: rgba(255,255,255,.7);
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    padding-left: 18px;
+    position: relative;
+  }
+  .pricing-includes li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+  }
+  .coach-card-small {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--offwhite);
+    padding: 16px;
+    border-radius: 4px;
+    margin-top: 24px;
+    cursor: pointer;
+  }
+  .coach-avatar {
+    width: 48px; height: 48px;
+    background: var(--navy);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gold);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+  }
+  .photo-gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 32px;
+  }
+  .gallery-img {
+    aspect-ratio: 4/3;
+    background: linear-gradient(135deg, #ddd, #eee);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #bbb;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+  }
+
+  /* ────────────────────────────────────────────
+     JOIN US PAGE
+  ──────────────────────────────────────────── */
+  .join-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: calc(100vh - 92px);
+  }
+  .join-left {
+    background: var(--navy);
+    padding: 72px 64px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  .join-left h1 { color: var(--white); font-size: 60px; }
+  .join-left p { color: rgba(255,255,255,.6); margin-top: 16px; max-width: 40ch; }
+  .join-reasons {
+    list-style: none;
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .join-reasons li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: rgba(255,255,255,.8);
+    font-size: 14px;
+  }
+  .join-reasons li::before {
+    content: '';
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .join-right {
+    background: var(--offwhite);
+    padding: 72px 64px;
+    overflow-y: auto;
+  }
+  .form-group { margin-bottom: 20px; }
+  .form-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 3px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--white);
+    transition: border-color .2s;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    outline: none;
+    border-color: var(--navy);
+  }
+  .form-textarea { resize: vertical; min-height: 100px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .form-checkbox input { margin-top: 3px; flex-shrink: 0; }
+  .form-submit {
+    width: 100%;
+    padding: 16px;
+    background: var(--navy);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background .2s;
+    margin-top: 8px;
+  }
+  .form-submit:hover { background: var(--navy-dark); }
+
+  /* ────────────────────────────────────────────
+     ABOUT PAGE
+  ──────────────────────────────────────────── */
+
+  /* About values full-width grid */
+  .about-values-section { padding-bottom: 80px; }
+  .about-values-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    padding: 0 48px;
+  }
+  .about-value-card {
+    padding: 32px 28px;
+    background: rgba(255,255,255,.05);
+    border-right: 1px solid rgba(255,255,255,.07);
+  }
+  .about-value-card:last-child { border-right: none; }
+  .about-val-icon {
+    width: 72px; height: 72px;
+    object-fit: contain;
+    display: block;
+    margin-bottom: 16px;
+  }
+  .about-val-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: var(--white);
+    letter-spacing: .04em;
+    margin-bottom: 10px;
+  }
+  .about-val-desc {
+    font-size: 13px;
+    line-height: 1.65;
+    color: rgba(255,255,255,.55);
+    margin: 0;
+  }
+  @media (max-width: 1000px) {
+    .about-values-grid {
+      grid-template-columns: repeat(6, 1fr);
+      padding: 0 24px;
+    }
+    .about-value-card { grid-column: span 2; border-right: none; border-bottom: 1px solid rgba(255,255,255,.07); }
+    .about-value-card:nth-child(4) { grid-column: 2 / span 2; }
+    .about-value-card:nth-child(5) { grid-column: 4 / span 2; border-bottom: none; }
+    .about-value-card:nth-child(4) { border-bottom: none; }
+  }
+  @media (max-width: 600px) {
+    .about-values-grid { grid-template-columns: 1fr 1fr; padding: 0 20px; }
+    .about-value-card { grid-column: span 1 !important; border-right: none; border-bottom: 1px solid rgba(255,255,255,.07); }
+    .about-value-card:last-child { border-bottom: none; }
+  }
+
+  .about-story {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    min-height: 520px;
+  }
+  .about-story-img {
+    background: linear-gradient(135deg, #1a2a50, #2a3d6e);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 80px;
+    opacity: .6;
+    min-height: 420px;
+  }
+  .about-story-text {
+    padding: 72px 64px;
+    background: var(--white);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .about-story-text h2 { font-size: 48px; color: var(--navy); margin-bottom: 8px; }
+  .about-story-text h3 {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .about-story-text p { margin-bottom: 16px; }
+
+  .club-info-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    background: var(--white);
+    border-top: 1px solid var(--border);
+  }
+  .club-info-item {
+    padding: 36px 32px;
+    border-right: 1px solid var(--border);
+  }
+  .club-info-item:last-child { border-right: none; }
+  .club-info-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .club-info-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: var(--navy);
+  }
+
+  /* ────────────────────────────────────────────
+     COACHES PAGE
+  ──────────────────────────────────────────── */
+  .coaches-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    padding: 40px 48px;
+    max-width: 1140px;
+    margin: 0 auto;
+  }
+  .coach-card {
+    background: var(--white);
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .coach-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,.1); }
+  .coach-card-img {
+    height: 260px;
+    background: linear-gradient(160deg, var(--navy) 0%, #2a3d6e 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 72px;
+    color: rgba(255,255,255,.2);
+    position: relative;
+    overflow: hidden;
+  }
+  .coach-initials {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    color: rgba(200,155,42,.4);
+    position: absolute;
+  }
+  .coach-card-body { padding: 20px 20px 24px; }
+  .coach-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+  .coach-role {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .coach-bio { font-size: 13px; color: var(--muted); line-height: 1.6; max-width: none; }
+
+  /* Coach Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(17,29,66,.7);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--white);
+    border-radius: 6px;
+    max-width: 640px;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+  .modal-header {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    background: var(--navy);
+  }
+  .modal-img {
+    height: 200px;
+    background: linear-gradient(160deg, #1a2a50, #2a3d6e);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .modal-img-initials {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 64px;
+    color: rgba(200,155,42,.5);
+  }
+  .modal-title {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .modal-title h2 { font-size: 36px; color: var(--white); }
+  .modal-title .coach-role { color: var(--gold-light); }
+  .modal-body { padding: 32px; }
+  .modal-body p { color: var(--muted); font-size: 14px; line-height: 1.7; max-width: none; margin-bottom: 16px; }
+  .modal-cert {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .cert-chip {
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--offwhite);
+    color: var(--navy);
+    padding: 4px 10px;
+    border-radius: 2px;
+    letter-spacing: .04em;
+  }
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    width: 32px; height: 32px;
+    background: rgba(255,255,255,.15);
+    border: none;
+    border-radius: 50%;
+    color: var(--white);
+    font-size: 16px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .15s;
+  }
+  .modal-close:hover { background: rgba(255,255,255,.3); }
+
+  /* ────────────────────────────────────────────
+     EVENTS PAGE
+  ──────────────────────────────────────────── */
+  .events-page-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 48px;
+    padding: 48px 48px;
+    max-width: 1140px;
+    margin: 0 auto;
+  }
+
+  /* === Phone Mockup Section === */
+  .phone-section {
+    background: var(--offwhite);
+    padding: 96px 0;
+  }
+  .phone-section-header {
+    max-width: 1140px;
+    margin: 0 auto 56px;
+    padding: 0 48px;
+  }
+  .phone-section-header .eyebrow {
+    color: var(--gold);
+    font-size: 13px;
+    letter-spacing: .12em;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .phone-section-header h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    line-height: 1.0;
+    color: var(--navy);
+    margin: 0 0 12px 0;
+  }
+  .phone-section-subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: #555;
+    line-height: 1.65;
+    margin: 0;
+  }
+  .phone-section-inner {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .phone-section-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .phone-frame {
+    position: relative;
+    width: 240px;
+    background: #1a1a1a;
+    border-radius: 44px;
+    border: 7px solid #1a1a1a;
+    box-shadow: 0 0 0 2px #555, 0 32px 64px rgba(0,0,0,.28), inset 0 0 0 1px rgba(255,255,255,.1);
+    overflow: hidden;
+    aspect-ratio: 9/19.5;
+  }
+  .phone-frame::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 82px; height: 28px;
+    background: #1a1a1a;
+    border-radius: 0 0 18px 18px;
+    z-index: 10;
+  }
+  .phone-screen {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 38px;
+  }
+  .phone-screen-placeholder {
+    width: 100%; height: 100%;
+    background: linear-gradient(160deg, #1C2B5E 0%, #2a3f80 55%, #C89B2A 100%);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 14px;
+    color: rgba(255,255,255,.85);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    text-align: center;
+    padding: 50px 24px;
+    line-height: 1.5;
+  }
+  .phone-screen-placeholder .play-icon {
+    width: 56px; height: 56px;
+    background: rgba(255,255,255,.18);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid rgba(255,255,255,.4);
+  }
+  .phone-screen-placeholder .play-icon::after {
+    content: '';
+    display: block;
+    width: 0; height: 0;
+    border-style: solid;
+    border-width: 9px 0 9px 16px;
+    border-color: transparent transparent transparent rgba(255,255,255,.9);
+    margin-left: 3px;
+  }
+  .phone-section-right {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .phone-level {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    padding: 32px 0;
+    border-bottom: 1px solid rgba(0,0,0,.09);
+  }
+  .phone-level:first-child { padding-top: 0; }
+  .phone-level:last-child { border-bottom: none; }
+  .phone-level-icon {
+    font-size: 28px;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+  .phone-level-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: .08em;
+    color: var(--navy);
+    margin: 0 0 8px 0;
+  }
+  .phone-level-desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    line-height: 1.65;
+    color: #555;
+    margin: 0;
+  }
+  .phone-section-cta { margin-top: 36px; }
+  @media (max-width: 860px) {
+    .phone-section-inner { grid-template-columns: 1fr; gap: 56px; }
+    .phone-frame { width: 200px; }
+    .phone-section-left { order: 2; }
+    .phone-section-right { order: 1; }
+  }
+
+  /* Board cards */
+  .board-card {
+    background: var(--offwhite);
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .board-card-initials {
+    height: 120px;
+    background: linear-gradient(160deg, var(--navy) 0%, #2a3d6e 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: .06em;
+    color: rgba(200,155,42,.7);
+  }
+  .board-card-body {
+    padding: 16px 20px 20px;
+  }
+  .board-card-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: .04em;
+    color: var(--navy);
+    margin-bottom: 2px;
+  }
+  .board-card-role {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+  }
+  @media (max-width: 860px) {
+    .board-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  }
+  @media (max-width: 480px) {
+    .board-grid { grid-template-columns: 1fr 1fr !important; gap: 16px !important; }
+  }
+
+  .event-card {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: 24px;
+    align-items: start;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .event-card:hover .event-name { color: var(--gold); }
+  .event-card-content {}
+  .event-name { font-size: 22px; color: var(--navy); margin-bottom: 6px; transition: color .2s; }
+  .event-detail { font-size: 13px; color: var(--muted); line-height: 1.6; max-width: none; margin-top: 8px; }
+  .events-sidebar {}
+  .sidebar-card {
+    background: var(--white);
+    padding: 28px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+  }
+  .sidebar-card h3 { font-size: 22px; color: var(--navy); margin-bottom: 16px; }
+  .sidebar-card p { font-size: 13px; max-width: none; }
+
+  /* ────────────────────────────────────────────
+     SHOP PAGE
+  ──────────────────────────────────────────── */
+  .shop-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    padding: 40px 48px;
+  }
+  .product-card {
+    background: var(--white);
+    border-radius: 2px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform .2s;
+  }
+  .product-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,.09); }
+  .product-img {
+    aspect-ratio: 1;
+    background: linear-gradient(135deg, var(--offwhite), #e8e4dd);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 52px;
+    position: relative;
+  }
+  .product-new {
+    position: absolute;
+    top: 12px; left: 12px;
+    background: var(--navy);
+    color: var(--white);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 2px;
+  }
+  .product-body { padding: 16px 16px 20px; }
+  .product-cat {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .product-name { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--navy); margin-bottom: 4px; }
+  .product-price { font-size: 15px; font-weight: 600; color: var(--text); }
+  .product-price span { font-size: 12px; font-weight: 400; color: var(--muted); margin-left: 4px; }
+
+  /* ────────────────────────────────────────────
+     CART
+  ──────────────────────────────────────────── */
+  .cart-icon-btn {
+    position: relative;
+    background: none; border: none; cursor: pointer;
+    padding: 6px 10px; display: flex; align-items: center;
+    color: var(--white); transition: color .2s;
+  }
+  nav.scrolled .cart-icon-btn, nav.solid .cart-icon-btn { color: var(--text); }
+  .cart-icon-btn svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+  .cart-badge {
+    position: absolute; top: 2px; right: 4px;
+    background: var(--gold); color: var(--navy-dark);
+    font-size: 9px; font-weight: 700; line-height: 1;
+    padding: 2px 5px; border-radius: 10px;
+    display: none;
+  }
+  .cart-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,.4); z-index: 1100;
+  }
+  .cart-overlay.open { display: block; }
+  .cart-drawer {
+    position: fixed; top: 0; right: -420px; bottom: 0;
+    width: 420px; max-width: 100vw;
+    background: var(--white); z-index: 1101;
+    display: flex; flex-direction: column;
+    transition: right .3s ease; box-shadow: -4px 0 32px rgba(0,0,0,.15);
+  }
+  .cart-drawer.open { right: 0; }
+  .cart-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 24px; border-bottom: 1px solid var(--border);
+  }
+  .cart-header h3 { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: .05em; color: var(--navy); margin: 0; }
+  .cart-close { background: none; border: none; cursor: pointer; font-size: 22px; color: var(--muted); padding: 4px; line-height: 1; }
+  .cart-items { flex: 1; overflow-y: auto; padding: 16px 24px; display: flex; flex-direction: column; gap: 16px; }
+  .cart-empty { text-align: center; padding: 48px 0; color: var(--muted); font-size: 14px; }
+  .cart-item { display: grid; grid-template-columns: 52px 1fr auto; gap: 12px; align-items: start; }
+  .cart-item-img { width: 52px; height: 52px; background: var(--offwhite); border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .cart-item-name { font-weight: 600; font-size: 14px; color: var(--navy); margin-bottom: 2px; }
+  .cart-item-meta { font-size: 12px; color: var(--muted); }
+  .cart-item-qty { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+  .cart-item-qty button { background: var(--offwhite); border: none; cursor: pointer; width: 22px; height: 22px; border-radius: 2px; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+  .cart-item-qty span { font-size: 13px; font-weight: 600; min-width: 16px; text-align: center; }
+  .cart-item-price { font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; }
+  .cart-item-remove { font-size: 11px; color: var(--muted); cursor: pointer; text-decoration: underline; display: block; margin-top: 4px; }
+  .cart-footer { padding: 20px 24px; border-top: 1px solid var(--border); }
+  .cart-subtotal { display: flex; justify-content: space-between; font-size: 15px; font-weight: 600; margin-bottom: 16px; color: var(--navy); }
+  .cart-shipping-note { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+
+  /* ────────────────────────────────────────────
+     PRODUCT DETAIL
+  ──────────────────────────────────────────── */
+  .product-detail-hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 480px;
+  }
+  .pd-image {
+    background: linear-gradient(135deg, var(--offwhite), #e0dbd3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 120px;
+    position: relative;
+  }
+  .pd-info {
+    background: var(--white);
+    padding: 56px max(48px, calc((100vw - 1140px) / 2 + 48px)) 56px 56px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .pd-cat {
+    font-size: 10px; font-weight: 600; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+  }
+  .pd-name {
+    font-family: 'Bebas Neue', sans-serif; font-size: clamp(36px, 4vw, 56px);
+    letter-spacing: .04em; color: var(--navy); line-height: 1; margin-bottom: 12px;
+  }
+  .pd-price {
+    font-size: 26px; font-weight: 700; color: var(--text); margin-bottom: 8px;
+  }
+  .pd-colors {
+    font-size: 13px; color: var(--muted); margin-bottom: 28px;
+  }
+  .pd-label {
+    font-size: 11px; font-weight: 600; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--navy); margin-bottom: 8px;
+  }
+  .pd-sizes {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px;
+  }
+  .pd-size {
+    width: 44px; height: 44px; border: 1.5px solid var(--border);
+    border-radius: 3px; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600; cursor: pointer; transition: all .15s;
+    color: var(--text);
+  }
+  .pd-size:hover, .pd-size.selected {
+    border-color: var(--navy); background: var(--navy); color: var(--white);
+  }
+  .pd-qty {
+    display: flex; align-items: center; gap: 0; margin-bottom: 24px;
+    border: 1.5px solid var(--border); border-radius: 3px; width: fit-content;
+  }
+  .pd-qty-btn {
+    width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 18px; font-weight: 300; color: var(--navy);
+    user-select: none; transition: background .15s;
+  }
+  .pd-qty-btn:hover { background: var(--offwhite); }
+  .pd-qty-val {
+    width: 44px; text-align: center; font-size: 14px;
+    font-weight: 600; border-left: 1.5px solid var(--border); border-right: 1.5px solid var(--border);
+    height: 40px; line-height: 40px;
+  }
+  .pd-actions { display: flex; gap: 12px; margin-bottom: 28px; }
+  .pd-desc {
+    font-size: 14px; line-height: 1.7; color: #555;
+    padding-top: 24px; border-top: 1px solid var(--border);
+  }
+  .pd-shipping {
+    margin-top: 16px; font-size: 12px; color: var(--muted);
+  }
+  @media (max-width: 760px) {
+    .product-detail-hero { grid-template-columns: 1fr; }
+    .pd-image { min-height: 260px; }
+    .pd-info { padding: 32px 20px; }
+  }
+
+  /* ────────────────────────────────────────────
+     EVENT DETAIL PAGE
+  ──────────────────────────────────────────── */
+  .event-detail-hero {
+    position: relative; overflow: hidden;
+    display: flex; align-items: flex-end;
+    height: 320px;
+    background: linear-gradient(135deg, #111D42, #1C2B5E);
+  }
+  .ed-hero-img {
+    position: absolute; inset: 0;
+    background-size: cover; background-position: center;
+  }
+  .ed-hero-img::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(10,18,40,.85) 0%, rgba(10,18,40,.3) 60%, transparent 100%);
+  }
+  .ed-hero-content {
+    position: relative; z-index: 2;
+    padding: 40px max(48px, calc((100vw - 1140px)/2 + 48px));
+    color: white;
+  }
+  .ed-type-chip {
+    display: inline-block; margin-bottom: 12px;
+  }
+  .ed-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 5vw, 64px);
+    line-height: 1; margin-bottom: 8px; color: white;
+  }
+  .ed-meta-strip {
+    display: flex; gap: 32px; flex-wrap: wrap;
+    background: white; border-bottom: 1px solid var(--border);
+    padding: 16px max(48px, calc((100vw - 1140px)/2 + 48px));
+  }
+  .ed-meta-item {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 14px; color: var(--muted);
+  }
+  .ed-body {
+    display: grid; grid-template-columns: 1fr 340px; gap: 48px;
+    max-width: 1140px; margin: 0 auto; padding: 48px 48px;
+  }
+  .ed-description { font-size: 15px; line-height: 1.75; color: #444; }
+  .ed-sidebar-card {
+    background: var(--offwhite); border-radius: 4px;
+    padding: 28px; margin-bottom: 20px;
+  }
+  /* Payment modal */
+  .payment-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.5); z-index: 2000; display: none;
+  }
+  .payment-modal {
+    position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: white; border-radius: 4px; padding: 40px;
+    width: 440px; max-width: 95vw; z-index: 2001;
+    display: none; position: fixed;
+  }
+  .payment-modal h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px; color: var(--navy);
+    margin-bottom: 4px; letter-spacing: .04em;
+  }
+  .payment-modal .pm-price {
+    font-size: 32px; font-weight: 700;
+    color: var(--navy); margin-bottom: 24px;
+  }
+  @media (max-width: 760px) {
+    .ed-body { grid-template-columns: 1fr; padding: 32px 20px; }
+    .ed-hero-content { padding: 32px 20px; }
+  }
+
+  /* ────────────────────────────────────────────
+     FOOTER
+  ──────────────────────────────────────────── */
+  footer {
+    background: var(--navy-dark);
+    color: rgba(255,255,255,.5);
+    padding: 56px 0 32px;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px;
+    max-width: 1140px;
+    margin: 0 auto 40px;
+    padding: 0 48px;
+  }
+  .footer-brand h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--white);
+    letter-spacing: .08em;
+    margin-bottom: 6px;
+  }
+  .footer-brand p { font-size: 13px; line-height: 1.6; max-width: 36ch; }
+  .footer-col h4 {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.4);
+    margin-bottom: 16px;
+  }
+  .footer-col a {
+    display: block;
+    font-size: 14px;
+    color: rgba(255,255,255,.6);
+    text-decoration: none;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: color .15s;
+  }
+  .footer-col a:hover { color: var(--white); }
+  .footer-bottom {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 24px 48px 0;
+    border-top: 1px solid rgba(255,255,255,.08);
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+  }
+
+  /* Scroll back to top after page switch */
+  html { scroll-behavior: smooth; }
+
+  /* ══════════════════════════════════════════
+     RESPONSIVE
+  ══════════════════════════════════════════ */
+
+  /* ── Hamburger button (hidden on desktop) ── */
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    z-index: 1001;
+  }
+  .nav-hamburger span {
+    display: block;
+    width: 22px; height: 2px;
+    background: var(--navy);
+    border-radius: 2px;
+    transition: all .2s;
+  }
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* Mobile nav drawer */
+  .nav-drawer {
+    display: none;
+    position: fixed;
+    top: 92px; left: 0; right: 0; bottom: 0;
+    background: var(--white);
+    z-index: 998;
+    flex-direction: column;
+    padding: 24px 32px;
+    gap: 4px;
+    overflow-y: auto;
+  }
+  .nav-drawer.open { display: flex; }
+  .nav-drawer a {
+    display: block;
+    padding: 14px 16px;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text);
+    text-decoration: none;
+    border-radius: 4px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-drawer a:last-child { border-bottom: none; }
+  .nav-drawer .nav-join {
+    background: var(--navy);
+    color: var(--white) !important;
+    margin-top: 12px;
+    text-align: center;
+    border-bottom: none;
+  }
+
+  @media (max-width: 900px) {
+    /* Nav */
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .nav-hamburger { display: flex; }
+
+    /* Sections */
+    .section { padding: 56px 0; }
+    .teams-full-grid, .coaches-grid, .shop-grid { padding-left: 20px; padding-right: 20px; }
+    .events-page-grid { padding: 24px 20px; }
+    .cta-band { padding: 48px 20px; }
+    .page-hero { padding: 48px 0; }
+    .page-hero .container, .container { padding-left: 20px; padding-right: 20px; }
+    .filter-bar .container { padding-top: 12px; padding-bottom: 12px; }
+    .teams-full-grid { padding: 24px 20px; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .coaches-grid { grid-template-columns: 1fr 1fr; padding: 24px 20px; gap: 16px; }
+    .shop-grid { grid-template-columns: 1fr 1fr; padding: 24px 20px; gap: 16px; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+
+    /* Hero */
+    .hero { min-height: auto; }
+    .hero-inner { grid-template-columns: 1fr; padding: 0 20px; }
+    .hero-right { display: none; }
+    .hero-left { padding: 120px 0 56px; }
+    .hero-big-logo { width: 160px; }
+    nav { height: 56px; }
+    nav { padding: 0 20px; }
+    .hero-stats { gap: 24px; }
+
+    /* Values */
+    .values-grid { grid-template-columns: 1fr 1fr; }
+    .value-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .value-item:last-child { border-bottom: none; }
+
+    /* CTA band */
+    .cta-band { flex-direction: column; padding: 56px 0; gap: 24px; }
+    .cta-band-inner { padding: 0 20px; flex-direction: column; }
+    .cta-band div:last-child { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* Teams overview */
+    .teams-grid { grid-template-columns: 1fr 1fr; gap: 16px; background: transparent; }
+
+    /* What is Cheerleading */
+    .cheer-disciplines-grid { grid-template-columns: 1fr !important; gap: 2px; }
+    .cheer-attrs-grid { grid-template-columns: 1fr !important; gap: 20px; }
+
+    /* About */
+    .about-story { grid-template-columns: 1fr; }
+    .about-story-img { min-height: 220px; }
+    .about-story-text { padding: 40px 24px; }
+    .club-info-grid { grid-template-columns: 1fr 1fr; }
+    .club-info-item { border-right: none; border-bottom: 1px solid var(--border); }
+    .club-info-item:nth-child(odd) { border-right: 1px solid var(--border); }
+
+    /* Team detail */
+    .team-detail-body { grid-template-columns: 1fr; padding: 32px 20px; gap: 32px; }
+    .team-detail-info-strip { flex-wrap: wrap; }
+    .info-strip-item { flex: none; width: 50%; border-bottom: 1px solid var(--border); }
+    .team-detail-hero { grid-template-columns: 1fr; height: auto; }
+    .td-hero-photo { height: 240px; }
+    .td-hero-info { padding: 32px 24px; }
+    .td-hero-logo { width: 240px; }
+    .photo-gallery { grid-template-columns: 1fr 1fr; }
+
+    /* Join */
+    .join-layout { grid-template-columns: 1fr; }
+    .join-left { padding: 48px 24px; }
+    .join-right { padding: 40px 24px; }
+
+    /* Events */
+    .events-page-grid { grid-template-columns: 1fr; padding: 32px 20px; gap: 32px; }
+
+    /* Schedule week grid — horizontal scroll on small screens */
+    .week-grid { grid-template-columns: repeat(7, minmax(100px, 1fr)); overflow-x: auto; }
+    #sched-week { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+    /* Footer */
+    footer { padding: 40px 0 24px; }
+    .footer-grid { padding: 0 20px; }
+    .footer-bottom { padding: 24px 20px 0; }
+    .footer-bottom { flex-direction: column; gap: 8px; font-size: 11px; }
+
+    /* Modal */
+    .modal { margin: 0 12px; }
+    .modal-header { grid-template-columns: 100px 1fr; }
+    .modal-img { height: 160px; }
+    .modal-title { padding: 20px; }
+    .modal-body { padding: 20px; }
+  }
+
+  @media (max-width: 560px) {
+    /* Single column everywhere */
+    .teams-grid { grid-template-columns: 1fr; gap: 20px; background: transparent; }
+    .teams-full-grid { grid-template-columns: 1fr; gap: 20px; }
+    .teams-grid .team-card,
+    .teams-full-grid .team-card {
+      border-radius: 8px;
+      box-shadow: 0 2px 16px rgba(0,0,0,.08);
+      overflow: hidden;
+    }
+    .coaches-grid { grid-template-columns: 1fr; }
+    .shop-grid { grid-template-columns: 1fr 1fr; }
+    .values-grid { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .club-info-grid { grid-template-columns: 1fr; }
+    .club-info-item { border-right: none !important; }
+    .info-strip-item { width: 50%; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 52px; }
+    .hero-stats { flex-wrap: wrap; gap: 20px; }
+
+    /* Events list compact */
+    .event-row { grid-template-columns: 64px 1fr; }
+    .event-row .event-type-chip { display: none; }
+    .event-card { grid-template-columns: 72px 1fr; }
+
+    /* Team detail info strip */
+    .info-strip-item { width: 50%; }
+
+    .modal-header { grid-template-columns: 1fr; }
+    .modal-img { height: 120px; }
+  }
+
+  /* ── SCHEDULE ── */
+  .sched-toggle {
+    display: flex;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .sched-toggle button {
+    padding: 7px 18px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--muted);
+    transition: all .15s;
+  }
+  .sched-toggle button.on { background: var(--navy); color: var(--white); }
+
+  .sched-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .sleg { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: var(--text); }
+  .sleg-dot { width: 11px; height: 11px; border-radius: 2px; flex-shrink: 0; }
+
+  .week-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+  }
+  .day-head {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: .08em;
+    color: var(--navy);
+    padding: 6px 6px 8px;
+    border-bottom: 2px solid var(--navy);
+    margin-bottom: 8px;
+  }
+  .day-col.empty .day-head { color: var(--muted); border-bottom-color: var(--border); }
+  .slots { display: flex; flex-direction: column; gap: 5px; }
+
+  .slot {
+    border-radius: 3px;
+    padding: 8px 9px;
+    transition: transform .12s, box-shadow .12s;
+  }
+  .slot:hover { transform: translateY(-1px); box-shadow: 0 3px 12px rgba(0,0,0,.15); z-index:1; position:relative; }
+  .slot-time { font-size: 10px; font-weight: 600; opacity: .7; margin-bottom: 3px; line-height: 1; letter-spacing:.02em; }
+  .slot-name { font-size: 12px; font-weight: 600; line-height: 1.3; }
+  .slot-sub  { font-size: 10px; opacity: .65; margin-top: 2px; line-height: 1.2; }
+
+  .s-opengym  { background: #EAE7E0; color: #555; }
+  .s-dev      { background: #D4DDF5; color: var(--navy); }
+  .s-comp     { background: var(--navy); color: var(--white); }
+  .s-rivals   { background: #111D42; color: #C89B2A; }
+  .s-worldcup { background: var(--gold); color: var(--navy-dark); }
+
+  .empty-slot {
+    background: var(--white);
+    border: 1.5px dashed var(--border);
+    border-radius: 3px;
+    height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--border);
+  }
+
+  /* list view */
+  #sched-list { display: none; }
+  .list-day { margin-bottom: 22px; }
+  .list-day-head {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: .06em;
+    color: var(--navy);
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--navy);
+    margin-bottom: 10px;
+    display: flex; align-items: baseline; gap: 10px;
+  }
+  .list-day-head span { font-family:'Inter',sans-serif; font-size:11px; font-weight:500; color:var(--muted); letter-spacing:.04em; }
+  .list-row {
+    display: grid;
+    grid-template-columns: 110px 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 9px 14px;
+    border-radius: 3px;
+    margin-bottom: 5px;
+    background: var(--white);
+    border-left: 3px solid transparent;
+  }
+  .lr-opengym  { border-left-color: #aaa; }
+  .lr-dev      { border-left-color: #7a95d0; }
+  .lr-comp     { border-left-color: var(--navy); }
+  .lr-rivals   { border-left-color: #111D42; }
+  .lr-worldcup { border-left-color: var(--gold); }
+  .list-time { font-size: 12px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+  .list-name { font-size: 14px; font-weight: 600; color: var(--navy); }
+  .list-sub  { font-size: 11px; color: var(--muted); margin-top:1px; }
+  .lbadge {
+    font-size: 10px; font-weight: 600; letter-spacing:.06em; text-transform:uppercase;
+    padding: 3px 8px; border-radius: 2px; white-space: nowrap;
+  }
+  .lb-open { background:#EAE7E0; color:#666; }
+  .lb-dev  { background:#D4DDF5; color:var(--navy); }
+  .lb-comp { background:var(--navy); color:var(--white); }
+  .lb-wc   { background:var(--gold); color:var(--navy-dark); }
+</style>
+</head>
+<body>
+
+<!-- PROTOTYPE NOTICE -->
+<div class="proto-banner">
+  <strong>Prototype</strong> — This is a design preview. Navigation works; forms and buttons are for illustration only.
+</div>
+
+<!-- PAYMENT MODAL -->
+<div class="payment-overlay" id="payment-overlay" onclick="closePayment()"></div>
+<div class="payment-modal" id="payment-modal" style="position:relative;">
+  <button onclick="closePayment()" style="position:absolute; top:16px; right:16px; background:none; border:none; cursor:pointer; font-size:20px; color:var(--muted);">✕</button>
+
+  <!-- Step 1: Contact details -->
+  <div id="pm-step-1">
+    <div id="pm-platform-chip" style="display:inline-block; font-size:11px; font-weight:700; letter-spacing:.08em; background:var(--offwhite); color:var(--navy); padding:4px 10px; border-radius:2px; margin-bottom:16px; text-transform:uppercase;"></div>
+    <h3 style="font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--navy); letter-spacing:.04em; margin-bottom:4px;">Get Tickets</h3>
+    <div id="pm-price" style="font-size:32px; font-weight:700; color:var(--navy); margin-bottom:4px;"></div>
+    <div id="pm-event-name" style="font-size:13px; color:var(--muted); margin-bottom:24px;"></div>
+    <p style="font-size:13px; color:var(--muted); margin-bottom:20px;">Enter your details — you'll complete payment on <span id="pm-platform-name"></span>.</p>
+    <div class="form-group">
+      <label class="form-label">Full Name</label>
+      <input class="form-input" id="pm-name" placeholder="Anna de Vries">
+    </div>
+    <div class="form-group" style="margin-top:12px;">
+      <label class="form-label">Email</label>
+      <input class="form-input" id="pm-email" type="email" placeholder="anna@example.com">
+    </div>
+    <button class="btn btn-primary" style="width:100%; margin-top:20px;" onclick="pmContinue()">Continue to <span id="pm-continue-label"></span> →</button>
+    <p style="text-align:center; margin-top:12px; font-size:13px;"><span style="color:var(--muted); cursor:pointer;" onclick="closePayment()">Cancel</span></p>
+  </div>
+
+  <!-- Step 2: Redirect confirmation -->
+  <div id="pm-step-2" style="display:none; text-align:center; padding:16px 0;">
+    <div style="font-size:48px; margin-bottom:16px;">✅</div>
+    <h3 style="font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--navy); letter-spacing:.04em; margin-bottom:8px;">Opening <span id="pm-step2-platform"></span>…</h3>
+    <p style="font-size:14px; color:var(--muted); margin-bottom:24px;">Your registration is being processed. You'll receive a confirmation email at <strong id="pm-step2-email"></strong>.</p>
+    <button class="btn btn-primary" onclick="pmDone()">Done</button>
+  </div>
+</div>
+
+<!-- OPEN GYM BOOKING MODAL -->
+<div class="payment-overlay" id="gym-overlay" onclick="closeGymBooking()"></div>
+<div class="payment-modal" id="gym-modal" style="position:relative;">
+  <button onclick="closeGymBooking()" style="position:absolute; top:16px; right:16px; background:none; border:none; cursor:pointer; font-size:20px; color:var(--muted);">✕</button>
+
+  <div id="gym-step-1">
+    <h3 style="font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--navy); letter-spacing:.04em; margin-bottom:20px;">Book Open Gym</h3>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:24px;" id="gym-session-select">
+      <div class="gym-session-opt selected" onclick="selectGymSession(this, 'Tuesday 20:00–22:00')" style="border:2px solid var(--navy); border-radius:4px; padding:14px; cursor:pointer; text-align:center;">
+        <div style="font-weight:600; font-size:14px;">Tuesday</div>
+        <div style="font-size:12px; color:var(--muted);">20:00 – 22:00</div>
+      </div>
+      <div class="gym-session-opt" onclick="selectGymSession(this, 'Saturday 10:00–12:00')" style="border:2px solid var(--border); border-radius:4px; padding:14px; cursor:pointer; text-align:center;">
+        <div style="font-weight:600; font-size:14px;">Saturday</div>
+        <div style="font-size:12px; color:var(--muted);">10:00 – 12:00</div>
+      </div>
+    </div>
+    <p style="font-size:13px; color:var(--muted); margin-bottom:16px;">Are you a Hikari member?</p>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:24px;">
+      <div id="gym-member-yes" onclick="setGymMember(true)" style="border:2px solid var(--navy); border-radius:4px; padding:14px; cursor:pointer; text-align:center;">
+        <div style="font-weight:600; font-size:14px;">Yes, I'm a member</div>
+        <div style="font-size:12px; color:var(--navy);">Free</div>
+      </div>
+      <div id="gym-member-no" onclick="setGymMember(false)" style="border:2px solid var(--border); border-radius:4px; padding:14px; cursor:pointer; text-align:center;">
+        <div style="font-weight:600; font-size:14px;">No, I'm a guest</div>
+        <div style="font-size:12px; color:var(--muted);">€8 drop-in</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Full Name</label>
+      <input class="form-input" id="gym-name" placeholder="Your name">
+    </div>
+    <div class="form-group" style="margin-top:12px;">
+      <label class="form-label">Email</label>
+      <input class="form-input" id="gym-email" type="email" placeholder="you@example.com">
+    </div>
+    <div id="gym-payment-note" style="display:none; background:var(--offwhite); border-radius:4px; padding:12px; margin-top:16px; font-size:13px; color:var(--muted);">
+      💳 You'll be taken to Mollie to pay the €8 drop-in fee.
+    </div>
+    <button class="btn btn-primary" style="width:100%; margin-top:20px;" id="gym-submit-btn" onclick="submitGymBooking()">Confirm Booking</button>
+  </div>
+
+  <div id="gym-step-2" style="display:none; text-align:center; padding:16px 0;">
+    <div style="font-size:48px; margin-bottom:16px;">✅</div>
+    <h3 style="font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--navy); letter-spacing:.04em; margin-bottom:8px;">You're booked in!</h3>
+    <p style="font-size:14px; color:var(--muted); margin-bottom:8px;" id="gym-confirm-text"></p>
+    <p style="font-size:13px; color:var(--muted); margin-bottom:24px;">A confirmation has been sent to <strong id="gym-confirm-email"></strong>.</p>
+    <button class="btn btn-primary" onclick="closeGymBooking()">Done</button>
+  </div>
+</div>
+
+<!-- CART OVERLAY + DRAWER -->
+<div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cart-drawer">
+  <div class="cart-header">
+    <h3>Your Cart</h3>
+    <button class="cart-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cart-items">
+    <div class="cart-empty">Your cart is empty</div>
+  </div>
+  <div class="cart-footer" id="cart-footer" style="display:none;">
+    <div class="cart-subtotal"><span>Subtotal</span><span id="cart-subtotal-val">€0</span></div>
+    <div class="cart-shipping-note">📦 Shipping €4.95 · Free pickup at training</div>
+    <button class="btn btn-primary" style="width:100%; margin-bottom:10px;">Proceed to Checkout</button>
+    <button class="btn btn-outline" style="width:100%;" onclick="closeCart()">Continue Shopping</button>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" onclick="showPage('home')">
+    <img class="logo-icon" src="hikari_logo_icon.png" alt="Hikari">
+  </a>
+  <ul class="nav-links">
+    <li><a onclick="showPage('home')" id="nav-home" class="active">Home</a></li>
+    <li><a onclick="showPage('teams')" id="nav-teams">Teams</a></li>
+    <li><a onclick="showPage('about')" id="nav-about">About</a></li>
+    <li><a onclick="showPage('events')" id="nav-events">Events</a></li>
+    <li><a onclick="showPage('shop')" id="nav-shop">Shop</a></li>
+    <li><a onclick="showPage('support')" id="nav-support">Support Us</a></li>
+    <li><a onclick="showPage('myarea')" id="nav-myarea">My Area</a></li>
+    <li><a onclick="showPage('join')" id="nav-join" class="nav-join">Join Us</a></li>
+  </ul>
+  <button class="cart-icon-btn" onclick="openCart()" aria-label="Cart">
+    <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+    <span class="cart-badge" id="cart-badge">0</span>
+  </button>
+  <button class="nav-hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile nav drawer -->
+<div class="nav-drawer" id="nav-drawer">
+  <div style="padding:20px 24px 16px; border-bottom:1px solid rgba(255,255,255,.1);">
+    <img src="hikari_logo_full.png" alt="Hikari Cheerleading" style="height:48px; width:auto;">
+  </div>
+  <a onclick="showPage('home');closeDrawer()">Home</a>
+  <a onclick="showPage('teams');closeDrawer()">Teams</a>
+  <a onclick="showPage('about');closeDrawer()">About</a>
+  <a onclick="showPage('events');closeDrawer()">Events</a>
+  <a onclick="showPage('shop');closeDrawer()">Shop</a>
+  <a onclick="showPage('support');closeDrawer()">Support Us</a>
+  <a onclick="showPage('myarea');closeDrawer()">My Area</a>
+  <a onclick="showPage('join');closeDrawer()" class="nav-join">Join Us</a>
+</div>
+
+<!-- ══════════════════════════════════════════
+     HOME PAGE
+══════════════════════════════════════════ -->
+<div id="page-home" class="page active">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-inner">
+    <div class="hero-left">
+      <img src="hikari_logo_full.png" alt="Hikari Cheerleading" class="hero-big-logo">
+      <h1>Find Your<br>Place on<br><em>the Mat</em></h1>
+      <p class="hero-sub">Join our vibrant community in Rotterdam</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" onclick="showPage('join')">Join the Club</button>
+        <button class="btn btn-outline-white" onclick="showPage('teams')">See Our Teams</button>
+      </div>
+    </div>
+    <div class="hero-right">
+      <video autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;position:absolute;inset:0;">
+        <source src="training_reel.mp4" type="video/mp4">
+      </video>
+    </div>
+    </div><!-- /hero-inner -->
+  </section>
+
+  <!-- Ticker Ribbon -->
+  <div class="ticker-ribbon">
+    <div class="ticker-track">
+      <!-- Two identical sets so the loop is seamless -->
+      <span class="ticker-item"><span class="ticker-star">✳</span> CHEER</span>
+      <span class="ticker-item"><span class="ticker-star">✳</span> CHEER</span>
+      <span class="ticker-item"><span class="ticker-star">✳</span> CHEER</span>
+      <span class="ticker-item"><span class="ticker-star">✳</span> CHEER</span>
+      <span class="ticker-item"><span class="ticker-star">✳</span> CHEER</span>
+      <span class="ticker-item"><span class="ticker-star">✳</span> CHEER</span>
+      <span class="ticker-item"><span class="ticker-star">✳</span> CHEER</span>
+      <span class="ticker-item"><span class="ticker-star">✳</span> CHEER</span>
+      <span class="ticker-item"><span class="ticker-star">✳</span> CHEER</span>
+      <span class="ticker-item"><span class="ticker-star">✳</span> CHEER</span>
+      <!-- Duplicate for seamless loop -->
+      <span class="ticker-item"><span class="ticker-star">✳</span> CHEER</span>
+      <span class="ticker-item"><span class="ticker-star">✳</span> CHEER</span>
+      <span class="ticker-item"><span class="ticker-star">✳</span> CHEER</span>
+      <span class="ticker-item"><span class="ticker-star">✳</span> CHEER</span>
+      <span class="ticker-item"><span class="ticker-star">✳</span> CHEER</span>
+      <span class="ticker-item"><span class="ticker-star">✳</span> CHEER</span>
+      <span class="ticker-item"><span class="ticker-star">✳</span> CHEER</span>
+      <span class="ticker-item"><span class="ticker-star">✳</span> CHEER</span>
+      <span class="ticker-item"><span class="ticker-star">✳</span> CHEER</span>
+      <span class="ticker-item"><span class="ticker-star">✳</span> CHEER</span>
+    </div>
+  </div>
+
+  <!-- Phone Mockup Section -->
+  <section class="phone-section">
+    <div class="phone-section-header">
+      <p class="eyebrow">Join the Community</p>
+      <h2>A Place for Everyone</h2>
+      <p class="phone-section-subtitle">No experience needed. Whether you're 6 or 60, there's a team for you in Rotterdam.</p>
+    </div>
+    <div class="phone-section-inner">
+      <div class="phone-section-left">
+        <div class="phone-frame">
+          <video class="phone-screen" autoplay muted loop playsinline>
+            <source src="phone_reel.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+      <div class="phone-section-right">
+        <div class="phone-level">
+          <div class="phone-level-icon">✦</div>
+          <div>
+            <h3 class="phone-level-title">Beginner</h3>
+            <p class="phone-level-desc">New to the sport? Start here. Our beginner programs focus on building your foundation in a supportive, fun environment. Learn the basics, gain confidence, and get comfortable with our team-first approach.</p>
+          </div>
+        </div>
+        <div class="phone-level">
+          <div class="phone-level-icon">🔥</div>
+          <div>
+            <h3 class="phone-level-title">Intermediate</h3>
+            <p class="phone-level-desc">Ready to level up? These sessions are perfect for athletes looking to refine their technique. We focus on skill development and performance, helping you grow as both an individual and a core team member.</p>
+          </div>
+        </div>
+        <div class="phone-level">
+          <div class="phone-level-icon">✳</div>
+          <div>
+            <h3 class="phone-level-title">Advanced</h3>
+            <p class="phone-level-desc">Push your limits with our advanced training. Designed for experienced athletes, these sessions emphasize precision, high-intensity routines, and excellence. Join a team where passion meets performance.</p>
+          </div>
+        </div>
+        <div style="display:flex; gap:14px; margin-top:36px; flex-wrap:wrap;">
+          <button class="btn btn-navy" onclick="showPage('join')">Register Now</button>
+          <button class="btn btn-outline" onclick="showPage('teams')">Browse Teams</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Schedule -->
+  <section class="section section-white">
+    <div class="container">
+      <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:28px; flex-wrap:wrap; gap:12px;">
+        <div>
+          <div class="eyebrow">When We Train</div>
+          <h2 class="title" style="color:var(--navy);">Training Schedule</h2>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <span style="display:flex;align-items:center;gap:5px;font-size:11px;font-weight:500;"><span style="width:10px;height:10px;border-radius:2px;background:#EAE7E0;border:1px solid #ccc;display:inline-block;"></span>Open Gym</span>
+            <span style="display:flex;align-items:center;gap:5px;font-size:11px;font-weight:500;"><span style="width:10px;height:10px;border-radius:2px;background:#D4DDF5;display:inline-block;"></span>Recreational</span>
+            <span style="display:flex;align-items:center;gap:5px;font-size:11px;font-weight:500;"><span style="width:10px;height:10px;border-radius:2px;background:var(--navy);display:inline-block;"></span>Competition</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Compact schedule: one row per day, slots inline -->
+      <div style="display:flex; flex-direction:column; gap:0; border:1px solid var(--border); border-radius:4px; overflow:hidden;">
+
+        <div style="display:grid; grid-template-columns:90px 1fr; border-bottom:1px solid var(--border);">
+          <div style="padding:14px 16px; font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:.06em; color:var(--muted); background:var(--offwhite); border-right:1px solid var(--border); display:flex; align-items:center;">Mon</div>
+          <div style="padding:10px 14px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            <span style="background:#EAE7E0;color:#555;font-size:11px;font-weight:600;padding:4px 10px;border-radius:2px;">19:00–22:00 · Open Gym</span>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:90px 1fr; border-bottom:1px solid var(--border);">
+          <div style="padding:14px 16px; font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:.06em; color:var(--muted); background:var(--offwhite); border-right:1px solid var(--border); display:flex; align-items:center;">Tue</div>
+          <div style="padding:10px 14px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            <span style="background:#EAE7E0;color:#555;font-size:11px;font-weight:600;padding:4px 10px;border-radius:2px;">19:00–22:00 · Tumbling &amp; Open Gym</span>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:90px 1fr; border-bottom:1px solid var(--border);">
+          <div style="padding:14px 16px; font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:.06em; color:var(--navy); background:var(--offwhite); border-right:1px solid var(--border); display:flex; align-items:center; font-weight:700;">Wed</div>
+          <div style="padding:10px 14px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            <span style="background:var(--navy);color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:2px;">19:30–21:00 · Eclipse</span>
+            <span style="background:#111D42;color:#C89B2A;font-size:11px;font-weight:600;padding:4px 10px;border-radius:2px;">19:30–21:00 · Blaze</span>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:90px 1fr; border-bottom:1px solid var(--border);">
+          <div style="padding:14px 16px; font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:.06em; color:var(--muted); background:var(--offwhite); border-right:1px solid var(--border); display:flex; align-items:center;">Thu</div>
+          <div style="padding:10px 14px; display:flex; align-items:center;">
+            <span style="font-size:12px; color:var(--muted);">No training</span>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:90px 1fr; border-bottom:1px solid var(--border);">
+          <div style="padding:14px 16px; font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:.06em; color:var(--navy); background:var(--offwhite); border-right:1px solid var(--border); display:flex; align-items:center; font-weight:700;">Fri</div>
+          <div style="padding:10px 14px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            <span style="background:#D4DDF5;color:var(--navy);font-size:11px;font-weight:600;padding:4px 10px;border-radius:2px;">17:30–18:30 · Nova</span>
+            <span style="background:#D4DDF5;color:var(--navy);font-size:11px;font-weight:600;padding:4px 10px;border-radius:2px;">18:15–19:45 · Nebula + Eclipse</span>
+            <span style="background:#D4DDF5;color:var(--navy);font-size:11px;font-weight:600;padding:4px 10px;border-radius:2px;">19:30–22:00 · Halo</span>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:90px 1fr; border-bottom:1px solid var(--border);">
+          <div style="padding:14px 16px; font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:.06em; color:var(--muted); background:var(--offwhite); border-right:1px solid var(--border); display:flex; align-items:center;">Sat</div>
+          <div style="padding:10px 14px; display:flex; align-items:center;">
+            <span style="font-size:12px; color:var(--muted);">No training</span>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:90px 1fr;">
+          <div style="padding:14px 16px; font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:.06em; color:var(--navy); background:var(--offwhite); border-right:1px solid var(--border); display:flex; align-items:center; font-weight:700;">Sun</div>
+          <div style="padding:10px 14px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            <span style="background:#111D42;color:#C89B2A;font-size:11px;font-weight:600;padding:4px 10px;border-radius:2px;">10:00–14:00 · Blaze</span>
+            <span style="background:#EAE7E0;color:#555;font-size:11px;font-weight:600;padding:4px 10px;border-radius:2px;">14:00–16:00 · Open Gym</span>
+          </div>
+        </div>
+
+      </div>
+      <p style="font-size:12px;color:var(--muted);margin-top:12px;">All sessions at Koperslagerstraat 8, Rotterdam. Open Gym is open to all Hikari members.</p>
+    </div>
+  </section>
+
+
+  <!-- Parallax Competition Photo -->
+  <div class="parallax-banner">
+    <div class="parallax-bg"></div>
+    <div class="parallax-overlay"></div>
+    <div class="parallax-content">
+      <div class="eyebrow">Named after the Japanese word for Light</div>
+      <h2>More Than a<br>Sport. A Home.</h2>
+      <p>Since 2017, Hikari Cheerleading has built a community in Rotterdam where safety, skill, and belonging come first — for every athlete, at every level.</p>
+      <div>
+        <button class="btn btn-primary" onclick="showPage('about')">Our Story</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Events Preview -->
+  <section class="section section-white">
+    <div class="container">
+      <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:32px;">
+        <div>
+          <div class="eyebrow">What's Coming Up</div>
+          <h2 class="title" style="color:var(--navy)">Upcoming Events</h2>
+        </div>
+        <button class="btn btn-outline" onclick="showPage('events')">All Events</button>
+      </div>
+      <div class="events-list">
+        <div class="event-row">
+          <div class="event-date-box">
+            <div class="event-date-day">14</div>
+            <div class="event-date-month">Sep</div>
+          </div>
+          <div>
+            <div class="event-name">Open Training Day</div>
+            <div class="event-meta">Koperslagerstraat 8, Rotterdam · 10:00–13:00</div>
+          </div>
+          <span class="event-type-chip chip-tryout">Open Day</span>
+        </div>
+        <div class="event-row">
+          <div class="event-date-box">
+            <div class="event-date-day">28</div>
+            <div class="event-date-month">Sep</div>
+          </div>
+          <div>
+            <div class="event-name">NCA Regional Championship</div>
+            <div class="event-meta">Ahoy Rotterdam · All Day</div>
+          </div>
+          <span class="event-type-chip chip-competition">Competition</span>
+        </div>
+        <div class="event-row">
+          <div class="event-date-box">
+            <div class="event-date-day">12</div>
+            <div class="event-date-month">Oct</div>
+          </div>
+          <div>
+            <div class="event-name">Halloween Showcase</div>
+            <div class="event-meta">Hikari Gym, Rotterdam · 15:00–18:00</div>
+          </div>
+          <span class="event-type-chip chip-social">Showcase</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+
+</div>
+
+<!-- ══════════════════════════════════════════
+     TEAMS PAGE
+══════════════════════════════════════════ -->
+<div id="page-teams" class="page">
+  <div class="page-hero">
+    <div class="container">
+      <div class="eyebrow">All Teams</div>
+      <h1 class="title">Find Your Team</h1>
+      <p>Eight teams across all levels and age groups — recreational and competitive.</p>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <div class="container">
+      <button class="filter-btn active" data-filter="all">All Teams</button>
+      <button class="filter-btn" data-filter="recreational">Recreational</button>
+      <button class="filter-btn" data-filter="competitive">Competitive</button>
+      <button class="filter-btn" data-filter="kids">Kids (6–12)</button>
+      <button class="filter-btn" data-filter="youth">Youth (12–16)</button>
+      <button class="filter-btn" data-filter="adults">Adults (16+)</button>
+    </div>
+  </div>
+
+  <div class="teams-full-grid" id="teams-full-grid">
+    <div class="team-card" onclick="showTeam('nova')" data-type="recreational" data-age="kids">
+      <div class="team-card-img" style="background-image:url('nova_team.jpg'); background-size:cover; background-position:center top;">
+        <span class="team-badge badge-recreational">Recreational</span>
+      </div>
+      <div class="team-card-body">
+        <div class="team-card-name">Nova</div>
+        <div class="team-meta"><span class="meta-chip">Level 0–1</span><span class="meta-chip">7–11 years</span><span class="meta-chip">Fri 17:30–18:30</span></div>
+        <p class="team-card-desc">The ideal first step for young athletes. Fun, safe sessions building confidence and the basics. No try-out required. €220/year.</p>
+        <span class="team-link">View team details</span>
+      </div>
+    </div>
+    <div class="team-card" onclick="showTeam('nebula')" data-type="recreational" data-age="kids youth">
+      <div class="team-card-img" style="background:linear-gradient(135deg,#1e3a5e,#243060);">
+        <div class="team-card-img-bg">🌟</div>
+        <span class="team-badge badge-recreational">Recreational</span>
+      </div>
+      <div class="team-card-body">
+        <div class="team-card-name">Nebula</div>
+        <div class="team-meta"><span class="meta-chip">Level 2</span><span class="meta-chip">9–18 years</span><span class="meta-chip">Fri 18:15–19:45</span></div>
+        <p class="team-card-desc">Recreational training for developing athletes across a wide age range. No try-out required. €280/year.</p>
+        <span class="team-link">View team details</span>
+      </div>
+    </div>
+    <div class="team-card" onclick="showTeam('eclipse')" data-type="competitive" data-age="kids youth">
+      <div class="team-card-img" style="background-image:url('eclipse_team.jpg'); background-size:cover; background-position:center top;">
+        <span class="team-badge badge-competitive">Competitive</span>
+      </div>
+      <div class="team-card-body">
+        <div class="team-card-name">Eclipse</div>
+        <div class="team-meta"><span class="meta-chip">Level 2</span><span class="meta-chip">8–18 years</span><span class="meta-chip">Wed + Fri</span></div>
+        <p class="team-card-desc">Competition team training twice a week. Wed 19:30–21:00 + Fri 18:15–19:45. No try-out required. €350/year.</p>
+        <span class="team-link">View team details</span>
+      </div>
+    </div>
+    <div class="team-card" onclick="showTeam('halo')" data-type="recreational" data-age="adults">
+      <div class="team-card-img" style="background-image:url('halo_team.jpg'); background-size:cover; background-position:center top;">
+        <span class="team-badge badge-recreational">Recreational</span>
+      </div>
+      <div class="team-card-body">
+        <div class="team-card-name">Halo</div>
+        <div class="team-meta"><span class="meta-chip">All levels</span><span class="meta-chip">16+ years</span><span class="meta-chip">Fri 19:30–22:00</span></div>
+        <p class="team-card-desc">Recreational team for adults at all levels. Friday evenings, relaxed and welcoming atmosphere. No try-out required. €480/year.</p>
+        <span class="team-link">View team details</span>
+      </div>
+    </div>
+    <div class="team-card" onclick="showTeam('blaze')" data-type="competitive" data-age="adults">
+      <div class="team-card-img" style="background-image:url('blaze_team.jpg'); background-size:cover; background-position:center top;">
+        <span class="team-badge badge-competitive">Competitive</span>
+      </div>
+      <div class="team-card-body">
+        <div class="team-card-name">Blaze</div>
+        <div class="team-meta"><span class="meta-chip">Level 4</span><span class="meta-chip">16+ years</span><span class="meta-chip">Wed + Sun</span></div>
+        <p class="team-card-desc">Our highest-level competition team. Wed 19:30–21:00 + Sun 10:00–14:00. Try-out required. €520–725/year.</p>
+        <span class="team-link">View team details</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-band" style="margin-top:0;">
+    <div class="cta-band-inner">
+      <div>
+        <h2 class="title">Not sure which team fits?</h2>
+        <p>Fill in the registration form and we'll match you with the right team.</p>
+      </div>
+      <button class="btn btn-navy" onclick="showPage('join')">Register Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TEAM DETAIL PAGE
+══════════════════════════════════════════ -->
+<div id="page-team-detail" class="page">
+  <div style="padding:12px 48px; background:var(--white); border-bottom:1px solid var(--border); font-size:13px; color:var(--muted);">
+    <span onclick="showPage('teams')" style="cursor:pointer; color:var(--navy);">← All Teams</span>
+  </div>
+
+  <div class="team-detail-hero">
+    <div class="td-hero-info">
+      <img class="td-hero-logo" src="" alt="Team logo">
+    </div>
+    <div class="td-hero-photo"></div>
+  </div>
+
+  <div class="team-detail-info-strip">
+    <div class="info-strip-item"><div class="info-strip-label">Level</div><div class="info-strip-value">Level 3</div></div>
+    <div class="info-strip-item"><div class="info-strip-label">Age Group</div><div class="info-strip-value">16+ years</div></div>
+    <div class="info-strip-item"><div class="info-strip-label">Training Days</div><div class="info-strip-value">Tue & Thu</div></div>
+    <div class="info-strip-item"><div class="info-strip-label">Time</div><div class="info-strip-value">19:00 – 21:00</div></div>
+    <div class="info-strip-item"><div class="info-strip-label">Location</div><div class="info-strip-value">Koperslagerstraat 8, 3077 MD Rotterdam</div></div>
+  </div>
+
+  <div class="team-detail-body">
+    <div>
+      <div class="eyebrow">About This Team</div>
+      <h2 class="td-tagline" style="font-family:'Bebas Neue',sans-serif; font-size:36px; color:var(--navy); margin-bottom:20px;"></h2>
+      <p class="td-about1" style="margin-bottom:16px;"></p>
+      <p class="td-about2" style="margin-bottom:16px;"></p>
+
+      <h3 style="font-family:'Bebas Neue',sans-serif; font-size:26px; color:var(--navy); margin:36px 0 16px;">What to Expect</h3>
+      <ul class="td-expect-list" style="list-style:none; display:flex; flex-direction:column; gap:10px;"></ul>
+
+      <div class="photo-gallery">
+        <div class="gallery-img">Photo 1</div>
+        <div class="gallery-img">Photo 2</div>
+        <div class="gallery-img">Photo 3</div>
+        <div class="gallery-img">Photo 4</div>
+        <div class="gallery-img">Photo 5</div>
+        <div class="gallery-img">Photo 6</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="pricing-box">
+        <h3>Membership</h3>
+        <div class="price-amount"></div>
+        <div class="price-period"></div>
+        <ul class="pricing-includes"></ul>
+        <p class="td-tryout-note" style="font-size:12px; color:rgba(255,255,255,.55); margin-bottom:16px; max-width:none;"></p>
+        <button class="btn btn-primary" onclick="showJoin()" style="width:100%; text-align:center;">Register for This Team</button>
+      </div>
+
+      <div class="coach-card-small" onclick="openCoachModal()">
+        <div class="coach-avatar">SV</div>
+        <div>
+          <div style="font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--navy);">Sophie van der Berg</div>
+          <div style="font-size:12px; color:var(--gold); font-weight:600; letter-spacing:.04em; text-transform:uppercase;">Head Coach</div>
+          <div style="font-size:12px; color:var(--muted); margin-top:3px;">View profile →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Selection & Membership section -->
+  <section class="td-terms-section">
+    <div class="container">
+      <div class="td-terms-grid">
+        <div class="td-terms-block">
+          <h3 class="td-terms-heading">Selection</h3>
+          <p class="td-selection-text"></p>
+          <p class="td-selection-text2"></p>
+        </div>
+        <div class="td-terms-block">
+          <h3 class="td-terms-heading">Membership &amp; Payment</h3>
+          <p class="td-membership-intro"></p>
+          <ul class="td-membership-list"></ul>
+          <p class="td-membership-note"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════════
+     JOIN US PAGE
+══════════════════════════════════════════ -->
+<div id="page-join" class="page">
+  <div class="join-layout">
+    <div class="join-left">
+      <div class="eyebrow">Get Started</div>
+      <h1 class="title">Join<br>Hikari</h1>
+      <p>Fill in the form and we'll be in touch to find the right team for you.</p>
+      <ul class="join-reasons">
+        <li>No experience needed — we have beginner teams for all ages</li>
+        <li>Free trial session for new athletes</li>
+        <li>All equipment provided for your first training</li>
+      </ul>
+      <p style="margin-top:32px; font-size:13px; color:rgba(255,255,255,.5);">Not registering? <span style="color:var(--gold); font-weight:600; cursor:pointer;" onclick="showPage('contact')">Send us a message instead →</span></p>
+    </div>
+    <div class="join-right">
+      <h2 style="font-family:'Bebas Neue',sans-serif; font-size:32px; color:var(--navy); margin-bottom:28px;">Registration Form</h2>
+      <form onsubmit="return false;">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">First Name *</label><input class="form-input" type="text" placeholder="Anna"></div>
+          <div class="form-group"><label class="form-label">Last Name *</label><input class="form-input" type="text" placeholder="de Vries"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Email Address *</label><input class="form-input" type="email" placeholder="anna@example.com"></div>
+        <div class="form-group"><label class="form-label">Phone Number</label><input class="form-input" type="tel" placeholder="+31 6 00 000 000"></div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">I am registering *</label>
+            <select class="form-select">
+              <option>Myself</option>
+              <option>My child</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Date of Birth (athlete) *</label><input class="form-input" type="date"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Team I'm interested in</label>
+          <select class="form-select" id="join-team-select">
+            <option value="">— Not sure yet, help me choose —</option>
+            <option value="nova">Nova (7–11, Recreational)</option>
+            <option value="nebula">Nebula (9–18, Recreational)</option>
+            <option value="eclipse">Eclipse (8–18, Competitive Level 2)</option>
+            <option value="halo">Halo (16+, Recreational)</option>
+            <option value="blaze">Blaze (16+, Competitive Level 4)</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Message / Questions</label><textarea class="form-textarea" placeholder="Any questions or information you'd like to share…"></textarea></div>
+        <div class="form-group">
+          <label class="form-checkbox"><input type="checkbox"> I have read and agree to the privacy policy and club regulations.</label>
+        </div>
+        <button type="submit" class="form-submit">Send Registration</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     CONTACT PAGE
+══════════════════════════════════════════ -->
+<div id="page-contact" class="page">
+  <div class="join-layout">
+    <div class="join-left">
+      <div class="eyebrow">Get in Touch</div>
+      <h1 class="title">Contact<br>Us</h1>
+      <p>For anything that isn't a team registration — coaching, events, press, or general questions.</p>
+      <ul class="join-reasons">
+        <li>Interested in joining our coaching staff</li>
+        <li>Want to host or partner on an event</li>
+        <li>Press, sponsorship or partnership enquiries</li>
+        <li>Any other question</li>
+      </ul>
+      <p style="margin-top:32px; font-size:13px; color:var(--muted);">Want to join a team instead? <span style="color:var(--gold); font-weight:600; cursor:pointer;" onclick="showPage('join')">Go to Registration →</span></p>
+    </div>
+    <div class="join-right">
+      <h2 style="font-family:'Bebas Neue',sans-serif; font-size:32px; color:var(--navy); margin-bottom:28px;">Contact Form</h2>
+      <form onsubmit="return false;">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">First Name *</label><input class="form-input" type="text" placeholder="Anna"></div>
+          <div class="form-group"><label class="form-label">Last Name *</label><input class="form-input" type="text" placeholder="de Vries"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Email Address *</label><input class="form-input" type="email" placeholder="anna@example.com"></div>
+        <div class="form-group">
+          <label class="form-label">Subject *</label>
+          <select class="form-select" id="contact-subject">
+            <option value="">— Select a topic —</option>
+            <option value="coaching">Interested in Coaching</option>
+            <option value="event">Host / Partner on an Event</option>
+            <option value="press">Press or Sponsorship</option>
+            <option value="other">General Question</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Message *</label><textarea class="form-textarea" placeholder="Tell us more…" rows="5"></textarea></div>
+        <div class="form-group">
+          <label class="form-checkbox"><input type="checkbox"> I have read and agree to the privacy policy.</label>
+        </div>
+        <button type="submit" class="form-submit">Send Message</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ABOUT PAGE (includes Coaches)
+══════════════════════════════════════════ -->
+<div id="page-about" class="page">
+  <div class="page-hero">
+    <div class="container">
+      <div class="eyebrow">More Than a Team</div>
+      <h1 class="title">Our Story,<br>Values & Coaches</h1>
+      <p>How Hikari started, what we stand for, and the people who make it happen.</p>
+    </div>
+  </div>
+
+  <!-- Our Story -->
+  <div class="about-story">
+    <div class="about-story-img" style="background-image:url('about_circle.png'); background-size:cover; background-position:center bottom;"></div>
+    <div class="about-story-text">
+      <div class="eyebrow">How It All Started</div>
+      <h2>We Are Hikari</h2>
+      <h3>Building Community Since 2017</h3>
+      <p>Hikari Cheerleading was founded with a clear vision: to create a space in Rotterdam where safety, technical precision, and inclusivity come first. Named after the Japanese word for "light" (光), we strive to be a welcoming home for every athlete, regardless of their starting point.</p>
+      <p>Through years of dedication, growth, and even overcoming the challenges of the pandemic, our focus has remained steadfast on our core values. Today, we are proud to be a vibrant community where passion meets performance — and where we continue to uphold the spirit that earned us the UCA Spirit Stick in 2021.</p>
+      <button class="btn btn-navy" onclick="showPage('join')" style="margin-top:8px;">Join Our Community</button>
+    </div>
+  </div>
+
+  <!-- The Five Values -->
+  <section class="section section-navy about-values-section">
+    <div class="container">
+      <div class="eyebrow">What We Stand For</div>
+      <h2 class="title">The Five Values of<br>the Hikari Athletes</h2>
+      <p style="margin-top:12px; margin-bottom:48px; color:rgba(255,255,255,.6); font-size:15px; max-width:560px;">We believe the best athletes cultivate the intersection of character, knowledge, and skill.</p>
+    </div>
+    <div class="about-values-grid">
+      <div class="about-value-card">
+        <img src="val_community.png" class="about-val-icon" alt="Community">
+        <div class="about-val-title">Community</div>
+        <p class="about-val-desc">Resilience and discipline are the foundation of everything we do on the mat. Our athletes show up for each other — on match days and on ordinary Tuesdays.</p>
+      </div>
+      <div class="about-value-card">
+        <img src="val_safety.png" class="about-val-icon" alt="Safety">
+        <div class="about-val-title">Safety</div>
+        <p class="about-val-desc">Every session is structured to ensure athletes feel secure and fully supported. All coaches hold current first-aid and cheerleading certifications.</p>
+      </div>
+      <div class="about-value-card">
+        <img src="val_inclusivity.png" class="about-val-icon" alt="Inclusivity">
+        <div class="about-val-title">Inclusivity</div>
+        <p class="about-val-desc">We foster an environment where every athlete belongs and is valued, regardless of experience level, background, or body type. Cheerleading is for all.</p>
+      </div>
+      <div class="about-value-card">
+        <img src="val_respect.png" class="about-val-icon" alt="Respect">
+        <div class="about-val-title">Respect &amp; Accountability</div>
+        <p class="about-val-desc">We ensure every athlete understands the "why" behind every movement, decision, and team role — not just how, but why.</p>
+      </div>
+      <div class="about-value-card">
+        <img src="val_cheerleader.png" class="about-val-icon" alt="Being a Cheerleader">
+        <div class="about-val-title">Being a Cheerleader</div>
+        <p class="about-val-desc">Mastering the correct execution of tasks to contribute to the strength of the collective team. A cheerleader's job is never done in isolation.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Club facts -->
+  <div class="club-info-grid">
+    <div class="club-info-item"><div class="club-info-label">Founded</div><div class="club-info-value">2017</div></div>
+    <div class="club-info-item"><div class="club-info-label">Location</div><div class="club-info-value">Rotterdam, NL</div></div>
+    <div class="club-info-item"><div class="club-info-label">Association</div><div class="club-info-value">NCA · KNGU</div></div>
+    <div class="club-info-item"><div class="club-info-label">KvK Number</div><div class="club-info-value">12345678</div></div>
+  </div>
+
+  <!-- Coaches -->
+  <section class="section section-offwhite">
+    <div class="container">
+      <div class="eyebrow">The Team Behind the Team</div>
+      <h2 class="title" style="color:var(--navy); margin-bottom:8px;">Our Coaches</h2>
+      <p style="margin-bottom:32px;">Certified, passionate, and committed to bringing out the best in every athlete.</p>
+    </div>
+    <div class="coaches-grid" style="padding-top:0;">
+      <div class="coach-card" onclick="openCoachModal('Sophie van der Berg','Head Coach','SV','Sophie has been coaching cheerleading for over 10 years and has led Hikari Elite since the club\'s founding. She holds NCA Level 3 and KNGU Advanced certification and is a first-aid instructor. Under her leadership, Hikari Elite won the UCA Spirit Stick in 2021.')">
+        <div class="coach-card-img"><div class="coach-initials">SV</div></div>
+        <div class="coach-card-body">
+          <div class="coach-name">Sophie van der Berg</div>
+          <div class="coach-role">Head Coach · Blaze</div>
+          <p class="coach-bio">NCA Level 3 certified. 10+ years coaching competitive cheerleading in the Netherlands.</p>
+        </div>
+      </div>
+      <div class="coach-card" onclick="openCoachModal('Marcus de Groot','Assistant Coach · Stunts','MG','Marcus specialises in stunting and has a background in gymnastics. He joined Hikari in 2019 and now leads all stunting progressions across the competitive teams. He holds NCA Level 2 and is a certified gymnastics instructor.')">
+        <div class="coach-card-img" style="background:linear-gradient(160deg,#1a3050,#243a6e);"><div class="coach-initials">MG</div></div>
+        <div class="coach-card-body">
+          <div class="coach-name">Marcus de Groot</div>
+          <div class="coach-role">Assistant Coach · Stunts</div>
+          <p class="coach-bio">Gymnastics background, NCA Level 2. Leads all stunting progressions at Hikari.</p>
+        </div>
+      </div>
+      <div class="coach-card" onclick="openCoachModal('Lena Bakker','Youth Coach · Nova','LB','Lena coaches our youngest athletes in Nova. Her background in primary education makes her exceptional with children aged 7–11. She holds NCA Level 1, EHBO certification, and completes yearly safeguarding training.')">
+        <div class="coach-card-img" style="background:linear-gradient(160deg,#243060,#1C2B5E);"><div class="coach-initials">LB</div></div>
+        <div class="coach-card-body">
+          <div class="coach-name">Lena Bakker</div>
+          <div class="coach-role">Youth Coach · Nova</div>
+          <p class="coach-bio">Former primary school teacher. NCA Level 1, EHBO certified. Specialises in young athlete development.</p>
+        </div>
+      </div>
+      <div class="coach-card" onclick="openCoachModal('Daan Visser','Tumbling Coach','DV','Daan brings a high-level gymnastics background to Hikari, running all tumbling and conditioning programmes across every team. He joined in 2021 and has significantly elevated the technical floor across the club. KNGU Turnen certified.')">
+        <div class="coach-card-img" style="background:linear-gradient(160deg,#1e2a5e,#2a3070);"><div class="coach-initials">DV</div></div>
+        <div class="coach-card-body">
+          <div class="coach-name">Daan Visser</div>
+          <div class="coach-role">Tumbling Coach · All Teams</div>
+          <p class="coach-bio">KNGU Turnen certified. Runs all tumbling and conditioning across every team at Hikari.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta-band">
+    <div class="cta-band-inner">
+      <div>
+        <h2 class="title">Interested in Coaching?</h2>
+        <p>We're always looking for passionate people to grow our coaching team. Get in touch.</p>
+      </div>
+      <button class="btn btn-navy" onclick="showContact('coaching')">Contact Us</button>
+    </div>
+  </div>
+
+  <!-- Board Members -->
+  <section class="section section-white">
+    <div class="container">
+      <div class="eyebrow">Who Runs the Club</div>
+      <h2 class="title" style="color:var(--navy); margin-bottom:8px;">Our Board</h2>
+      <p style="margin-bottom:40px;">Hikari Cheerleading is a registered non-profit (stichting) run by a volunteer board responsible for the organisation, finances, and long-term vision of the club.</p>
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:24px;" class="board-grid">
+        <div class="board-card">
+          <div class="board-card-initials">AB</div>
+          <div class="board-card-body">
+            <div class="board-card-name">Board Member Name</div>
+            <div class="board-card-role">Chair</div>
+          </div>
+        </div>
+        <div class="board-card">
+          <div class="board-card-initials">CD</div>
+          <div class="board-card-body">
+            <div class="board-card-name">Board Member Name</div>
+            <div class="board-card-role">Secretary</div>
+          </div>
+        </div>
+        <div class="board-card">
+          <div class="board-card-initials">EF</div>
+          <div class="board-card-body">
+            <div class="board-card-name">Board Member Name</div>
+            <div class="board-card-role">Treasurer</div>
+          </div>
+        </div>
+        <div class="board-card">
+          <div class="board-card-initials">GH</div>
+          <div class="board-card-body">
+            <div class="board-card-name">Board Member Name</div>
+            <div class="board-card-role">Member at Large</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════════
+     EVENTS PAGE
+══════════════════════════════════════════ -->
+<div id="page-events" class="page">
+  <div class="page-hero">
+    <div class="container">
+      <div class="eyebrow">What's On</div>
+      <h1 class="title">Events &<br>Competitions</h1>
+      <p>Competitions, open days, showcases, and club socials — all in one place.</p>
+    </div>
+  </div>
+
+  <div class="events-page-grid">
+    <div>
+      <!-- OPEN GYM SECTION -->
+      <div class="event-card" style="border-bottom:1px solid var(--border); margin-bottom:0; padding-bottom:28px;">
+        <div class="event-date-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;">
+          <span style="font-size:22px; line-height:1;">↻</span>
+          <span style="font-family:'Bebas Neue',sans-serif; font-size:13px; color:var(--gold); letter-spacing:.08em; line-height:1;">TUE</span>
+          <span style="font-size:9px; color:rgba(255,255,255,.5); letter-spacing:.06em; text-transform:uppercase;">& SAT</span>
+        </div>
+        <div>
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px; flex-wrap:wrap;">
+            <div class="event-name" style="margin-bottom:0;">Open Gym</div>
+            <span class="event-type-chip" style="background:rgba(28,43,94,.07); color:var(--navy);">Recurring</span>
+          </div>
+          <p class="event-detail" style="margin-bottom:14px;">Open to all Hikari athletes as part of their membership. External athletes welcome on a drop-in basis. · Koperslagerstraat 8, Rotterdam</p>
+          <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:center;">
+            <div style="display:flex; gap:16px; flex-wrap:wrap;">
+              <span style="font-size:12px; color:var(--muted);">Tue <strong style="color:var(--navy);">20:00–22:00</strong></span>
+              <span style="font-size:12px; color:var(--muted);">Sat <strong style="color:var(--navy);">10:00–12:00</strong></span>
+              <span style="font-size:12px; color:var(--muted);">Members <strong style="color:var(--navy);">Free</strong></span>
+              <span style="font-size:12px; color:var(--muted);">Guests <strong style="color:var(--navy);">€8</strong></span>
+            </div>
+            <button class="btn btn-outline" onclick="openGymBooking()" style="padding:8px 20px; font-size:13px; margin-left:auto;">Book a Spot →</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="eyebrow" style="margin-bottom:20px;">Upcoming</div>
+
+      <div class="event-card" style="cursor:pointer;" onclick="showEvent('openday')">
+        <div class="event-date-box"><div class="event-date-day">14</div><div class="event-date-month">Sep</div></div>
+        <div>
+          <div class="event-name">Open Training Day</div>
+          <span class="event-type-chip chip-tryout" style="margin-bottom:8px; display:inline-block;">Open Day</span>
+          <p class="event-detail">Come and try cheerleading for free! Suitable for all ages, no experience needed. Sessions run every hour — just show up. Koperslagerstraat 8, Rotterdam · 10:00–13:00</p>
+        </div>
+      </div>
+
+      <div class="event-card" style="cursor:pointer;" onclick="showEvent('nca')">
+        <div class="event-date-box"><div class="event-date-day">28</div><div class="event-date-month">Sep</div></div>
+        <div>
+          <div class="event-name">NCA Regional Championship</div>
+          <span class="event-type-chip chip-competition" style="margin-bottom:8px; display:inline-block;">Competition</span>
+          <p class="event-detail">Hikari Elite, Rising, and Force compete at the NCA Regional Championship. Come support our teams! Ahoy Rotterdam · Doors open 09:00</p>
+        </div>
+      </div>
+
+      <div class="event-card" style="cursor:pointer;" onclick="showEvent('halloween')">
+        <div class="event-date-box"><div class="event-date-day">12</div><div class="event-date-month">Oct</div></div>
+        <div>
+          <div class="event-name">Halloween Showcase</div>
+          <span class="event-type-chip chip-social" style="margin-bottom:8px; display:inline-block;">Showcase</span>
+          <p class="event-detail">Annual Halloween showcase — all Hikari teams perform for family and friends. Costumes welcome! Hikari Gym, Rotterdam · 15:00–18:00. Free entry.</p>
+        </div>
+      </div>
+
+      <div class="event-card" style="cursor:pointer;" onclick="showEvent('tryouts')">
+        <div class="event-date-box"><div class="event-date-day">18</div><div class="event-date-month">Jan</div></div>
+        <div>
+          <div class="event-name">New Season Try-outs</div>
+          <span class="event-type-chip chip-tryout" style="margin-bottom:8px; display:inline-block;">Try-outs</span>
+          <p class="event-detail">Auditions and placements for the 2027 season. All current and prospective athletes are invited. Registration required — sign up via the Join Us form. Koperslagerstraat 8, 3077 MD Rotterdam · 14:00–18:00</p>
+        </div>
+      </div>
+
+      <div class="eyebrow" style="margin-top:48px; margin-bottom:20px;">Past Events</div>
+      <div class="event-card" style="opacity:.5;">
+        <div class="event-date-box" style="background:var(--muted);"><div class="event-date-day">22</div><div class="event-date-month">Jun</div></div>
+        <div><div class="event-name">End of Season Showcase 2026</div><p class="event-detail">Hikari Gym, Rotterdam</p></div>
+      </div>
+
+      <div style="text-align:center; padding:48px 24px; background:var(--white); border-radius:4px; margin-top:24px; border:1.5px dashed var(--border);">
+        <div style="font-size:32px; margin-bottom:12px;">📅</div>
+        <div style="font-family:'Bebas Neue',sans-serif; font-size:24px; color:var(--navy); margin-bottom:8px; letter-spacing:.04em;">No upcoming events right now</div>
+        <p style="font-size:14px; color:var(--muted); max-width:40ch; margin:0 auto;">Check back soon, or follow us on Instagram to be the first to know.</p>
+      </div>
+    </div>
+
+    <div class="events-sidebar">
+      <div class="sidebar-card">
+        <h3>Stay Updated</h3>
+        <p style="margin-bottom:16px;">Follow us on Instagram for event announcements, training updates, and competition results.</p>
+        <button class="btn btn-navy" style="width:100%;">@hikaricheer</button>
+      </div>
+      <div class="sidebar-card">
+        <h3>Host an Event?</h3>
+        <p style="margin-bottom:16px;">We occasionally take part in showcases and community events. Get in touch if you'd like Hikari to perform.</p>
+        <button class="btn btn-outline" style="width:100%;" onclick="showContact('event')">Contact Us</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EVENT DETAIL PAGE -->
+<div id="page-event-detail" class="page">
+  <div style="padding:20px max(48px, calc((100vw - 1140px) / 2 + 48px)); background:var(--white); border-bottom:1px solid var(--border);">
+    <span style="font-size:13px; color:var(--navy); cursor:pointer; font-weight:500;" onclick="showPage('events')">← Back to Events</span>
+  </div>
+  <div class="event-detail-hero">
+    <div class="ed-hero-img" id="ed-hero-img"></div>
+    <div class="ed-hero-content">
+      <span class="event-type-chip" id="ed-type-chip" style="margin-bottom:12px; display:inline-block;"></span>
+      <div class="ed-title" style="font-family:'Bebas Neue',sans-serif; font-size:clamp(40px,5vw,64px); color:white; line-height:1; margin-bottom:0;" id="ed-title"></div>
+    </div>
+  </div>
+  <div class="ed-meta-strip">
+    <div class="ed-meta-item">📅 <span id="ed-date"></span></div>
+    <div class="ed-meta-item">🕐 <span id="ed-time"></span></div>
+    <div class="ed-meta-item">📍 <span id="ed-location"></span></div>
+  </div>
+  <div class="ed-body">
+    <div>
+      <div class="eyebrow" style="margin-bottom:12px;">About this event</div>
+      <div class="ed-description" id="ed-description"></div>
+    </div>
+    <div>
+      <div class="ed-sidebar-card" id="ed-registration-card"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SHOP PAGE
+══════════════════════════════════════════ -->
+<div id="page-shop" class="page">
+  <div class="page-hero">
+    <div class="container">
+      <div class="eyebrow">Merch & Gear</div>
+      <h1 class="title">Hikari Shop</h1>
+      <p>Represent the club. All items are official Hikari merchandise.</p>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <div class="container">
+      <button class="filter-btn active">All</button>
+      <button class="filter-btn">Clothing</button>
+      <button class="filter-btn">Accessories</button>
+      <button class="filter-btn">Uniforms</button>
+    </div>
+  </div>
+
+  <div class="shop-grid">
+    <div class="product-card" onclick="showProduct('hoodie')">
+      <div class="product-img">🧥<div class="product-new">New</div></div>
+      <div class="product-body">
+        <div class="product-cat">Clothing</div>
+        <div class="product-name">Hikari Hoodie</div>
+        <div class="product-price">€45 <span>Navy / Gold</span></div>
+      </div>
+    </div>
+    <div class="product-card" onclick="showProduct('tee')">
+      <div class="product-img">👕</div>
+      <div class="product-body">
+        <div class="product-cat">Clothing</div>
+        <div class="product-name">Training Tee</div>
+        <div class="product-price">€22 <span>Navy / White</span></div>
+      </div>
+    </div>
+    <div class="product-card" onclick="showProduct('shorts')">
+      <div class="product-img">🩳</div>
+      <div class="product-body">
+        <div class="product-cat">Clothing</div>
+        <div class="product-name">Shorts</div>
+        <div class="product-price">€18 <span>Black</span></div>
+      </div>
+    </div>
+    <div class="product-card" onclick="showProduct('bow')">
+      <div class="product-img">🎀<div class="product-new">New</div></div>
+      <div class="product-body">
+        <div class="product-cat">Accessories</div>
+        <div class="product-name">Competition Bow</div>
+        <div class="product-price">€12 <span>Gold / Navy</span></div>
+      </div>
+    </div>
+    <div class="product-card" onclick="showProduct('backpack')">
+      <div class="product-img">🎒</div>
+      <div class="product-body">
+        <div class="product-cat">Accessories</div>
+        <div class="product-name">Club Backpack</div>
+        <div class="product-price">€38 <span>Navy</span></div>
+      </div>
+    </div>
+    <div class="product-card" onclick="showProduct('bottle')">
+      <div class="product-img">💧</div>
+      <div class="product-body">
+        <div class="product-cat">Accessories</div>
+        <div class="product-name">Water Bottle</div>
+        <div class="product-price">€14 <span>White / Gold print</span></div>
+      </div>
+    </div>
+    <div class="product-card" onclick="showProduct('keyring')">
+      <div class="product-img">✨</div>
+      <div class="product-body">
+        <div class="product-cat">Accessories</div>
+        <div class="product-name">Keyring</div>
+        <div class="product-price">€6</div>
+      </div>
+    </div>
+    <div class="product-card" onclick="showProduct('uniform')">
+      <div class="product-img" style="background:linear-gradient(135deg,#1C2B5E 0%, #2a3d6e 100%); color:var(--gold);">★</div>
+      <div class="product-body">
+        <div class="product-cat">Uniforms</div>
+        <div class="product-name">Competition Uniform</div>
+        <div class="product-price">By order <span>Contact us</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center; padding:20px 48px 60px; color:var(--muted); font-size:13px;">
+    Shipping within the Netherlands: €4.95. Free pickup at training. Questions? <span style="color:var(--navy); cursor:pointer; font-weight:500;">shop@hikaricheer.nl</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PRODUCT DETAIL PAGE
+══════════════════════════════════════════ -->
+<div id="page-product-detail" class="page">
+  <div style="padding:20px max(48px, calc((100vw - 1140px) / 2 + 48px)); background:var(--white); border-bottom:1px solid var(--border);">
+    <span style="font-size:13px; color:var(--navy); cursor:pointer; font-weight:500;" onclick="showPage('shop')">← Back to Shop</span>
+  </div>
+  <div class="product-detail-hero">
+    <div class="pd-image" id="pd-image-el">🧥<span class="product-new" id="pd-new-badge" style="display:none;">New</span></div>
+    <div class="pd-info">
+      <div class="pd-cat" id="pd-cat">Clothing</div>
+      <div class="pd-name" id="pd-name">Hikari Hoodie</div>
+      <div class="pd-price" id="pd-price">€45</div>
+      <div class="pd-colors" id="pd-colors">Navy / Gold</div>
+
+      <div id="pd-sizes-section">
+        <div class="pd-label">Size</div>
+        <div class="pd-sizes" id="pd-sizes"></div>
+      </div>
+
+      <div id="pd-qty-section">
+        <div class="pd-label">Quantity</div>
+        <div class="pd-qty">
+          <div class="pd-qty-btn" onclick="changeQty(-1)">−</div>
+          <div class="pd-qty-val" id="pd-qty-val">1</div>
+          <div class="pd-qty-btn" onclick="changeQty(1)">+</div>
+        </div>
+      </div>
+
+      <div class="pd-actions">
+        <button class="btn btn-primary" style="flex:1;" id="pd-cta-btn">Add to Cart</button>
+        <button class="btn btn-outline" style="padding:0 16px;" title="Save for later">♡</button>
+      </div>
+
+      <div class="pd-desc" id="pd-desc"></div>
+      <div class="pd-shipping">📦 €4.95 shipping within NL · Free pickup at training · <span style="color:var(--navy); cursor:pointer;">shop@hikaricheer.nl</span></div>
+    </div>
+  </div>
+
+  <section class="section section-offwhite" style="padding:48px 0;">
+    <div class="container">
+      <div class="eyebrow">Product Details</div>
+      <ul id="pd-details-list" style="margin-top:16px; display:flex; flex-direction:column; gap:8px; padding:0; list-style:none;"></ul>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SCHEDULE PAGE
+══════════════════════════════════════════ -->
+<div id="page-schedule" class="page">
+  <div class="page-hero">
+    <div class="container">
+      <div class="eyebrow">When We Train</div>
+      <h1 class="title">Training Schedule</h1>
+      <p>All sessions at Koperslagerstraat 8, Rotterdam, unless communicated otherwise.</p>
+    </div>
+  </div>
+
+  <section class="section section-offwhite">
+    <div class="container">
+
+      <!-- header row -->
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+        <div class="sched-legend">
+          <div class="sleg"><div class="sleg-dot" style="background:#EAE7E0;border:1px solid #ccc;"></div>Open Gym</div>
+          <div class="sleg"><div class="sleg-dot" style="background:#D4DDF5;"></div>Recreational</div>
+          <div class="sleg"><div class="sleg-dot" style="background:var(--navy);"></div>Competitive</div>
+          <div class="sleg"><div class="sleg-dot" style="background:#111D42;"></div>Blaze</div>
+        </div>
+        <div class="sched-toggle">
+          <button class="on" id="sbtn-week" onclick="setSchedView('week')">Week</button>
+          <button id="sbtn-list" onclick="setSchedView('list')">List</button>
+        </div>
+      </div>
+
+      <!-- WEEK VIEW -->
+      <div id="sched-week">
+        <div class="week-grid">
+
+          <div class="day-col">
+            <div class="day-head">Mon</div>
+            <div class="slots">
+              <div class="slot s-opengym"><div class="slot-time">19:00–22:00</div><div class="slot-name">Open Gym</div></div>
+            </div>
+          </div>
+
+          <div class="day-col">
+            <div class="day-head">Tue</div>
+            <div class="slots">
+              <div class="slot s-opengym"><div class="slot-time">19:00–22:00</div><div class="slot-name">Tumbling &amp; Open Gym</div></div>
+            </div>
+          </div>
+
+          <div class="day-col">
+            <div class="day-head">Wed</div>
+            <div class="slots">
+              <div class="slot s-comp"><div class="slot-time">19:30–21:00</div><div class="slot-name">Eclipse</div><div class="slot-sub">Competitive · L2</div></div>
+              <div class="slot s-rivals"><div class="slot-time">19:30–21:00</div><div class="slot-name">Blaze</div><div class="slot-sub">Competitive · L4</div></div>
+            </div>
+          </div>
+
+          <div class="day-col empty">
+            <div class="day-head">Thu</div>
+            <div class="slots"><div class="empty-slot">–</div></div>
+          </div>
+
+          <div class="day-col">
+            <div class="day-head">Fri</div>
+            <div class="slots">
+              <div class="slot s-dev"><div class="slot-time">17:30–18:30</div><div class="slot-name">Nova</div><div class="slot-sub">Recreational · 7–11y</div></div>
+              <div class="slot s-dev"><div class="slot-time">18:15–19:45</div><div class="slot-name">Nebula + Eclipse</div><div class="slot-sub">Rec + Competitive</div></div>
+              <div class="slot s-comp"><div class="slot-time">19:30–22:00</div><div class="slot-name">Halo</div><div class="slot-sub">Recreational · 16+</div></div>
+            </div>
+          </div>
+
+          <div class="day-col empty">
+            <div class="day-head">Sat</div>
+            <div class="slots"><div class="empty-slot">–</div></div>
+          </div>
+
+          <div class="day-col">
+            <div class="day-head">Sun</div>
+            <div class="slots">
+              <div class="slot s-rivals"><div class="slot-time">10:00–14:00</div><div class="slot-name">Blaze</div><div class="slot-sub">Competitive · L4</div></div>
+              <div class="slot s-opengym"><div class="slot-time">14:00–16:00</div><div class="slot-name">Open Gym</div></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- LIST VIEW -->
+      <div id="sched-list">
+
+        <div class="list-day">
+          <div class="list-day-head">Monday</div>
+          <div class="list-row lr-opengym"><div class="list-time">19:00 – 22:00</div><div><div class="list-name">Open Gym</div></div><span class="lbadge lb-open">Open</span></div>
+        </div>
+
+        <div class="list-day">
+          <div class="list-day-head">Tuesday</div>
+          <div class="list-row lr-opengym"><div class="list-time">19:00 – 22:00</div><div><div class="list-name">Tumbling &amp; Open Gym</div></div><span class="lbadge lb-open">Open</span></div>
+        </div>
+
+        <div class="list-day">
+          <div class="list-day-head">Wednesday</div>
+          <div class="list-row lr-comp"><div class="list-time">19:30 – 21:00</div><div><div class="list-name">Eclipse</div><div class="list-sub">Level 2 · Competitive · 8–18 years</div></div><span class="lbadge lb-comp">Competitive</span></div>
+          <div class="list-row lr-rivals"><div class="list-time">19:30 – 21:00</div><div><div class="list-name">Blaze</div><div class="list-sub">Level 4 · Competitive · 16+</div></div><span class="lbadge lb-comp">Competitive</span></div>
+        </div>
+
+        <div class="list-day">
+          <div class="list-day-head">Thursday <span>No training</span></div>
+        </div>
+
+        <div class="list-day">
+          <div class="list-day-head">Friday</div>
+          <div class="list-row lr-dev"><div class="list-time">17:30 – 18:30</div><div><div class="list-name">Nova</div><div class="list-sub">Recreational · 7–11 years · Level 0–1</div></div><span class="lbadge lb-dev">Recreational</span></div>
+          <div class="list-row lr-dev"><div class="list-time">18:15 – 19:45</div><div><div class="list-name">Nebula + Eclipse</div><div class="list-sub">Recreational + Competitive · 9–18 years</div></div><span class="lbadge lb-dev">Rec + Comp</span></div>
+          <div class="list-row lr-comp"><div class="list-time">19:30 – 22:00</div><div><div class="list-name">Halo</div><div class="list-sub">Recreational · 16+ · All levels</div></div><span class="lbadge lb-dev">Recreational</span></div>
+        </div>
+
+        <div class="list-day">
+          <div class="list-day-head">Saturday <span>No training</span></div>
+        </div>
+
+        <div class="list-day">
+          <div class="list-day-head">Sunday</div>
+          <div class="list-row lr-rivals"><div class="list-time">10:00 – 14:00</div><div><div class="list-name">Blaze</div><div class="list-sub">Level 4 · Competitive · 16+</div></div><span class="lbadge lb-comp">Competitive</span></div>
+          <div class="list-row lr-opengym"><div class="list-time">14:00 – 16:00</div><div><div class="list-name">Open Gym</div></div><span class="lbadge lb-open">Open</span></div>
+        </div>
+
+      </div>
+
+      <p style="font-size:12px; color:var(--muted); margin-top:24px; line-height:1.7;">
+        <strong style="color:var(--navy);">Open Gym</strong> sessions are open to all Hikari members.
+        <strong style="color:var(--navy);">Halo</strong> members may also use Mon &amp; Tue open gym for extra training.
+        Eclipse trains jointly with Nebula on Fridays.
+      </p>
+
+    </div>
+  </section>
+
+  <div class="cta-band">
+    <div class="cta-band-inner">
+      <div>
+        <h2 class="title">Want to join a session?</h2>
+        <p>Register first and we'll make sure you're in the right team before your first training.</p>
+      </div>
+      <button class="btn btn-navy" onclick="showPage('join')">Register Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SUPPORT US PAGE
+══════════════════════════════════════════ -->
+<div id="page-support" class="page">
+  <!-- Page hero (navy, same style as other pages) -->
+  <div class="page-hero">
+    <div class="container">
+      <div class="eyebrow">Support Hikari</div>
+      <h1 class="title">Be Part of<br>Something Bigger</h1>
+      <p>There are two ways to support Hikari beyond being an athlete — as a supporting member or as a sponsor.</p>
+    </div>
+  </div>
+
+  <!-- Begunstigd Lid section -->
+  <section class="section section-white">
+    <div class="container">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:start;">
+        <div>
+          <div class="eyebrow">Begunstigd Lid</div>
+          <h2 class="title" style="color:var(--navy); margin-bottom:20px;">Supporting Member</h2>
+          <p style="margin-bottom:16px;">Love what Hikari stands for? Become a supporting member and help us keep the club running, growing, and open to everyone — even if you're not training on the mat yourself.</p>
+          <p>For just €50 per year you become part of our community and get a handful of real perks in return.</p>
+          <div style="margin-top:32px; display:flex; flex-direction:column; gap:12px;">
+            <div style="display:flex; align-items:center; gap:12px; font-size:14px;">
+              <span style="color:var(--gold); font-size:18px;">✦</span> Invitation to club meetings
+            </div>
+            <div style="display:flex; align-items:center; gap:12px; font-size:14px;">
+              <span style="color:var(--gold); font-size:18px;">✦</span> 2–3 recreational training sessions per year
+            </div>
+            <div style="display:flex; align-items:center; gap:12px; font-size:14px;">
+              <span style="color:var(--gold); font-size:18px;">✦</span> Invitations to all club events
+            </div>
+            <div style="display:flex; align-items:center; gap:12px; font-size:14px;">
+              <span style="color:var(--gold); font-size:18px;">✦</span> Hikari newsletter
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="background:var(--navy); border-radius:4px; padding:36px; color:var(--white);">
+            <div style="font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:.06em; color:rgba(255,255,255,.5); margin-bottom:4px;">Annual contribution</div>
+            <div style="font-family:'Bebas Neue',sans-serif; font-size:64px; color:var(--gold); line-height:1; letter-spacing:.02em;">€50</div>
+            <div style="font-size:13px; color:rgba(255,255,255,.5); margin-bottom:28px;">per year</div>
+            <button class="btn btn-primary" onclick="showPage('join')" style="width:100%; text-align:center;">Become a Supporting Member</button>
+            <p style="font-size:12px; color:rgba(255,255,255,.35); margin-top:12px; max-width:none;">After signing up we'll confirm by email and send you the payment details.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sponsors section -->
+  <section class="section section-offwhite">
+    <div class="container">
+      <div class="eyebrow">Partners &amp; Sponsors</div>
+      <h2 class="title" style="color:var(--navy); margin-bottom:12px;">Our Sponsors</h2>
+      <p style="margin-bottom:40px;">These organisations make it possible for Hikari to keep training, competing, and growing.</p>
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:48px;">
+        <div style="background:var(--white); border-radius:4px; padding:28px 24px; display:flex; flex-direction:column; gap:12px;">
+          <div style="font-family:'Bebas Neue',sans-serif; font-size:24px; color:var(--navy); letter-spacing:.04em;">Virtuoos</div>
+          <p style="font-size:13px; max-width:none; margin-bottom:0;">Official nutrition partner. Hikari athletes get a <strong>15% discount</strong> on all Virtuoos supplements — ask your coach for the discount code.</p>
+        </div>
+        <div style="background:var(--white); border-radius:4px; padding:28px 24px; display:flex; align-items:center; justify-content:center; border:1.5px dashed var(--border); min-height:100px;">
+          <span style="font-size:13px; color:var(--muted); font-weight:500;">Your logo here</span>
+        </div>
+        <div style="background:var(--white); border-radius:4px; padding:28px 24px; display:flex; align-items:center; justify-content:center; border:1.5px dashed var(--border); min-height:100px;">
+          <span style="font-size:13px; color:var(--muted); font-weight:500;">Your logo here</span>
+        </div>
+      </div>
+
+      <div style="background:var(--navy); border-radius:4px; padding:40px 48px; display:flex; justify-content:space-between; align-items:center; gap:32px; flex-wrap:wrap;">
+        <div>
+          <div style="font-family:'Bebas Neue',sans-serif; font-size:32px; color:var(--white); letter-spacing:.04em; margin-bottom:8px;">Become a Sponsor</div>
+          <p style="color:rgba(255,255,255,.6); max-width:52ch; margin:0;">Support 120+ athletes in Rotterdam, get your brand in front of an engaged sports community, and contribute to a club built on inclusivity and excellence.</p>
+        </div>
+        <button class="btn btn-primary" onclick="showContact('press')">Get in Touch</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+</div>
+
+<!-- ══════════════════════════════════════════
+     MY AREA PAGE
+══════════════════════════════════════════ -->
+<div id="page-myarea" class="page">
+  <div class="page-hero">
+    <div class="container">
+      <div class="eyebrow">Member Portal</div>
+      <h1 class="title">My Area</h1>
+      <p>Your membership, your orders, your team — all in one place.</p>
+    </div>
+  </div>
+
+  <!-- Login panel -->
+  <section id="area-login-panel" class="section section-white">
+    <div class="container">
+      <div style="max-width:440px; margin:0 auto;">
+        <h2 style="font-family:'Bebas Neue',sans-serif; font-size:36px; color:var(--navy); letter-spacing:.04em; margin-bottom:8px;">Sign In</h2>
+        <p style="font-size:14px; color:var(--muted); margin-bottom:32px;">Access your membership, order history, and team info.</p>
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <div>
+            <label style="display:block; font-size:12px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--navy); margin-bottom:6px;">Email</label>
+            <input type="email" placeholder="your@email.com" style="width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:3px; font-size:14px; font-family:'Inter',sans-serif; box-sizing:border-box; outline:none; transition:border-color .2s;" onfocus="this.style.borderColor='var(--navy)'" onblur="this.style.borderColor='var(--border)'">
+          </div>
+          <div>
+            <label style="display:block; font-size:12px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--navy); margin-bottom:6px;">Password</label>
+            <input type="password" placeholder="••••••••" style="width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:3px; font-size:14px; font-family:'Inter',sans-serif; box-sizing:border-box; outline:none; transition:border-color .2s;" onfocus="this.style.borderColor='var(--navy)'" onblur="this.style.borderColor='var(--border)'">
+          </div>
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-top:4px;">
+            <button class="btn btn-primary" onclick="doLogin()" style="flex:1; margin-right:16px;">Sign In</button>
+            <span style="font-size:13px; color:var(--navy); cursor:pointer; white-space:nowrap; text-decoration:underline; text-underline-offset:3px;">Forgot password?</span>
+          </div>
+        </div>
+        <div style="margin-top:32px; padding-top:24px; border-top:1px solid var(--border); text-align:center;">
+          <p style="font-size:13px; color:var(--muted);">Not a member yet? <span style="color:var(--navy); font-weight:600; cursor:pointer;" onclick="showPage('join')">Join Hikari →</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Portal (shown after login) -->
+  <section id="area-portal-panel" style="display:none;" class="section section-white">
+    <div class="container">
+      <div style="display:flex; justify-content:flex-end; margin-bottom:24px; margin-top:-24px;">
+        <span style="font-size:13px; color:var(--muted); cursor:pointer;" onclick="doLogout()">← Sign out</span>
+      </div>
+      <div style="display:grid; grid-template-columns:260px 1fr; gap:32px; align-items:start;">
+
+        <!-- Sidebar -->
+        <div style="display:flex; flex-direction:column; gap:4px;">
+          <div style="font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); padding:8px 14px; margin-bottom:4px;">My Account</div>
+          <div onclick="showAreaTab('team')" id="area-tab-team" style="padding:10px 14px; border-radius:3px; font-size:14px; font-weight:500; cursor:pointer; background:var(--navy); color:var(--white);">My Team</div>
+          <div onclick="showAreaTab('orders')" id="area-tab-orders" style="padding:10px 14px; border-radius:3px; font-size:14px; font-weight:500; cursor:pointer; color:var(--text);">Order History</div>
+          <div onclick="showAreaTab('profile')" id="area-tab-profile" style="padding:10px 14px; border-radius:3px; font-size:14px; font-weight:500; cursor:pointer; color:var(--text);">Profile</div>
+          <div onclick="showAreaTab('events')" id="area-tab-events" style="padding:10px 14px; border-radius:3px; font-size:14px; font-weight:500; cursor:pointer; color:var(--text);">My Events</div>
+        </div>
+
+        <!-- Content panels -->
+        <div>
+
+          <!-- My Team -->
+          <div id="area-team">
+            <h2 style="font-family:'Bebas Neue',sans-serif; font-size:32px; color:var(--navy); margin-bottom:24px; letter-spacing:.04em;">My Team</h2>
+            <div style="background:var(--navy); border-radius:4px; padding:28px 32px; color:var(--white); display:flex; align-items:center; gap:28px; margin-bottom:20px;">
+              <div style="width:56px; height:56px; background:rgba(200,155,42,.2); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--gold); flex-shrink:0;">HC</div>
+              <div>
+                <div style="font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:.04em;">Eclipse</div>
+                <div style="font-size:13px; color:rgba(255,255,255,.5); margin-top:2px;">Competition · Level 2 · 8–18 years</div>
+              </div>
+              <div style="margin-left:auto; text-align:right;">
+                <div style="font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:rgba(255,255,255,.4); margin-bottom:4px;">Member since</div>
+                <div style="font-size:14px; color:var(--white);">September 2026</div>
+              </div>
+            </div>
+            <div style="background:var(--offwhite); border-radius:4px; padding:20px 24px;">
+              <div style="font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--navy); margin-bottom:12px; letter-spacing:.04em;">Training Schedule</div>
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <div style="font-size:14px; color:var(--muted);">📅 Wednesdays · 19:30–21:00</div>
+                <div style="font-size:14px; color:var(--muted);">📅 Fridays · 18:15–19:45</div>
+                <div style="font-size:14px; color:var(--muted); margin-top:4px;">📍 Koperslagerstraat 8, Rotterdam</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Orders -->
+          <div id="area-orders" style="display:none;">
+            <h2 style="font-family:'Bebas Neue',sans-serif; font-size:32px; color:var(--navy); margin-bottom:24px; letter-spacing:.04em;">Order History</h2>
+            <div style="border-radius:4px; overflow:hidden; border:1px solid var(--border);">
+              <div style="display:grid; grid-template-columns:1fr 120px 80px 100px; gap:0; background:var(--offwhite); padding:10px 20px; font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);">
+                <div>Item</div><div>Date</div><div>Total</div><div>Status</div>
+              </div>
+              <div style="display:grid; grid-template-columns:1fr 120px 80px 100px; padding:14px 20px; border-top:1px solid var(--border); align-items:center; font-size:14px;">
+                <div><strong style="color:var(--navy);">Hikari Hoodie</strong><div style="font-size:12px; color:var(--muted);">Navy · Size M</div></div>
+                <div style="color:var(--muted);">12 Sep 2026</div>
+                <div>€45</div>
+                <div><span style="font-size:11px; font-weight:600; background:#e8f5e8; color:#2a6a2a; padding:3px 8px; border-radius:2px;">Delivered</span></div>
+              </div>
+              <div style="display:grid; grid-template-columns:1fr 120px 80px 100px; padding:14px 20px; border-top:1px solid var(--border); align-items:center; font-size:14px;">
+                <div><strong style="color:var(--navy);">Competition Bow</strong><div style="font-size:12px; color:var(--muted);">Gold / Navy</div></div>
+                <div style="color:var(--muted);">3 Sep 2026</div>
+                <div>€12</div>
+                <div><span style="font-size:11px; font-weight:600; background:#e8f5e8; color:#2a6a2a; padding:3px 8px; border-radius:2px;">Delivered</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Profile -->
+          <div id="area-profile" style="display:none;">
+            <h2 style="font-family:'Bebas Neue',sans-serif; font-size:32px; color:var(--navy); margin-bottom:24px; letter-spacing:.04em;">My Profile</h2>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+              <div class="form-group"><label class="form-label">First Name</label><input class="form-input" value="Anna"></div>
+              <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" value="de Vries"></div>
+              <div class="form-group"><label class="form-label">Email</label><input class="form-input" value="anna@example.com"></div>
+              <div class="form-group"><label class="form-label">Phone</label><input class="form-input" value="+31 6 00 000 000"></div>
+            </div>
+            <button class="btn btn-navy" style="margin-top:8px;">Save Changes</button>
+          </div>
+
+          <!-- My Events -->
+          <div id="area-events" style="display:none;">
+            <h2 style="font-family:'Bebas Neue',sans-serif; font-size:32px; color:var(--navy); margin-bottom:24px; letter-spacing:.04em;">My Events</h2>
+            <div id="area-events-list"></div>
+            <p style="margin-top:24px; font-size:13px; color:var(--muted);" id="area-events-empty">No upcoming events registered. <span style="color:var(--navy); cursor:pointer; font-weight:500;" onclick="showPage('events')">Browse events →</span></p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+</div><!-- end page-myarea -->
+
+<!-- ══════════════════════════════════════════
+     SHARED FOOTER TEMPLATE
+══════════════════════════════════════════ -->
+<template id="shared-footer-tpl">
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="hikari_icon.png" alt="Hikari Cheerleading" style="height:52px; width:auto; margin-bottom:14px; display:block;">
+        <p>Named after the Japanese word for "light" (光), we are a home for every athlete in Rotterdam — regardless of starting point.</p>
+        <div style="margin-top:20px; display:flex; gap:12px;">
+          <span style="color:rgba(255,255,255,.4); font-size:20px; cursor:pointer;">📸</span>
+          <span style="color:rgba(255,255,255,.4); font-size:20px; cursor:pointer;">👍</span>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Club</h4>
+        <a onclick="showPage('about')">About Us</a>
+        <a onclick="showPage('about')">Coaches</a>
+        <a onclick="showPage('teams')">Teams</a>
+        <a onclick="showPage('events')">Events</a>
+      </div>
+      <div class="footer-col">
+        <h4>Join</h4>
+        <a onclick="showPage('join')">Register</a>
+        <a onclick="showPage('teams')">Find Your Team</a>
+        <a>Try-out Info</a>
+        <a>Pricing</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <a>info@hikaricheer.nl</a>
+        <a>Rotterdam, NL</a>
+        <a>KvK: 12345678</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Hikari Cheerleading · Stichting Hikari Rotterdam</span>
+      <span>Privacy Policy · Terms</span>
+    </div>
+  </footer>
+</template>
+
+<!-- ══════════════════════════════════════════
+     COACH MODAL
+══════════════════════════════════════════ -->
+<div class="modal-overlay" id="coachModal" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeCoachModal()">✕</button>
+    <div class="modal-header">
+      <div class="modal-img"><div class="modal-img-initials" id="modalInitials">SV</div></div>
+      <div class="modal-title">
+        <h2 id="modalName">Sophie van der Berg</h2>
+        <div class="coach-role" id="modalRole">Head Coach</div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <p id="modalBio">Bio text here.</p>
+      <div class="modal-cert">
+        <span class="cert-chip">NCA Level 3</span>
+        <span class="cert-chip">KNGU Advanced</span>
+        <span class="cert-chip">EHBO Certified</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const TEAMS = {
+    nova: {
+      name: 'Nova',
+      badge: 'Recreational',
+      badgeClass: 'badge-recreational',
+      type: 'recreational',
+      emoji: '⭐',
+      img: 'nova_team.jpg',
+      logo: 'nova_logo.png',
+      logoOffset: 0.074,
+      heroGradient: 'linear-gradient(135deg,#2a4a6e,#1C2B5E)',
+      level: 'Level 0–1',
+      age: '7–11 years',
+      schedule: 'Fridays',
+      time: '17:30 – 18:30',
+      price: '€220',
+      period: 'per year',
+      tryout: false,
+      tagline: 'The perfect first step into cheerleading',
+      about: 'Nova is Hikari\'s beginner recreational team for young athletes aged 7–11. No prior experience is needed — just enthusiasm! Sessions focus on the fundamental skills of cheerleading: movement, coordination, cheer technique, and teamwork in a safe and fun environment.',
+      about2: 'Nova athletes train together on Friday afternoons and often have the chance to perform at club events throughout the year. It\'s the perfect introduction to cheerleading and to the Hikari family.',
+      whatToExpect: [
+        '1 session per week, 1 hour',
+        'No try-out — all welcome',
+        'Fun, structured skill-building',
+        'Supervised by certified coaches',
+        'Performance opportunities at club events',
+      ],
+      pricing: ['1 training session per week', 'KNGU accident insurance', 'Access to all club events', 'Coaching by certified staff'],
+    },
+    nebula: {
+      name: 'Nebula',
+      badge: 'Recreational',
+      badgeClass: 'badge-recreational',
+      type: 'recreational',
+      emoji: '🌟',
+      logo: 'nebula_logo.png',
+      logoOffset: 0.136,
+      heroGradient: 'linear-gradient(135deg,#1e3a5e,#243060)',
+      level: 'Level 2',
+      age: '9–18 years',
+      schedule: 'Fridays',
+      time: '18:15 – 19:45',
+      price: '€280',
+      period: 'per year',
+      tryout: false,
+      tagline: 'Growing athletes, growing confidence',
+      about: 'Nebula is a recreational team for athletes aged 9–18 who want to develop their cheerleading skills beyond the basics. Training covers stunting, tumbling fundamentals, jumps, and performance skills in a supportive group setting.',
+      about2: 'Nebula often trains alongside Eclipse on Friday evenings, giving members exposure to what higher-level training looks like. No try-out required — just a love for cheerleading.',
+      whatToExpect: [
+        '1 session per week, 1.5 hours',
+        'No try-out — all welcome',
+        'Stunting, tumbling, and jumps',
+        'Joint training with Eclipse on Fridays',
+        'Performance opportunities throughout the year',
+      ],
+      pricing: ['1 training session per week', 'KNGU accident insurance', 'Access to all club events', 'Coaching by certified staff'],
+    },
+    eclipse: {
+      name: 'Eclipse',
+      badge: 'Competitive',
+      badgeClass: 'badge-competitive',
+      type: 'competitive',
+      emoji: '🏆',
+      img: 'eclipse_team.jpg',
+      logo: 'eclipse_logo.png',
+      logoOffset: 0.103,
+      heroGradient: 'linear-gradient(135deg,#1C2B5E,#2a3d6e)',
+      level: 'Level 2',
+      age: '8–18 years',
+      schedule: 'Wed + Fri',
+      time: 'Wed 19:30–21:00, Fri 18:15–19:45',
+      price: '€350',
+      period: 'per year',
+      tryout: false,
+      tagline: 'Step up to competition',
+      about: 'Eclipse is Hikari\'s entry-level competitive team, training at Level 2 and competing at regional and national cheerleading competitions. Athletes train twice a week and learn to execute a full competition routine including stunts, pyramids, tumbling, jumps, and dance.',
+      about2: 'No try-out is required — Eclipse is open to athletes aged 8–18 who are ready for the commitment of competitive cheerleading. Coaches assess skill and readiness during the first weeks of training and will guide each athlete through their progression.',
+      whatToExpect: [
+        '2 sessions per week',
+        'No try-out — commitment assessed at start of season',
+        'Full competition routine including stunts & tumbling',
+        'Compete at NL regional and national level',
+      ],
+      pricing: ['2 training sessions per week', 'KNGU accident insurance', 'Access to all club events', 'Competition entry included'],
+    },
+    halo: {
+      name: 'Halo',
+      badge: 'Recreational',
+      badgeClass: 'badge-recreational',
+      type: 'recreational',
+      emoji: '💛',
+      img: 'halo_team.jpg',
+      logo: 'halo_logo.png',
+      logoOffset: 0.130,
+      heroGradient: 'linear-gradient(135deg,#1a3050,#2a4060)',
+      level: 'All Levels',
+      age: '16+ years',
+      schedule: 'Fridays',
+      time: '19:30 – 22:00',
+      price: '€480',
+      period: 'per year',
+      tryout: false,
+      tagline: 'Cheerleading for adults, at your own pace',
+      about: 'Halo is Hikari\'s recreational adult team, welcoming athletes 16 and older of all skill levels. Whether you\'re completely new or have a cheer background, Halo offers a fun and welcoming space to train, improve, and be part of a team.',
+      about2: 'Halo members are also encouraged to take part in Open Gym sessions on Mondays, Tuesdays, and Sundays for extra mat time. No try-out required — just show up.',
+      whatToExpect: [
+        '1 session per week, 2.5 hours',
+        'No try-out — all adults welcome',
+        'All levels — from beginner to experienced',
+        'Access to Open Gym sessions for extra training',
+        'Relaxed, welcoming team culture',
+      ],
+      pricing: ['1 training session per week', 'Access to Open Gym sessions', 'KNGU accident insurance', 'Access to all club events', 'Coaching by certified staff'],
+    },
+    blaze: {
+      name: 'Blaze',
+      badge: 'Competitive',
+      badgeClass: 'badge-competitive',
+      type: 'competitive',
+      emoji: '🔥',
+      img: 'blaze_team.jpg',
+      logo: 'blaze_logo.png',
+      logoOffset: 0.072,
+      heroGradient: 'linear-gradient(135deg,#111D42,#1C2B5E)',
+      level: 'Level 4',
+      age: '16+ years',
+      schedule: 'Wed + Sun',
+      time: 'Wed 19:30–21:00, Sun 10:00–14:00',
+      price: '€520–725',
+      period: 'per year',
+      tryout: true,
+      tagline: 'Our flagship competitive team',
+      about: 'Blaze is Hikari\'s highest-level competitive team, training at Level 4 and representing the club at national and international competitions. Athletes commit to two intense training sessions per week and are expected to maintain a high standard of skill, fitness, and team dedication.',
+      about2: 'Blaze includes a select World Cup sub-group for athletes competing in international World Cup events. A try-out is required to join Blaze. Pricing depends on whether you are part of the regular competition squad or the World Cup group.',
+      whatToExpect: [
+        '2 sessions per week (Wed evenings + Sun mornings)',
+        'Try-out required to join',
+        'Level 4 stunts, pyramids, tumbling',
+        'National and international competition travel',
+        'World Cup sub-group for eligible athletes',
+      ],
+      pricing: ['2 training sessions per week', 'KNGU accident insurance', 'Competition entry costs included', 'Access to all club events'],
+    },
+  };
+
+  function showTeam(teamId) {
+    const t = TEAMS[teamId];
+    if (!t) { showPage('teams'); return; }
+    _currentTeamId = teamId;
+
+    // hero
+    const photoEl = document.querySelector('#page-team-detail .td-hero-photo');
+    if (t.img) {
+      photoEl.style.cssText = `background-image:url('${t.img}'); background-size:cover; background-position:center;`;
+    } else {
+      photoEl.style.cssText = `background:${t.heroGradient};`;
+    }
+    const logoImg = document.querySelector('#page-team-detail .td-hero-logo');
+    logoImg.src = t.logo || '';
+    logoImg.alt = 'Hikari ' + t.name;
+    logoImg.style.marginLeft = t.logoOffset ? `${-(t.logoOffset * 480).toFixed(0)}px` : '0';
+
+    // info strip
+    const strip = document.querySelectorAll('#page-team-detail .info-strip-value');
+    strip[0].textContent = t.level;
+    strip[1].textContent = t.age;
+    strip[2].textContent = t.schedule;
+    strip[3].textContent = t.time;
+    strip[4].textContent = 'Koperslagerstraat 8, 3077 MD Rotterdam';
+
+    // body text
+    document.querySelector('#page-team-detail .td-tagline').textContent = t.tagline;
+    document.querySelector('#page-team-detail .td-about1').textContent = t.about;
+    document.querySelector('#page-team-detail .td-about2').textContent = t.about2;
+
+    // what to expect list
+    const wtList = document.querySelector('#page-team-detail .td-expect-list');
+    wtList.innerHTML = t.whatToExpect.map(item =>
+      `<li style="font-size:14px;color:var(--muted);padding-left:20px;position:relative;"><span style="position:absolute;left:0;color:var(--gold);">✦</span> ${item}</li>`
+    ).join('');
+
+    // pricing box
+    document.querySelector('#page-team-detail .price-amount').textContent = t.price;
+    document.querySelector('#page-team-detail .price-period').textContent = t.period;
+    const incList = document.querySelector('#page-team-detail .pricing-includes');
+    incList.innerHTML = t.pricing.map(i => `<li>${i}</li>`).join('');
+
+    // tryout note
+    const tryNote = document.querySelector('#page-team-detail .td-tryout-note');
+    tryNote.textContent = t.tryout
+      ? 'Try-out required. Contact us for the next try-out date.'
+      : 'No try-out required — register directly and join at the start of the next training block.';
+
+    // Selection & Membership section
+    const isRec = t.type === 'recreational';
+    document.querySelector('#page-team-detail .td-selection-text').textContent = isRec
+      ? 'There is no selection process to join these teams, they are open to everyone, regardless of whether you have experience with cheerleading or not.'
+      : 'To be part of these teams, athletes must attend a try-out and be selected by coaches. We often organise try-outs in June and September.';
+    document.querySelector('#page-team-detail .td-selection-text2').textContent = isRec
+      ? ''
+      : 'If you missed the try-outs, don\'t worry — there is always a chance to join! Contact us and we will discuss the possibilities.';
+
+    document.querySelector('#page-team-detail .td-membership-intro').textContent = isRec
+      ? 'Recreational membership is collected via direct debit. You can choose from three options:'
+      : 'Cheerleading is a team sport. When participating in a competition team, athletes commit to an entire season through an annual membership valid between September 1 and August 31 of the following year. The annual fee is automatically debited. You can choose from two options:';
+
+    const memItems = isRec
+      ? [
+          'One-time payment for the entire year, debited at the end of September (valid September 1 – August 31)',
+          'One-time payment for a semester, debited at the end of September (valid September 1 – February 28)',
+          'One-time payment for a semester, debited at the end of February (valid March 1 – August 31)',
+        ]
+      : [
+          'A one-time payment, debited at the end of September',
+          'Payment in 2 instalments, debited at the end of September and the end of November',
+        ];
+    document.querySelector('#page-team-detail .td-membership-list').innerHTML =
+      memItems.map(i => `<li>${i}</li>`).join('');
+
+    document.querySelector('#page-team-detail .td-membership-note').textContent = isRec
+      ? 'Recreational memberships are non-refundable.'
+      : 'Competition memberships are non-refundable.';
+
+    showPage('team-detail');
+  }
+
+  const _nav = document.querySelector('nav');
+
+  // Inject shared footer into every page once
+  (function injectFooters() {
+    const tpl = document.getElementById('shared-footer-tpl');
+    if (!tpl) return;
+    document.querySelectorAll('.page').forEach(page => {
+      if (!page.querySelector('footer')) {
+        page.appendChild(tpl.content.cloneNode(true));
+      }
+    });
+  })();
+
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const el = document.getElementById('page-' + id);
+    if (el) {
+      el.classList.add('active');
+      window.scrollTo(0,0);
+      _isHome = (id === 'home');
+      if (_nav) {
+        _nav.classList.remove('scrolled');
+        _nav.classList.toggle('solid', !_isHome);
+      }
+    }
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    const navMap = {
+      'home':'nav-home','teams':'nav-teams','team-detail':'nav-teams',
+      'join':'nav-join','about':'nav-about','coaches':'nav-about',
+      'events':'nav-events','shop':'nav-shop','schedule':'nav-schedule',
+      'support':'nav-support','myarea':'nav-myarea','product-detail':'nav-shop','contact':'nav-join',
+      'event-detail':'nav-events'
+    };
+    const navId = navMap[id];
+    if (navId) { const n = document.getElementById(navId); if(n) n.classList.add('active'); }
+    document.querySelectorAll('.filter-btn').forEach(b => {
+      b.addEventListener('click', function() {
+        this.closest('.filter-bar').querySelectorAll('.filter-btn').forEach(x => x.classList.remove('active'));
+        this.classList.add('active');
+        const filter = this.dataset.filter;
+        document.querySelectorAll('#teams-full-grid .team-card').forEach(card => {
+          if (filter === 'all') {
+            card.style.display = '';
+          } else if (filter === 'recreational' || filter === 'competitive') {
+            card.style.display = card.dataset.type === filter ? '' : 'none';
+          } else {
+            // age filter: kids / youth / adults
+            card.style.display = card.dataset.age.includes(filter) ? '' : 'none';
+          }
+        });
+      });
+    });
+    document.querySelectorAll('.shop-tab').forEach(t => {
+      t.addEventListener('click', function() {
+        this.closest('.shop-cat-tabs').querySelectorAll('.shop-tab').forEach(x=>x.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+  }
+
+  // Scroll: make nav solid on homepage when scrolled
+  let _isHome = true;
+  const _tickerTrack = document.querySelector('.ticker-track');
+  const _parallaxBg = document.querySelector('.parallax-bg');
+  window.addEventListener('scroll', () => {
+    if (_isHome) _nav.classList.toggle('scrolled', window.scrollY > 60);
+    if (_tickerTrack) {
+      const halfWidth = _tickerTrack.scrollWidth / 2;
+      const offset = (window.scrollY * 0.4) % halfWidth;
+      _tickerTrack.style.transform = `translateX(-${offset}px)`;
+    }
+    if (_parallaxBg) {
+      const banner = _parallaxBg.parentElement;
+      const rect = banner.getBoundingClientRect();
+      if (rect.bottom > 0 && rect.top < window.innerHeight) {
+        const progress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
+        const shift = (progress - 0.5) * 320;
+        _parallaxBg.style.transform = `translateY(${shift}px)`;
+      }
+    }
+  }, { passive: true });
+
+  function toggleDrawer() {
+    const drawer = document.getElementById('nav-drawer');
+    const btn = document.getElementById('hamburger');
+    drawer.classList.toggle('open');
+    btn.classList.toggle('open');
+    document.body.style.overflow = drawer.classList.contains('open') ? 'hidden' : '';
+  }
+  function closeDrawer() {
+    document.getElementById('nav-drawer').classList.remove('open');
+    document.getElementById('hamburger').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function setSchedView(v) {
+    document.getElementById('sched-week').style.display = v === 'week' ? 'block' : 'none';
+    document.getElementById('sched-list').style.display = v === 'list' ? 'block' : 'none';
+    document.getElementById('sbtn-week').classList.toggle('on', v === 'week');
+    document.getElementById('sbtn-list').classList.toggle('on', v === 'list');
+  }
+
+  function openCoachModal(name, role, initials, bio) {
+    if (name) {
+      document.getElementById('modalName').textContent = name;
+      document.getElementById('modalRole').textContent = role;
+      document.getElementById('modalInitials').textContent = initials;
+      document.getElementById('modalBio').textContent = bio;
+    }
+    document.getElementById('coachModal').classList.add('open');
+  }
+  function closeCoachModal() {
+    document.getElementById('coachModal').classList.remove('open');
+  }
+  function closeModal(e) {
+    if (e.target === document.getElementById('coachModal')) closeCoachModal();
+  }
+
+  // ── CART ──────────────────────────────────
+  let _cart = []; // [{id, name, price, emoji, size, qty}]
+
+  function openCart() {
+    document.getElementById('cart-overlay').classList.add('open');
+    document.getElementById('cart-drawer').classList.add('open');
+  }
+  function closeCart() {
+    document.getElementById('cart-overlay').classList.remove('open');
+    document.getElementById('cart-drawer').classList.remove('open');
+  }
+
+  function addToCart() {
+    const id = document.getElementById('pd-name').dataset.productId;
+    if (!id) return;
+    const p = PRODUCTS[id];
+    if (!p) return;
+    const sizeEl = document.querySelector('.pd-size.selected');
+    const size = sizeEl ? sizeEl.textContent : null;
+    if (p.sizes && p.sizes.length && !size) {
+      alert('Please select a size first.');
+      return;
+    }
+    const qty = _pdQty;
+    const existing = _cart.find(i => i.id === id && i.size === size);
+    if (existing) { existing.qty += qty; }
+    else { _cart.push({ id, name: p.name, price: p.price, emoji: p.emoji, emojiStyle: p.emojiStyle||'', size, qty }); }
+    renderCart();
+    openCart();
+  }
+
+  function cartRemove(id, size) {
+    _cart = _cart.filter(i => !(i.id === id && i.size === size));
+    renderCart();
+  }
+
+  function cartChangeQty(id, size, delta) {
+    const item = _cart.find(i => i.id === id && i.size === size);
+    if (!item) return;
+    item.qty = Math.max(1, item.qty + delta);
+    renderCart();
+  }
+
+  function renderCart() {
+    const itemsEl = document.getElementById('cart-items');
+    const footerEl = document.getElementById('cart-footer');
+    const badge = document.getElementById('cart-badge');
+    const totalQty = _cart.reduce((s, i) => s + i.qty, 0);
+
+    badge.style.display = totalQty > 0 ? 'block' : 'none';
+    badge.textContent = totalQty;
+
+    if (_cart.length === 0) {
+      itemsEl.innerHTML = '<div class="cart-empty">Your cart is empty</div>';
+      footerEl.style.display = 'none';
+      return;
+    }
+
+    itemsEl.innerHTML = _cart.map(item => {
+      const priceNum = parseFloat(item.price.replace('€',''));
+      const linePrice = isNaN(priceNum) ? item.price : '€' + (priceNum * item.qty).toFixed(2).replace('.00','');
+      return `
+        <div class="cart-item">
+          <div class="cart-item-img" style="${item.emojiStyle}">${item.emoji}</div>
+          <div>
+            <div class="cart-item-name">${item.name}</div>
+            <div class="cart-item-meta">${item.size ? 'Size: ' + item.size : ''}</div>
+            <div class="cart-item-qty">
+              <button onclick="cartChangeQty('${item.id}','${item.size}',-1)">−</button>
+              <span>${item.qty}</span>
+              <button onclick="cartChangeQty('${item.id}','${item.size}',1)">+</button>
+            </div>
+            <span class="cart-item-remove" onclick="cartRemove('${item.id}','${item.size}')">Remove</span>
+          </div>
+          <div class="cart-item-price">${linePrice}</div>
+        </div>`;
+    }).join('');
+
+    const subtotal = _cart.reduce((s, i) => {
+      const n = parseFloat(i.price.replace('€',''));
+      return s + (isNaN(n) ? 0 : n * i.qty);
+    }, 0);
+    document.getElementById('cart-subtotal-val').textContent = subtotal > 0 ? '€' + subtotal.toFixed(2).replace('.00','') : '—';
+    footerEl.style.display = 'block';
+  }
+
+  const EVENTS = {
+    openday: {
+      title: 'Open Training Day',
+      day: '14', month: 'Sep', date: '14 September 2026',
+      time: '10:00 – 13:00',
+      location: 'Koperslagerstraat 8, 3077 MD Rotterdam',
+      type: 'Open Day', typeClass: 'chip-tryout',
+      emoji: '🎪',
+      emojiStyle: 'font-size:80px;',
+      description: 'Come and try cheerleading completely for free! Our Open Training Day is perfect for anyone curious about the sport — no experience or fitness level required.\n\nSessions run every hour from 10:00 to 13:00. You\'ll get to try basic cheer movements, see a stunt demonstration from our athletes, and meet our coaches and current members.\n\nAll ages welcome. Just show up — no registration needed.',
+      registration: 'none',
+    },
+    nca: {
+      title: 'NCA Regional Championship',
+      day: '28', month: 'Sep', date: '28 September 2026',
+      time: 'Doors open 09:00',
+      location: 'Ahoy Rotterdam',
+      type: 'Competition', typeClass: 'chip-competition',
+      emoji: '🏆',
+      description: 'Hikari Blaze, Eclipse, and Nova compete at the NCA Regional Championship — one of the biggest cheerleading events of the year in the Netherlands.\n\nCome support our teams as they take to the floor! The event features teams from clubs across the country competing in multiple divisions and levels.\n\nTickets include access to all rounds. Doors open at 09:00; competition starts at 10:00. Parking available on-site at Ahoy.',
+      registration: 'paid',
+      price: '€12.50',
+      priceNum: 12.50,
+      paymentPlatform: 'Eventbrite',
+    },
+    halloween: {
+      title: 'Halloween Showcase',
+      day: '12', month: 'Oct', date: '12 October 2026',
+      time: '15:00 – 18:00',
+      location: 'Koperslagerstraat 8, 3077 MD Rotterdam',
+      type: 'Showcase', typeClass: 'chip-social',
+      emoji: '🎃',
+      description: 'Our annual Halloween Showcase is one of the most beloved events in the Hikari calendar. All teams perform their season routine — costumes encouraged!\n\nThis is a free event open to family, friends, and anyone who wants to see what Hikari is all about. Doors open at 14:30. Light refreshments available.\n\nCome dressed up — there will be a costume contest!',
+      registration: 'free',
+      price: null,
+    },
+    tryouts: {
+      title: 'New Season Try-outs',
+      day: '18', month: 'Jan', date: '18 January 2027',
+      time: '14:00 – 18:00',
+      location: 'Koperslagerstraat 8, 3077 MD Rotterdam',
+      type: 'Try-outs', typeClass: 'chip-tryout',
+      emoji: '⭐',
+      description: 'Auditions and placements for the 2027 season. This session is for athletes interested in joining Hikari Blaze (Level 4) or athletes already in the club looking to move up a team.\n\nCoaches will assess tumbling, stunting, and general athleticism. No routine preparation is required — just come ready to move.\n\nAll current club members and prospective new members are welcome to attend. Registration is required so we can plan group sizes.',
+      registration: 'free',
+      price: null,
+    },
+  };
+
+  let _currentEventId = null;
+
+  function showEvent(id) {
+    const e = EVENTS[id];
+    if (!e) return;
+    _currentEventId = id;
+    showPage('event-detail');
+
+    // hero
+    const heroImg = document.getElementById('ed-hero-img');
+    heroImg.style.cssText = `position:absolute; inset:0; background:linear-gradient(135deg,#111D42,#1C2B5E); display:flex; align-items:center; justify-content:center; ${e.emojiStyle||''}`;
+    heroImg.innerHTML = `<span style="font-size:80px; opacity:.3;">${e.emoji}</span>`;
+
+    const typeChip = document.getElementById('ed-type-chip');
+    typeChip.textContent = e.type;
+    typeChip.className = 'event-type-chip ' + e.typeClass;
+
+    document.getElementById('ed-title').textContent = e.title;
+    document.getElementById('ed-date').textContent = e.date;
+    document.getElementById('ed-time').textContent = e.time;
+    document.getElementById('ed-location').textContent = e.location;
+
+    // description — preserve newlines
+    const descEl = document.getElementById('ed-description');
+    descEl.innerHTML = e.description.split('\n\n').map(p => `<p style="margin-bottom:16px;">${p}</p>`).join('');
+
+    // registration card
+    const regCard = document.getElementById('ed-registration-card');
+    if (e.registration === 'paid') {
+      regCard.innerHTML = `
+        <div style="font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--navy); letter-spacing:.04em; margin-bottom:4px;">Tickets</div>
+        <div style="font-size:32px; font-weight:700; color:var(--navy); margin-bottom:4px;">${e.price}</div>
+        <div style="font-size:12px; color:var(--muted); margin-bottom:20px;">per person</div>
+        <button class="btn btn-primary" style="width:100%; margin-bottom:12px;" onclick="openPayment('${id}')">Get Tickets</button>
+        <p style="font-size:12px; color:var(--muted); text-align:center;">🔒 Secure checkout</p>`;
+    } else if (e.registration === 'free') {
+      regCard.innerHTML = `
+        <div style="font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--navy); letter-spacing:.04em; margin-bottom:16px;">Register</div>
+        <p style="font-size:13px; color:var(--muted); margin-bottom:20px;">Free entry — registration helps us plan capacity.</p>
+        <div class="form-group"><label class="form-label">Name</label><input class="form-input" id="ed-reg-name" placeholder="Your name"></div>
+        <div class="form-group" style="margin-top:12px;"><label class="form-label">Email</label><input class="form-input" id="ed-reg-email" type="email" placeholder="you@example.com"></div>
+        <button class="btn btn-primary" style="width:100%; margin-top:16px;" onclick="completeRegistration('${id}')">Register for Free</button>`;
+    } else {
+      regCard.innerHTML = `
+        <div style="font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--navy); letter-spacing:.04em; margin-bottom:12px;">Free Entry</div>
+        <p style="font-size:13px; color:var(--muted); margin-bottom:0;">No registration needed — just show up! See you there.</p>`;
+    }
+  }
+
+  let _registeredEvents = new Set();
+
+  function completeRegistration(id) {
+    _registeredEvents.add(id);
+    const regCard = document.getElementById('ed-registration-card');
+    const e = EVENTS[id];
+    regCard.innerHTML = `
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+        <span style="font-size:24px;">✅</span>
+        <div style="font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--navy); letter-spacing:.04em;">You're Registered!</div>
+      </div>
+      <p style="font-size:13px; color:var(--muted);">See you at <strong>${e.title}</strong> on ${e.date}. A confirmation will be sent to your email.</p>`;
+  }
+
+  function openPayment(id) {
+    const e = EVENTS[id];
+    if (!e) return;
+    _currentEventId = id;
+    document.getElementById('pm-price').textContent = e.price;
+    document.getElementById('pm-event-name').textContent = e.title + ' · ' + e.date;
+    const platform = e.paymentPlatform || 'Mollie';
+    document.getElementById('pm-platform-chip').textContent = 'via ' + platform;
+    document.getElementById('pm-platform-name').textContent = platform;
+    document.getElementById('pm-continue-label').textContent = platform;
+    document.getElementById('pm-step2-platform').textContent = platform;
+    // reset to step 1
+    document.getElementById('pm-step-1').style.display = 'block';
+    document.getElementById('pm-step-2').style.display = 'none';
+    document.getElementById('pm-name').value = '';
+    document.getElementById('pm-email').value = '';
+    document.getElementById('payment-overlay').style.display = 'block';
+    document.getElementById('payment-modal').style.display = 'block';
+  }
+
+  function pmContinue() {
+    const email = document.getElementById('pm-email').value || 'your email';
+    document.getElementById('pm-step2-email').textContent = email;
+    document.getElementById('pm-step-1').style.display = 'none';
+    document.getElementById('pm-step-2').style.display = 'block';
+  }
+
+  function pmDone() {
+    const id = _currentEventId;
+    closePayment();
+    if (id) {
+      _registeredEvents.add(id);
+      const regCard = document.getElementById('ed-registration-card');
+      const e = EVENTS[id];
+      if (regCard && e) {
+        regCard.innerHTML = `
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+            <span style="font-size:24px;">✅</span>
+            <div style="font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--navy); letter-spacing:.04em;">Ticket Confirmed!</div>
+          </div>
+          <p style="font-size:13px; color:var(--muted);">Your ticket for <strong>${e.title}</strong> on ${e.date} is confirmed.</p>`;
+      }
+    }
+  }
+
+  function closePayment() {
+    document.getElementById('payment-overlay').style.display = 'none';
+    document.getElementById('payment-modal').style.display = 'none';
+  }
+
+  let _gymIsMember = true;
+  let _gymSession = 'Tuesday 20:00–22:00';
+
+  function openGymBooking() {
+    _gymIsMember = true;
+    _gymSession = 'Tuesday 20:00–22:00';
+    document.getElementById('gym-step-1').style.display = 'block';
+    document.getElementById('gym-step-2').style.display = 'none';
+    document.getElementById('gym-overlay').style.display = 'block';
+    document.getElementById('gym-modal').style.display = 'block';
+    document.getElementById('gym-payment-note').style.display = 'none';
+    document.getElementById('gym-submit-btn').textContent = 'Confirm Booking';
+    document.getElementById('gym-name').value = '';
+    document.getElementById('gym-email').value = '';
+    // reset selection state
+    document.getElementById('gym-member-yes').style.border = '2px solid var(--navy)';
+    document.getElementById('gym-member-no').style.border = '2px solid var(--border)';
+    document.querySelectorAll('.gym-session-opt').forEach((o, i) => {
+      o.style.border = i === 0 ? '2px solid var(--navy)' : '2px solid var(--border)';
+    });
+  }
+
+  function closeGymBooking() {
+    document.getElementById('gym-overlay').style.display = 'none';
+    document.getElementById('gym-modal').style.display = 'none';
+  }
+
+  function selectGymSession(el, session) {
+    _gymSession = session;
+    document.querySelectorAll('.gym-session-opt').forEach(o => {
+      o.style.border = '2px solid var(--border)';
+    });
+    el.style.border = '2px solid var(--navy)';
+  }
+
+  function setGymMember(isMember) {
+    _gymIsMember = isMember;
+    document.getElementById('gym-member-yes').style.border = isMember ? '2px solid var(--navy)' : '2px solid var(--border)';
+    document.getElementById('gym-member-no').style.border = !isMember ? '2px solid var(--navy)' : '2px solid var(--border)';
+    document.getElementById('gym-payment-note').style.display = isMember ? 'none' : 'block';
+    document.getElementById('gym-submit-btn').textContent = isMember ? 'Confirm Booking' : 'Continue to Mollie →';
+  }
+
+  function submitGymBooking() {
+    const email = document.getElementById('gym-email').value || 'your email';
+    document.getElementById('gym-confirm-email').textContent = email;
+    document.getElementById('gym-confirm-text').textContent = `See you ${_gymSession} at Koperslagerstraat 8, Rotterdam.`;
+    document.getElementById('gym-step-1').style.display = 'none';
+    document.getElementById('gym-step-2').style.display = 'block';
+  }
+
+  const PRODUCTS = {
+    hoodie: {
+      name: 'Hikari Hoodie', cat: 'Clothing', price: '€45', colors: 'Navy / Gold', isNew: true, emoji: '🧥',
+      sizes: ['XS','S','M','L','XL','XXL'],
+      cta: 'Add to Cart',
+      desc: 'The official Hikari club hoodie. Heavyweight 350g fleece, embroidered chest logo, kangaroo pocket. Runs true to size.',
+      details: ['350g fleece, 80% cotton / 20% polyester','Embroidered Hikari logo on chest','Kangaroo pocket','Ribbed cuffs and hem','Wash at 30°C, do not tumble dry','Available in Navy with Gold logo'],
+    },
+    tee: {
+      name: 'Training Tee', cat: 'Clothing', price: '€22', colors: 'Navy / White', emoji: '👕',
+      sizes: ['XS','S','M','L','XL','XXL'],
+      cta: 'Add to Cart',
+      desc: 'Lightweight performance tee for training. Moisture-wicking fabric keeps you comfortable through every drill.',
+      details: ['160g performance fabric, 100% polyester','Printed Hikari logo on chest','Slim athletic fit','Moisture-wicking','Machine washable at 40°C'],
+    },
+    shorts: {
+      name: 'Training Shorts', cat: 'Clothing', price: '€18', colors: 'Black', emoji: '🩳',
+      sizes: ['XS','S','M','L','XL','XXL'],
+      cta: 'Add to Cart',
+      desc: 'Club training shorts with a comfortable elastic waistband and side pockets. Ideal for practice and open gym.',
+      details: ['Elastic waistband with drawstring','Side pockets','Length: approx. 20cm above knee','100% polyester','Machine washable at 40°C'],
+    },
+    bow: {
+      name: 'Competition Bow', cat: 'Accessories', price: '€12', colors: 'Gold / Navy', isNew: true, emoji: '🎀',
+      cta: 'Add to Cart',
+      desc: 'Official Hikari competition bow in club colours. Required for all competitive team performances.',
+      details: ['Official club colours: Gold and Navy','Pre-tied, clip fastening','One size fits all','Suitable for all hair types'],
+    },
+    backpack: {
+      name: 'Club Backpack', cat: 'Accessories', price: '€38', colors: 'Navy', emoji: '🎒',
+      cta: 'Add to Cart',
+      desc: 'Spacious club backpack with dedicated shoe compartment. Fits all your training gear and competition essentials.',
+      details: ['Embroidered Hikari logo','Dedicated shoe / wet clothes compartment','Padded laptop sleeve (up to 15")','Side bottle pocket','Approx. 30L capacity'],
+    },
+    bottle: {
+      name: 'Water Bottle', cat: 'Accessories', price: '€14', colors: 'White / Gold print', emoji: '💧',
+      cta: 'Add to Cart',
+      desc: 'Double-walled stainless steel bottle keeps drinks cold for 24 hours. Hikari logo in gold.',
+      details: ['500ml capacity','Double-walled stainless steel','Keeps cold 24h / warm 12h','Leak-proof lid','Dishwasher safe lid, hand wash bottle'],
+    },
+    keyring: {
+      name: 'Keyring', cat: 'Accessories', price: '€6', colors: 'Gold', emoji: '✨',
+      cta: 'Add to Cart',
+      desc: 'Enamel keyring featuring the Hikari H emblem. A small piece of club pride for everyday carry.',
+      details: ['Hard enamel on zinc alloy','Gold plating','Approx. 3cm diameter','Split ring attachment'],
+    },
+    uniform: {
+      name: 'Competition Uniform', cat: 'Uniforms', price: 'By order', colors: 'Contact us for sizing', emoji: '★',
+      emojiStyle: 'background:linear-gradient(135deg,#1C2B5E,#2a3d6e); color:var(--gold);',
+      cta: 'Contact Us',
+      ctaAction: "showContact('other')",
+      noSizes: true,
+      noQty: true,
+      desc: 'Official Hikari competition uniform. Ordered on behalf of the club at the start of each season. Contact us to register your interest or for sizing guidance.',
+      details: ['Custom-fit competition bodysuit','Club colours: Navy and Gold','Rhinestone detailing','Made to order — lead time 6–8 weeks','Only available to registered club members'],
+    },
+  };
+
+  let _pdQty = 1;
+  let _pdCurrentCta = null;
+
+  function showProduct(id) {
+    const p = PRODUCTS[id];
+    if (!p) return;
+    showPage('product-detail');
+
+    document.getElementById('pd-cat').textContent = p.cat;
+    const pdNameEl = document.getElementById('pd-name');
+    pdNameEl.textContent = p.name;
+    pdNameEl.dataset.productId = id;
+    document.getElementById('pd-price').textContent = p.price;
+    document.getElementById('pd-colors').textContent = p.colors || '';
+
+    // image
+    const imgEl = document.getElementById('pd-image-el');
+    imgEl.style.cssText = p.emojiStyle ? p.emojiStyle + ' aspect-ratio:1; display:flex; align-items:center; justify-content:center; font-size:120px; position:relative;' : '';
+    imgEl.childNodes[0].textContent = p.emoji;
+    const badge = document.getElementById('pd-new-badge');
+    badge.style.display = p.isNew ? 'block' : 'none';
+
+    // sizes
+    const sizesSection = document.getElementById('pd-sizes-section');
+    const sizesEl = document.getElementById('pd-sizes');
+    if (p.sizes && p.sizes.length) {
+      sizesSection.style.display = 'block';
+      sizesEl.innerHTML = p.sizes.map(s =>
+        `<div class="pd-size" onclick="selectSize(this)">${s}</div>`
+      ).join('');
+    } else {
+      sizesSection.style.display = 'none';
+    }
+
+    // qty
+    document.getElementById('pd-qty-section').style.display = p.noQty ? 'none' : 'block';
+    _pdQty = 1;
+    document.getElementById('pd-qty-val').textContent = '1';
+
+    // CTA
+    const ctaBtn = document.getElementById('pd-cta-btn');
+    ctaBtn.textContent = p.cta || 'Add to Cart';
+    ctaBtn.onclick = p.ctaAction ? new Function(p.ctaAction) : addToCart;
+
+    // description
+    document.getElementById('pd-desc').textContent = p.desc || '';
+
+    // details list
+    const dl = document.getElementById('pd-details-list');
+    dl.innerHTML = (p.details || []).map(d =>
+      `<li style="font-size:14px; color:#555; padding-left:20px; position:relative;"><span style="position:absolute;left:0;color:var(--gold);">✦</span> ${d}</li>`
+    ).join('');
+  }
+
+  function selectSize(el) {
+    el.closest('.pd-sizes').querySelectorAll('.pd-size').forEach(s => s.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function changeQty(delta) {
+    _pdQty = Math.max(1, _pdQty + delta);
+    document.getElementById('pd-qty-val').textContent = _pdQty;
+  }
+
+  let _currentTeamId = null;
+
+  function showJoin(teamId) {
+    const id = teamId || _currentTeamId;
+    showPage('join');
+    const sel = document.getElementById('join-team-select');
+    if (sel && id) sel.value = id;
+  }
+
+  function showContact(subject) {
+    showPage('contact');
+    if (subject) {
+      const sel = document.getElementById('contact-subject');
+      if (sel) sel.value = subject;
+    }
+  }
+
+  function doLogin() {
+    document.getElementById('area-login-panel').style.display = 'none';
+    document.getElementById('area-portal-panel').style.display = 'block';
+  }
+  function doLogout() {
+    document.getElementById('area-portal-panel').style.display = 'none';
+    document.getElementById('area-login-panel').style.display = 'block';
+  }
+
+  function renderMyAreaEvents() {
+    const list = document.getElementById('area-events-list');
+    const empty = document.getElementById('area-events-empty');
+    if (!list) return;
+    const ids = [..._registeredEvents].filter(id => EVENTS[id]);
+    if (ids.length === 0) {
+      list.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+    list.innerHTML = ids.map(id => {
+      const e = EVENTS[id];
+      return `<div onclick="showEvent('${id}')" style="background:var(--white); border:1px solid var(--border); border-radius:4px; padding:20px 24px; display:grid; grid-template-columns:64px 1fr auto; gap:16px; align-items:center; margin-bottom:12px; cursor:pointer; transition:box-shadow .15s;" onmouseover="this.style.boxShadow='0 4px 16px rgba(0,0,0,.08)'" onmouseout="this.style.boxShadow='none'">
+        <div class="event-date-box"><div class="event-date-day">${e.day}</div><div class="event-date-month">${e.month}</div></div>
+        <div><div class="event-name">${e.title}</div><div class="event-meta">${e.location} · ${e.time}</div></div>
+        <span style="font-size:11px; font-weight:600; background:#e8f5e8; color:#2a6a2a; padding:4px 10px; border-radius:2px; white-space:nowrap;">Registered ›</span>
+      </div>`;
+    }).join('');
+  }
+
+  function showAreaTab(tab) {
+    ['team','orders','profile','events'].forEach(t => {
+      document.getElementById('area-' + t).style.display = t === tab ? 'block' : 'none';
+      const el = document.getElementById('area-tab-' + t);
+      el.style.background = t === tab ? 'var(--navy)' : 'transparent';
+      el.style.color = t === tab ? 'var(--white)' : 'var(--text)';
+    });
+    if (tab === 'events') renderMyAreaEvents();
+  }
+</script>
+</body>
+</html>
