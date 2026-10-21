@@ -2007,14 +2007,25 @@
     .club-info-item { border-right: none; border-bottom: 1px solid var(--border); }
     .club-info-item:nth-child(odd) { border-right: 1px solid var(--border); }
 
+    /* Body text — readable sizes on mobile */
+    p { font-size: 15px; }
+    .team-card-desc { font-size: 14px; }
+    .event-detail { font-size: 14px; }
+    .td-terms-block p { font-size: 15px; }
+    .td-membership-list li { font-size: 15px; }
+    .td-membership-note { font-size: 13px !important; }
+    .join-reasons li { font-size: 15px; }
+    .coach-bio-desc { font-size: 14px; }
+    .sidebar-card p, .sidebar-card li { font-size: 14px; }
+
     /* Team detail */
     .team-detail-body { grid-template-columns: 1fr; padding: 32px 20px; gap: 32px; }
     .team-detail-info-strip { flex-wrap: wrap; }
     .info-strip-item { flex: none; width: 50%; border-bottom: 1px solid var(--border); }
     .team-detail-hero { grid-template-columns: 1fr; height: auto; }
     .td-hero-photo { height: 240px; }
-    .td-hero-info { padding: 32px 24px; }
-    .td-hero-logo { width: 240px; }
+    .td-hero-info { padding: 32px 24px; align-items: center; text-align: center; }
+    .td-hero-logo { width: 240px; margin: 0 auto; }
     .photo-gallery { grid-template-columns: 1fr 1fr; }
 
     /* Join */
@@ -2120,6 +2131,8 @@
     /* Join page */
     .join-left { padding: 40px 16px; }
     .join-right { padding: 32px 16px; }
+    p { font-size: 15px; }
+    .td-terms-block p, .td-membership-list li { font-size: 15px; }
 
     /* My Area sidebar tabs — pill style on mobile */
     .area-sidebar > div { white-space: nowrap; border-radius: 20px !important; font-size: 13px !important; padding: 8px 14px !important; border: 1.5px solid var(--border); flex-shrink: 0; }
@@ -2410,7 +2423,7 @@
   </div>
   <div class="cart-footer" id="cart-footer" style="display:none;">
     <div class="cart-subtotal"><span>Subtotal</span><span id="cart-subtotal-val">€0</span></div>
-    <div class="cart-shipping-note">📦 Shipping €4.95 · Free pickup at training</div>
+    <div class="cart-shipping-note">🏋️ Delivered at training — no shipping</div>
     <button class="btn btn-primary" style="width:100%; margin-bottom:10px;">Proceed to Checkout</button>
     <button class="btn btn-outline" style="width:100%;" onclick="closeCart()">Continue Shopping</button>
   </div>
@@ -4306,7 +4319,7 @@
     const qty = _pdQty;
     const existing = _cart.find(i => i.id === id && i.size === size);
     if (existing) { existing.qty += qty; }
-    else { _cart.push({ id, name: p.name, price: p.price, emoji: p.emoji, emojiStyle: p.emojiStyle||'', size, qty }); }
+    else { _cart.push({ id, name: p.name, price: p.price, emoji: p.emoji, emojiStyle: p.emojiStyle||'', image: (p.images && p.images[0]) || null, size, qty }); }
     renderCart();
     openCart();
   }
@@ -4345,7 +4358,7 @@
       const linePrice = isNaN(priceNum) ? item.price : '€' + (priceNum * item.qty).toFixed(2).replace('.00','');
       return `
         <div class="cart-item">
-          <div class="cart-item-img" style="${item.emojiStyle}">${item.emoji}</div>
+          <div class="cart-item-img">${item.image ? `<img src="${item.image}" alt="${item.name}" style="width:100%;height:100%;object-fit:contain;border-radius:3px;">` : `<span style="${item.emojiStyle}">${item.emoji}</span>`}</div>
           <div>
             <div class="cart-item-name">${item.name}</div>
             <div class="cart-item-meta">${item.size ? 'Size: ' + item.size : ''}</div>
