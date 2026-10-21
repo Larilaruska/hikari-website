@@ -99,6 +99,19 @@
     background: var(--navy-dark) !important;
     color: var(--white) !important;
   }
+  /* Keep Join Us CTA as a solid button even when it's the active page & nav is solid/scrolled */
+  nav.solid .nav-links a.nav-join,
+  nav.scrolled .nav-links a.nav-join {
+    background: var(--navy) !important;
+    color: var(--white) !important;
+  }
+  nav.solid .nav-links a.nav-join:hover,
+  nav.scrolled .nav-links a.nav-join:hover,
+  nav.solid .nav-links a.nav-join.active,
+  nav.scrolled .nav-links a.nav-join.active {
+    background: var(--navy-dark) !important;
+    color: var(--white) !important;
+  }
 
   /* Small icon in nav — invisible on transparent homepage, visible once solid */
   .nav-logo {
@@ -1540,22 +1553,26 @@
   .product-detail-hero {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    min-height: 480px;
+    align-items: stretch;
   }
   .pd-gallery {
     background: linear-gradient(135deg, var(--offwhite), #e0dbd3);
     display: flex;
     flex-direction: column;
-    position: relative;
+    position: sticky;
+    top: 64px;
+    max-height: calc(100vh - 64px);
     overflow: hidden;
   }
   .pd-main-img {
     flex: 1;
-    background-size: cover;
+    background-size: contain;
+    background-repeat: no-repeat;
     background-position: center;
     background-color: #e8e5df;
     position: relative;
-    min-height: 360px;
+    min-height: 320px;
+    max-height: 520px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1626,7 +1643,7 @@
     padding: 56px max(48px, calc((100vw - 1140px) / 2 + 48px)) 56px 56px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
   }
   .pd-cat {
     font-size: 10px; font-weight: 600; letter-spacing: .12em;
@@ -1684,7 +1701,8 @@
   }
   @media (max-width: 760px) {
     .product-detail-hero { grid-template-columns: 1fr; }
-    .pd-image { min-height: 260px; }
+    .pd-gallery { position: relative; top: auto; height: auto; min-height: 300px; }
+    .pd-main-img { min-height: 280px; }
     .pd-info { padding: 32px 20px; }
   }
 
@@ -1853,10 +1871,15 @@
   .nav-hamburger span {
     display: block;
     width: 22px; height: 2px;
-    background: var(--navy);
+    background: var(--white);
     border-radius: 2px;
     transition: all .2s;
   }
+  /* On solid/scrolled nav (white bg), switch hamburger bars to navy */
+  nav.solid .nav-hamburger span,
+  nav.scrolled .nav-hamburger span { background: var(--navy); }
+  /* When drawer is open, nav gets a white bg so bars must be navy */
+  .nav-hamburger.open span { background: var(--navy); }
   .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
   .nav-hamburger.open span:nth-child(2) { opacity: 0; }
   .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
@@ -1865,13 +1888,14 @@
   .nav-drawer {
     display: none;
     position: fixed;
-    top: 92px; left: 0; right: 0; bottom: 0;
+    top: 76px; left: 0; right: 0; bottom: 0;
     background: var(--white);
     z-index: 998;
     flex-direction: column;
-    padding: 24px 32px;
+    padding: 16px 24px 32px;
     gap: 4px;
     overflow-y: auto;
+    border-top: 1px solid var(--border);
   }
   .nav-drawer.open { display: flex; }
   .nav-drawer a {
@@ -1970,6 +1994,17 @@
     .week-grid { grid-template-columns: repeat(7, minmax(100px, 1fr)); overflow-x: auto; }
     #sched-week { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
+    /* Filter bars — scroll horizontally, don't wrap */
+    .filter-bar .container { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 16px; }
+
+    /* Cart drawer — full width on small screens */
+    .cart-drawer { width: 100vw; right: -100vw; }
+
+    /* My Area — stack sidebar above content */
+    .area-portal-grid { grid-template-columns: 1fr !important; }
+    .area-sidebar { flex-direction: row !important; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; gap: 6px !important; padding-bottom: 12px; margin-bottom: 4px; border-bottom: 1px solid var(--border); }
+    .area-sidebar > div:first-child { display: none; } /* hide "My Account" label */
+
     /* Footer */
     footer { padding: 40px 0 24px; }
     .footer-grid { padding: 0 20px; }
@@ -2015,6 +2050,42 @@
 
     .modal-header { grid-template-columns: 1fr; }
     .modal-img { height: 120px; }
+
+    /* Hero — tighten up on phones */
+    .hero h1 { font-size: 42px; }
+    .hero-left { padding: 100px 0 48px; }
+    .page-hero h1 { font-size: clamp(36px, 8vw, 52px); }
+
+    /* Product detail — single column, no sticky gallery */
+    .product-detail-hero { gap: 0; }
+    .pd-gallery { min-height: 260px; max-height: 60vw; }
+    .pd-main-img { min-height: 220px; }
+    .pd-info { padding: 24px 16px; }
+
+    /* Team detail info strip — 2 per row */
+    .info-strip-item { width: 50%; }
+
+    /* Join page */
+    .join-left { padding: 40px 16px; }
+    .join-right { padding: 32px 16px; }
+
+    /* My Area sidebar tabs — pill style on mobile */
+    .area-sidebar > div { white-space: nowrap; border-radius: 20px !important; font-size: 13px !important; padding: 8px 14px !important; border: 1.5px solid var(--border); flex-shrink: 0; }
+    .area-sidebar > div[style*="background:var(--navy)"] { border-color: var(--navy); }
+
+    /* Buttons — full width in key sections */
+    .td-join-btn { width: 100%; }
+
+    /* Schedule toggle — make buttons equal width */
+    .sched-toggle { width: 100%; }
+    .sched-toggle button { flex: 1; }
+
+    /* Footer — single column */
+    .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+
+    /* Reduce section padding on phones */
+    .section { padding: 40px 0; }
+    .container { padding-left: 16px; padding-right: 16px; }
   }
 
   /* ── SCHEDULE ── */
@@ -2313,9 +2384,6 @@
 
 <!-- Mobile nav drawer -->
 <div class="nav-drawer" id="nav-drawer">
-  <div style="padding:20px 24px 16px; border-bottom:1px solid rgba(255,255,255,.1);">
-    <img src="hikari_logo_full.png" alt="Hikari Cheerleading" style="height:48px; width:auto;">
-  </div>
   <a onclick="showPage('home');closeDrawer()">Home</a>
   <a onclick="showPage('teams');closeDrawer()">Teams</a>
   <a onclick="showPage('about');closeDrawer()">About</a>
@@ -2461,7 +2529,7 @@
         <div style="display:grid; grid-template-columns:90px 1fr; border-bottom:1px solid var(--border);">
           <div style="padding:14px 16px; font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:.06em; color:var(--navy); background:var(--offwhite); border-right:1px solid var(--border); display:flex; align-items:center; font-weight:700;">Wed</div>
           <div style="padding:10px 14px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-            <span style="background:var(--navy);color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:2px;">19:30–21:00 · Eclipse</span>
+            <span style="background:var(--navy);color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:2px;">17:30–19:00 · Eclipse</span>
             <span style="background:#111D42;color:#C89B2A;font-size:11px;font-weight:600;padding:4px 10px;border-radius:2px;">19:30–21:00 · Blaze</span>
           </div>
         </div>
@@ -2667,7 +2735,7 @@
      TEAM DETAIL PAGE
 ══════════════════════════════════════════ -->
 <div id="page-team-detail" class="page">
-  <div style="padding:12px 48px; background:var(--white); border-bottom:1px solid var(--border); font-size:13px; color:var(--muted);">
+  <div style="padding:12px max(16px, calc((100vw - 1140px) / 2 + 48px)); background:var(--white); border-bottom:1px solid var(--border); font-size:13px; color:var(--muted);">
     <span onclick="showPage('teams')" style="cursor:pointer; color:var(--navy);">← All Teams</span>
   </div>
 
@@ -3123,7 +3191,7 @@
 
 <!-- EVENT DETAIL PAGE -->
 <div id="page-event-detail" class="page">
-  <div style="padding:20px max(48px, calc((100vw - 1140px) / 2 + 48px)); background:var(--white); border-bottom:1px solid var(--border);">
+  <div style="padding:20px max(16px, calc((100vw - 1140px) / 2 + 48px)); background:var(--white); border-bottom:1px solid var(--border);">
     <span style="font-size:13px; color:var(--navy); cursor:pointer; font-weight:500;" onclick="showPage('events')">← Back to Events</span>
   </div>
   <div class="event-detail-hero">
@@ -3280,7 +3348,7 @@
      PRODUCT DETAIL PAGE
 ══════════════════════════════════════════ -->
 <div id="page-product-detail" class="page">
-  <div style="padding:20px max(48px, calc((100vw - 1140px) / 2 + 48px)); background:var(--white); border-bottom:1px solid var(--border);">
+  <div style="padding:20px max(16px, calc((100vw - 1140px) / 2 + 48px)); background:var(--white); border-bottom:1px solid var(--border);">
     <span style="font-size:13px; color:var(--navy); cursor:pointer; font-weight:500;" onclick="showPage('shop')">← Back to Shop</span>
   </div>
   <div class="product-detail-hero">
@@ -3322,16 +3390,15 @@
       </div>
 
       <div class="pd-desc" id="pd-desc"></div>
-      <div class="pd-shipping">🏋️ Merch is delivered at training — no shipping available · Questions? <span style="color:var(--navy); cursor:pointer;">shop@hikaricheer.nl</span></div>
+
+      <div id="pd-details-section" style="margin-top:20px; padding-top:20px; border-top:1px solid var(--border);">
+        <div class="pd-label" style="margin-bottom:12px;">Product Details</div>
+        <ul id="pd-details-list" style="display:flex; flex-direction:column; gap:8px; padding:0; list-style:none; margin:0;"></ul>
+      </div>
+
+      <div class="pd-shipping" style="margin-top:20px;">🏋️ Merch is delivered at training — no shipping available · Questions? <span style="color:var(--navy); cursor:pointer;">shop@hikaricheer.nl</span></div>
     </div>
   </div>
-
-  <section class="section section-offwhite" style="padding:48px 0;">
-    <div class="container">
-      <div class="eyebrow">Product Details</div>
-      <ul id="pd-details-list" style="margin-top:16px; display:flex; flex-direction:column; gap:8px; padding:0; list-style:none;"></ul>
-    </div>
-  </section>
 </div>
 
 <!-- Size Chart Modal -->
@@ -3394,7 +3461,7 @@
           <div class="day-col">
             <div class="day-head">Wed</div>
             <div class="slots">
-              <div class="slot s-comp"><div class="slot-time">19:30–21:00</div><div class="slot-name">Eclipse</div><div class="slot-sub">Competitive · L2</div></div>
+              <div class="slot s-comp"><div class="slot-time">17:30–19:00</div><div class="slot-name">Eclipse</div><div class="slot-sub">Competitive · L2</div></div>
               <div class="slot s-rivals"><div class="slot-time">19:30–21:00</div><div class="slot-name">Blaze</div><div class="slot-sub">Competitive · L4</div></div>
             </div>
           </div>
@@ -3444,7 +3511,7 @@
 
         <div class="list-day">
           <div class="list-day-head">Wednesday</div>
-          <div class="list-row lr-comp"><div class="list-time">19:30 – 21:00</div><div><div class="list-name">Eclipse</div><div class="list-sub">Level 2 · Competitive · 8–18 years</div></div><span class="lbadge lb-comp">Competitive</span></div>
+          <div class="list-row lr-comp"><div class="list-time">17:30 – 19:00</div><div><div class="list-name">Eclipse</div><div class="list-sub">Level 2 · Competitive · 8–18 years</div></div><span class="lbadge lb-comp">Competitive</span></div>
           <div class="list-row lr-rivals"><div class="list-time">19:30 – 21:00</div><div><div class="list-name">Blaze</div><div class="list-sub">Level 4 · Competitive · 16+</div></div><span class="lbadge lb-comp">Competitive</span></div>
         </div>
 
@@ -3618,10 +3685,10 @@
       <div style="display:flex; justify-content:flex-end; margin-bottom:24px; margin-top:-24px;">
         <span style="font-size:13px; color:var(--muted); cursor:pointer;" onclick="doLogout()">← Sign out</span>
       </div>
-      <div style="display:grid; grid-template-columns:260px 1fr; gap:32px; align-items:start;">
+      <div class="area-portal-grid" style="display:grid; grid-template-columns:260px 1fr; gap:32px; align-items:start;">
 
         <!-- Sidebar -->
-        <div style="display:flex; flex-direction:column; gap:4px;">
+        <div class="area-sidebar" style="display:flex; flex-direction:column; gap:4px;">
           <div style="font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); padding:8px 14px; margin-bottom:4px;">My Account</div>
           <div onclick="showAreaTab('team')" id="area-tab-team" style="padding:10px 14px; border-radius:3px; font-size:14px; font-weight:500; cursor:pointer; background:var(--navy); color:var(--white);">My Team</div>
           <div onclick="showAreaTab('orders')" id="area-tab-orders" style="padding:10px 14px; border-radius:3px; font-size:14px; font-weight:500; cursor:pointer; color:var(--text);">Order History</div>
@@ -3649,7 +3716,7 @@
             <div style="background:var(--offwhite); border-radius:4px; padding:20px 24px;">
               <div style="font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--navy); margin-bottom:12px; letter-spacing:.04em;">Training Schedule</div>
               <div style="display:flex; flex-direction:column; gap:8px;">
-                <div style="font-size:14px; color:var(--muted);">📅 Wednesdays · 19:30–21:00</div>
+                <div style="font-size:14px; color:var(--muted);">📅 Wednesdays · 17:30–19:00</div>
                 <div style="font-size:14px; color:var(--muted);">📅 Fridays · 18:15–19:45</div>
                 <div style="font-size:14px; color:var(--muted); margin-top:4px;">📍 Koperslagerstraat 8, Rotterdam</div>
               </div>
@@ -3844,7 +3911,7 @@
       level: 'Level 2',
       age: '8–18 years',
       schedule: 'Wed + Fri',
-      time: 'Wed 19:30–21:00, Fri 18:15–19:45',
+      time: 'Wed 17:30–19:00, Fri 18:15–19:45',
       price: '€350',
       period: 'per year',
       tryout: false,
@@ -4090,12 +4157,17 @@
     const btn = document.getElementById('hamburger');
     drawer.classList.toggle('open');
     btn.classList.toggle('open');
-    document.body.style.overflow = drawer.classList.contains('open') ? 'hidden' : '';
+    const isOpen = drawer.classList.contains('open');
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+    // Force nav to solid white while drawer is open so X icon is always visible
+    if (isOpen) _nav.classList.add('solid');
+    else if (_isHome && window.scrollY <= 60) _nav.classList.remove('solid');
   }
   function closeDrawer() {
     document.getElementById('nav-drawer').classList.remove('open');
     document.getElementById('hamburger').classList.remove('open');
     document.body.style.overflow = '';
+    if (_isHome && window.scrollY <= 60) _nav.classList.remove('solid');
   }
 
   function setSchedView(v) {
@@ -4104,6 +4176,10 @@
     document.getElementById('sbtn-week').classList.toggle('on', v === 'week');
     document.getElementById('sbtn-list').classList.toggle('on', v === 'list');
   }
+  // Default schedule to list view on mobile
+  window.addEventListener('load', () => {
+    if (window.innerWidth <= 900) setSchedView('list');
+  });
 
   function openCoachModal(name, role, initials, bio) {
     if (name) {
