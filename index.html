@@ -1336,10 +1336,11 @@
   .phone-level:first-child { padding-top: 0; }
   .phone-level:last-child { border-bottom: none; }
   .phone-level-icon {
-    font-size: 28px;
-    line-height: 1;
     flex-shrink: 0;
-    margin-top: 3px;
+    width: 24px;
+    display: flex;
+    align-items: flex-start;
+    padding-top: 5px;
   }
   .phone-level-title {
     font-family: 'Bebas Neue', sans-serif;
@@ -1450,6 +1451,8 @@
   .product-img {
     aspect-ratio: 1;
     background: linear-gradient(135deg, var(--offwhite), #e8e4dd);
+    background-size: cover;
+    background-position: center;
     display: flex; align-items: center; justify-content: center;
     font-size: 52px;
     position: relative;
@@ -1539,6 +1542,77 @@
     grid-template-columns: 1fr 1fr;
     min-height: 480px;
   }
+  .pd-gallery {
+    background: linear-gradient(135deg, var(--offwhite), #e0dbd3);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+  .pd-main-img {
+    flex: 1;
+    background-size: cover;
+    background-position: center;
+    background-color: #e8e5df;
+    position: relative;
+    min-height: 360px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 120px;
+    cursor: pointer;
+  }
+  .pd-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background: rgba(255,255,255,.85);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    color: var(--navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+    transition: background .15s;
+    line-height: 1;
+  }
+  .pd-arrow:hover { background: white; }
+  .pd-arrow-prev { left: 12px; }
+  .pd-arrow-next { right: 12px; }
+  .pd-arrow[style*="none"] { display: none !important; }
+  .pd-thumbs {
+    display: flex;
+    gap: 6px;
+    padding: 10px 12px;
+    background: rgba(0,0,0,.04);
+    border-top: 1px solid rgba(0,0,0,.07);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .pd-thumbs::-webkit-scrollbar { display: none; }
+  .pd-thumb {
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 3px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color .15s;
+    opacity: .7;
+    transition: opacity .15s, border-color .15s;
+  }
+  .pd-thumb.active { border-color: var(--navy); opacity: 1; }
+  .pd-thumb:hover { opacity: 1; }
+  /* keep old .pd-image for emoji-only fallback */
   .pd-image {
     background: linear-gradient(135deg, var(--offwhite), #e0dbd3);
     display: flex;
@@ -1576,10 +1650,11 @@
     display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px;
   }
   .pd-size {
-    width: 44px; height: 44px; border: 1.5px solid var(--border);
+    min-width: 44px; min-height: 44px; border: 1.5px solid var(--border);
     border-radius: 3px; display: flex; align-items: center; justify-content: center;
     font-size: 12px; font-weight: 600; cursor: pointer; transition: all .15s;
-    color: var(--text);
+    color: var(--text); padding: 6px 10px; text-align: center; line-height: 1.3;
+    box-sizing: border-box;
   }
   .pd-size:hover, .pd-size.selected {
     border-color: var(--navy); background: var(--navy); color: var(--white);
@@ -1645,14 +1720,29 @@
     line-height: 1; margin-bottom: 8px; color: white;
   }
   .ed-meta-strip {
-    display: flex; gap: 32px; flex-wrap: wrap;
     background: white; border-bottom: 1px solid var(--border);
-    padding: 16px max(48px, calc((100vw - 1140px)/2 + 48px));
+    padding: 24px max(48px, calc((100vw - 1140px)/2 + 48px));
   }
-  .ed-meta-item {
-    display: flex; align-items: center; gap: 8px;
-    font-size: 14px; color: var(--muted);
+  .ed-info-cards {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 640px;
   }
+  .ed-info-card {
+    display: flex; gap: 14px; align-items: flex-start;
+    border: 1px solid var(--border); border-radius: 4px; padding: 16px 18px;
+    background: var(--white);
+  }
+  .ed-info-card-icon {
+    width: 36px; height: 36px; border-radius: 4px;
+    background: var(--offwhite); display: flex; align-items: center;
+    justify-content: center; flex-shrink: 0;
+  }
+  .ed-info-card-icon svg { width: 18px; height: 18px; stroke: var(--navy); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .ed-info-card-label { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
+  .ed-info-card-value { font-size: 14px; font-weight: 600; color: var(--navy); line-height: 1.4; }
+  .ed-info-card-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .ed-info-card-link { font-size: 12px; color: var(--navy); font-weight: 500; text-decoration: none; display: inline-block; margin-top: 5px; }
+  .ed-info-card-link:hover { text-decoration: underline; }
+  @media (max-width: 540px) { .ed-info-cards { grid-template-columns: 1fr; } }
   .ed-body {
     display: grid; grid-template-columns: 1fr 340px; gap: 48px;
     max-width: 1140px; margin: 0 auto; padding: 48px 48px;
@@ -1666,13 +1756,13 @@
   .payment-overlay {
     position: fixed; inset: 0;
     background: rgba(0,0,0,.5); z-index: 2000; display: none;
+    align-items: center; justify-content: center;
+    overflow-y: auto; padding: 20px; box-sizing: border-box;
   }
   .payment-modal {
-    position: fixed; top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
     background: white; border-radius: 4px; padding: 40px;
-    width: 440px; max-width: 95vw; z-index: 2001;
-    display: none; position: fixed;
+    width: 440px; max-width: 100%; z-index: 2001;
+    position: relative; flex-shrink: 0; margin: auto;
   }
   .payment-modal h3 {
     font-family: 'Bebas Neue', sans-serif;
@@ -2052,8 +2142,8 @@
 </div>
 
 <!-- PAYMENT MODAL -->
-<div class="payment-overlay" id="payment-overlay" onclick="closePayment()"></div>
-<div class="payment-modal" id="payment-modal" style="position:relative;">
+<div class="payment-overlay" id="payment-overlay" onclick="closePayment()">
+<div class="payment-modal" id="payment-modal" onclick="event.stopPropagation()">
   <button onclick="closePayment()" style="position:absolute; top:16px; right:16px; background:none; border:none; cursor:pointer; font-size:20px; color:var(--muted);">✕</button>
 
   <!-- Step 1: Contact details -->
@@ -2083,56 +2173,100 @@
     <button class="btn btn-primary" onclick="pmDone()">Done</button>
   </div>
 </div>
+</div>
 
 <!-- OPEN GYM BOOKING MODAL -->
-<div class="payment-overlay" id="gym-overlay" onclick="closeGymBooking()"></div>
-<div class="payment-modal" id="gym-modal" style="position:relative;">
+<div class="payment-overlay" id="gym-overlay" onclick="closeGymBooking()">
+<div class="payment-modal" id="gym-modal" onclick="event.stopPropagation()">
   <button onclick="closeGymBooking()" style="position:absolute; top:16px; right:16px; background:none; border:none; cursor:pointer; font-size:20px; color:var(--muted);">✕</button>
 
+  <!-- Member note -->
+  <div style="background:#f0f4ff; border-left:3px solid var(--navy); border-radius:2px; padding:10px 14px; margin-bottom:24px; font-size:13px; color:var(--navy);">
+    💙 <strong>Hikari members:</strong> no booking needed — just show up!
+  </div>
+
+  <!-- Step 1: Choose type -->
   <div id="gym-step-1">
-    <h3 style="font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--navy); letter-spacing:.04em; margin-bottom:20px;">Book Open Gym</h3>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:24px;" id="gym-session-select">
-      <div class="gym-session-opt selected" onclick="selectGymSession(this, 'Tuesday 20:00–22:00')" style="border:2px solid var(--navy); border-radius:4px; padding:14px; cursor:pointer; text-align:center;">
-        <div style="font-weight:600; font-size:14px;">Tuesday</div>
-        <div style="font-size:12px; color:var(--muted);">20:00 – 22:00</div>
+    <h3 style="font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--navy); letter-spacing:.04em; margin-bottom:6px;">Book Open Gym</h3>
+    <p style="font-size:13px; color:var(--muted); margin-bottom:20px;">Guest access</p>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:24px;">
+      <div id="gym-type-single" onclick="selectGymType('single')" style="border:2px solid var(--navy); border-radius:4px; padding:16px; cursor:pointer; text-align:center;">
+        <div style="font-weight:600; font-size:14px; margin-bottom:4px;">Single Day(s)</div>
+        <div style="font-size:22px; font-weight:700; color:var(--navy);">€8</div>
+        <div style="font-size:11px; color:var(--muted);">per session</div>
       </div>
-      <div class="gym-session-opt" onclick="selectGymSession(this, 'Saturday 10:00–12:00')" style="border:2px solid var(--border); border-radius:4px; padding:14px; cursor:pointer; text-align:center;">
-        <div style="font-weight:600; font-size:14px;">Saturday</div>
-        <div style="font-size:12px; color:var(--muted);">10:00 – 12:00</div>
+      <div id="gym-type-monthly" onclick="selectGymType('monthly')" style="border:2px solid var(--border); border-radius:4px; padding:16px; cursor:pointer; text-align:center;">
+        <div style="font-weight:600; font-size:14px; margin-bottom:4px;">Monthly Pass</div>
+        <div style="font-size:22px; font-weight:700; color:var(--navy);">€25</div>
+        <div style="font-size:11px; color:var(--muted);">unlimited sessions</div>
       </div>
     </div>
-    <p style="font-size:13px; color:var(--muted); margin-bottom:16px;">Are you a Hikari member?</p>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:24px;">
-      <div id="gym-member-yes" onclick="setGymMember(true)" style="border:2px solid var(--navy); border-radius:4px; padding:14px; cursor:pointer; text-align:center;">
-        <div style="font-weight:600; font-size:14px;">Yes, I'm a member</div>
-        <div style="font-size:12px; color:var(--navy);">Free</div>
-      </div>
-      <div id="gym-member-no" onclick="setGymMember(false)" style="border:2px solid var(--border); border-radius:4px; padding:14px; cursor:pointer; text-align:center;">
-        <div style="font-weight:600; font-size:14px;">No, I'm a guest</div>
-        <div style="font-size:12px; color:var(--muted);">€8 drop-in</div>
-      </div>
+    <button class="btn btn-primary" style="width:100%;" onclick="gymTypeNext()">Continue →</button>
+  </div>
+
+  <!-- Step 2a: Date picker (single days) -->
+  <div id="gym-step-dates" style="display:none;">
+    <button onclick="gymBack()" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--navy);padding:0;margin-bottom:16px;">← Back</button>
+    <h3 style="font-family:'Bebas Neue',sans-serif; font-size:24px; color:var(--navy); letter-spacing:.04em; margin-bottom:6px;">Pick Your Sessions</h3>
+    <p style="font-size:13px; color:var(--muted); margin-bottom:16px;">Select one or more dates — €8 each.</p>
+    <div id="gym-dates-list" style="max-height:280px; overflow-y:auto; margin-bottom:16px;"></div>
+    <div id="gym-selection-summary" style="background:var(--offwhite); border-radius:4px; padding:12px 16px; font-size:14px; color:var(--navy); margin-bottom:16px; display:flex; justify-content:space-between; align-items:center;">
+      <span id="gym-summary-text">0 sessions selected</span>
+      <strong id="gym-summary-price">€0</strong>
+    </div>
+    <button class="btn btn-primary" style="width:100%; opacity:.5;" id="gym-add-cart-btn" onclick="gymDatesNext()" disabled>Next →</button>
+  </div>
+
+  <!-- Step 2b: Monthly pass form -->
+  <div id="gym-step-monthly" style="display:none;">
+    <button onclick="gymBack('monthly')" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--navy);padding:0;margin-bottom:16px;">← Back</button>
+    <h3 style="font-family:'Bebas Neue',sans-serif; font-size:24px; color:var(--navy); letter-spacing:.04em; margin-bottom:4px;">Monthly Pass</h3>
+    <div style="font-size:28px; font-weight:700; color:var(--navy); margin-bottom:4px;">€25 <span style="font-size:14px; font-weight:400; color:var(--muted);">/ month</span></div>
+    <p style="font-size:13px; color:var(--muted); margin-bottom:16px;">Unlimited access to all Open Gym sessions.</p>
+    <div style="background:var(--offwhite); border-radius:4px; padding:14px 16px; margin-bottom:20px; font-size:13px; color:#444; line-height:1.6;">
+      Your first payment of <strong>€25</strong> will be charged today (<strong id="gym-monthly-start-date"></strong>). After that, <strong>€25 will be debited automatically each month</strong> on the same date until you cancel. You can cancel at any time by contacting us.
     </div>
     <div class="form-group">
       <label class="form-label">Full Name</label>
-      <input class="form-input" id="gym-name" placeholder="Your name">
+      <input class="form-input" id="gym-monthly-name" placeholder="Your name">
     </div>
     <div class="form-group" style="margin-top:12px;">
       <label class="form-label">Email</label>
-      <input class="form-input" id="gym-email" type="email" placeholder="you@example.com">
+      <input class="form-input" id="gym-monthly-email" type="email" placeholder="you@example.com">
     </div>
-    <div id="gym-payment-note" style="display:none; background:var(--offwhite); border-radius:4px; padding:12px; margin-top:16px; font-size:13px; color:var(--muted);">
-      💳 You'll be taken to Mollie to pay the €8 drop-in fee.
-    </div>
-    <button class="btn btn-primary" style="width:100%; margin-top:20px;" id="gym-submit-btn" onclick="submitGymBooking()">Confirm Booking</button>
+    <label style="display:flex; align-items:flex-start; gap:10px; margin-top:20px; cursor:pointer; font-size:13px; color:#444; line-height:1.5;">
+      <input type="checkbox" id="gym-monthly-consent" onchange="gymMonthlyConsentChange()" style="margin-top:2px; flex-shrink:0; accent-color:var(--navy);">
+      I understand that €25 will be charged monthly as a recurring subscription and I agree to these terms.
+    </label>
+    <p style="font-size:12px; color:var(--muted); margin-top:16px; margin-bottom:16px;">💳 You'll be taken to Mollie to complete your first payment.</p>
+    <button class="btn btn-primary" style="width:100%; opacity:.5;" id="gym-monthly-pay-btn" onclick="gymPayNow('monthly')" disabled>Pay with Mollie → (€25)</button>
   </div>
 
-  <div id="gym-step-2" style="display:none; text-align:center; padding:16px 0;">
+  <!-- Step 2c: Single days contact details -->
+  <div id="gym-step-contact" style="display:none;">
+    <button onclick="gymBack('contact')" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--navy);padding:0;margin-bottom:16px;">← Back</button>
+    <h3 style="font-family:'Bebas Neue',sans-serif; font-size:24px; color:var(--navy); letter-spacing:.04em; margin-bottom:16px;">Your Details</h3>
+    <div id="gym-contact-summary" style="background:var(--offwhite); border-radius:4px; padding:12px 16px; margin-bottom:20px; font-size:13px; color:var(--navy);"></div>
+    <div class="form-group">
+      <label class="form-label">Full Name</label>
+      <input class="form-input" id="gym-contact-name" placeholder="Your name">
+    </div>
+    <div class="form-group" style="margin-top:12px;">
+      <label class="form-label">Email</label>
+      <input class="form-input" id="gym-contact-email" type="email" placeholder="you@example.com">
+    </div>
+    <p style="font-size:12px; color:var(--muted); margin-top:16px; margin-bottom:16px;">💳 You'll be taken to Mollie to complete payment.</p>
+    <button class="btn btn-primary" style="width:100%;" id="gym-pay-btn" onclick="gymPayNow('single')">Pay with Mollie →</button>
+  </div>
+
+  <!-- Step 3: Confirmed -->
+  <div id="gym-step-done" style="display:none; text-align:center; padding:16px 0;">
     <div style="font-size:48px; margin-bottom:16px;">✅</div>
-    <h3 style="font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--navy); letter-spacing:.04em; margin-bottom:8px;">You're booked in!</h3>
-    <p style="font-size:14px; color:var(--muted); margin-bottom:8px;" id="gym-confirm-text"></p>
-    <p style="font-size:13px; color:var(--muted); margin-bottom:24px;">A confirmation has been sent to <strong id="gym-confirm-email"></strong>.</p>
+    <h3 style="font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--navy); letter-spacing:.04em; margin-bottom:8px;" id="gym-done-title">Booking Confirmed!</h3>
+    <p style="font-size:14px; color:var(--muted); margin-bottom:24px;" id="gym-done-msg">See you on the mat!</p>
     <button class="btn btn-primary" onclick="closeGymBooking()">Done</button>
   </div>
+</div>
 </div>
 
 <!-- CART OVERLAY + DRAWER -->
@@ -2262,21 +2396,21 @@
       </div>
       <div class="phone-section-right">
         <div class="phone-level">
-          <div class="phone-level-icon">✦</div>
+          <div class="phone-level-icon"><svg width="22" height="18" viewBox="0 0 22 18" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="11" width="5" height="7" rx="1" fill="#9aa3b8"/><rect x="8.5" y="11" width="5" height="7" rx="1" fill="#d8dbe6"/><rect x="17" y="11" width="5" height="7" rx="1" fill="#d8dbe6"/></svg></div>
           <div>
             <h3 class="phone-level-title">Beginner</h3>
             <p class="phone-level-desc">New to the sport? Start here. Our beginner programs focus on building your foundation in a supportive, fun environment. Learn the basics, gain confidence, and get comfortable with our team-first approach.</p>
           </div>
         </div>
         <div class="phone-level">
-          <div class="phone-level-icon">🔥</div>
+          <div class="phone-level-icon"><svg width="22" height="18" viewBox="0 0 22 18" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="11" width="5" height="7" rx="1" fill="#9aa3b8"/><rect x="8.5" y="6" width="5" height="12" rx="1" fill="#9aa3b8"/><rect x="17" y="11" width="5" height="7" rx="1" fill="#d8dbe6"/></svg></div>
           <div>
             <h3 class="phone-level-title">Intermediate</h3>
             <p class="phone-level-desc">Ready to level up? These sessions are perfect for athletes looking to refine their technique. We focus on skill development and performance, helping you grow as both an individual and a core team member.</p>
           </div>
         </div>
         <div class="phone-level">
-          <div class="phone-level-icon">✳</div>
+          <div class="phone-level-icon"><svg width="22" height="18" viewBox="0 0 22 18" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="11" width="5" height="7" rx="1" fill="#9aa3b8"/><rect x="8.5" y="6" width="5" height="12" rx="1" fill="#9aa3b8"/><rect x="17" y="0" width="5" height="18" rx="1" fill="#9aa3b8"/></svg></div>
           <div>
             <h3 class="phone-level-title">Advanced</h3>
             <p class="phone-level-desc">Push your limits with our advanced training. Designed for experienced athletes, these sessions emphasize precision, high-intensity routines, and excellence. Join a team where passion meets performance.</p>
@@ -2460,13 +2594,13 @@
 
   <div class="teams-full-grid" id="teams-full-grid">
     <div class="team-card" onclick="showTeam('nova')" data-type="recreational" data-age="kids">
-      <div class="team-card-img" style="background-image:url('nova_team.jpg'); background-size:cover; background-position:center top;">
+      <div class="team-card-img" style="background-image:url('nova_team.jpg'); background-size:contain; background-repeat:no-repeat; background-position:center;">
         <span class="team-badge badge-recreational">Recreational</span>
       </div>
       <div class="team-card-body">
         <div class="team-card-name">Nova</div>
         <div class="team-meta"><span class="meta-chip">Level 0–1</span><span class="meta-chip">7–11 years</span><span class="meta-chip">Fri 17:30–18:30</span></div>
-        <p class="team-card-desc">The ideal first step for young athletes. Fun, safe sessions building confidence and the basics. No try-out required. €220/year.</p>
+        <p class="team-card-desc">The ideal first step for young athletes. Fun, safe sessions building confidence and the basics. <strong>2 free trial lessons</strong> — no commitment needed. €220/year.</p>
         <span class="team-link">View team details</span>
       </div>
     </div>
@@ -2478,34 +2612,34 @@
       <div class="team-card-body">
         <div class="team-card-name">Nebula</div>
         <div class="team-meta"><span class="meta-chip">Level 2</span><span class="meta-chip">9–18 years</span><span class="meta-chip">Fri 18:15–19:45</span></div>
-        <p class="team-card-desc">Recreational training for developing athletes across a wide age range. No try-out required. €280/year.</p>
+        <p class="team-card-desc">Recreational training for developing athletes across a wide age range. <strong>2 free trial lessons</strong> — no commitment needed. €280/year.</p>
         <span class="team-link">View team details</span>
       </div>
     </div>
     <div class="team-card" onclick="showTeam('eclipse')" data-type="competitive" data-age="kids youth">
-      <div class="team-card-img" style="background-image:url('eclipse_team.jpg'); background-size:cover; background-position:center top;">
+      <div class="team-card-img" style="background-image:url('eclipse_team.jpg'); background-size:contain; background-repeat:no-repeat; background-position:center;">
         <span class="team-badge badge-competitive">Competitive</span>
       </div>
       <div class="team-card-body">
         <div class="team-card-name">Eclipse</div>
         <div class="team-meta"><span class="meta-chip">Level 2</span><span class="meta-chip">8–18 years</span><span class="meta-chip">Wed + Fri</span></div>
-        <p class="team-card-desc">Competition team training twice a week. Wed 19:30–21:00 + Fri 18:15–19:45. No try-out required. €350/year.</p>
+        <p class="team-card-desc">Competition team training twice a week. Wed 19:30–21:00 + Fri 18:15–19:45. <strong>2 free trial lessons</strong> — no commitment needed. €350/year.</p>
         <span class="team-link">View team details</span>
       </div>
     </div>
     <div class="team-card" onclick="showTeam('halo')" data-type="recreational" data-age="adults">
-      <div class="team-card-img" style="background-image:url('halo_team.jpg'); background-size:cover; background-position:center top;">
+      <div class="team-card-img" style="background-image:url('halo_team.jpg'); background-size:contain; background-repeat:no-repeat; background-position:center;">
         <span class="team-badge badge-recreational">Recreational</span>
       </div>
       <div class="team-card-body">
         <div class="team-card-name">Halo</div>
         <div class="team-meta"><span class="meta-chip">All levels</span><span class="meta-chip">16+ years</span><span class="meta-chip">Fri 19:30–22:00</span></div>
-        <p class="team-card-desc">Recreational team for adults at all levels. Friday evenings, relaxed and welcoming atmosphere. No try-out required. €480/year.</p>
+        <p class="team-card-desc">Recreational team for adults at all levels. Friday evenings, relaxed and welcoming atmosphere. <strong>2 free trial lessons</strong> — no commitment needed. €480/year.</p>
         <span class="team-link">View team details</span>
       </div>
     </div>
     <div class="team-card" onclick="showTeam('blaze')" data-type="competitive" data-age="adults">
-      <div class="team-card-img" style="background-image:url('blaze_team.jpg'); background-size:cover; background-position:center top;">
+      <div class="team-card-img" style="background-image:url('blaze_team.jpg'); background-size:contain; background-repeat:no-repeat; background-position:center;">
         <span class="team-badge badge-competitive">Competitive</span>
       </div>
       <div class="team-card-body">
@@ -2559,9 +2693,6 @@
       <p class="td-about1" style="margin-bottom:16px;"></p>
       <p class="td-about2" style="margin-bottom:16px;"></p>
 
-      <h3 style="font-family:'Bebas Neue',sans-serif; font-size:26px; color:var(--navy); margin:36px 0 16px;">What to Expect</h3>
-      <ul class="td-expect-list" style="list-style:none; display:flex; flex-direction:column; gap:10px;"></ul>
-
       <div class="photo-gallery">
         <div class="gallery-img">Photo 1</div>
         <div class="gallery-img">Photo 2</div>
@@ -2578,8 +2709,12 @@
         <div class="price-amount"></div>
         <div class="price-period"></div>
         <ul class="pricing-includes"></ul>
+        <div class="td-trial-callout" style="display:none; background:rgba(200,155,42,.18); border:1px solid rgba(200,155,42,.4); border-radius:4px; padding:12px 14px; margin-bottom:14px;">
+          <div style="font-size:12px; font-weight:700; color:var(--gold); letter-spacing:.04em; text-transform:uppercase; margin-bottom:4px;">2 Free Trial Lessons</div>
+          <div style="font-size:12px; color:rgba(255,255,255,.8); line-height:1.5;">Your first 2 sessions are completely free. Come and get a feel for the team — you only commit to membership after that.</div>
+        </div>
         <p class="td-tryout-note" style="font-size:12px; color:rgba(255,255,255,.55); margin-bottom:16px; max-width:none;"></p>
-        <button class="btn btn-primary" onclick="showJoin()" style="width:100%; text-align:center;">Register for This Team</button>
+        <button class="btn btn-primary td-join-btn" onclick="showJoin()" style="width:100%; text-align:center;">Register for This Team</button>
       </div>
 
       <div class="coach-card-small" onclick="openCoachModal()">
@@ -2620,17 +2755,22 @@
   <div class="join-layout">
     <div class="join-left">
       <div class="eyebrow">Get Started</div>
-      <h1 class="title">Join<br>Hikari</h1>
-      <p>Fill in the form and we'll be in touch to find the right team for you.</p>
+      <h1 class="title" id="join-page-title">Join<br>Hikari</h1>
+      <p id="join-page-intro">Fill in the form and we'll be in touch to find the right team for you.</p>
       <ul class="join-reasons">
         <li>No experience needed — we have beginner teams for all ages</li>
-        <li>Free trial session for new athletes</li>
+        <li><strong>2 free trial lessons</strong> for all new athletes on most teams</li>
+        <li>You only commit to membership after your trial — no pressure</li>
         <li>All equipment provided for your first training</li>
       </ul>
       <p style="margin-top:32px; font-size:13px; color:rgba(255,255,255,.5);">Not registering? <span style="color:var(--gold); font-weight:600; cursor:pointer;" onclick="showPage('contact')">Send us a message instead →</span></p>
     </div>
     <div class="join-right">
-      <h2 style="font-family:'Bebas Neue',sans-serif; font-size:32px; color:var(--navy); margin-bottom:28px;">Registration Form</h2>
+      <h2 id="join-form-heading" style="font-family:'Bebas Neue',sans-serif; font-size:32px; color:var(--navy); margin-bottom:16px;">Registration Form</h2>
+      <div id="join-trial-notice" style="display:none; background:#f0f6ff; border:1.5px solid var(--navy); border-radius:4px; padding:14px 16px; margin-bottom:20px;">
+        <div style="font-size:12px; font-weight:700; color:var(--navy); letter-spacing:.04em; text-transform:uppercase; margin-bottom:5px;">You're signing up for 2 free trial lessons</div>
+        <div style="font-size:13px; color:#444; line-height:1.6;">Come and see what training is like — no strings attached. After your two trial sessions you can decide whether you'd like to become a member. We'll be in touch to confirm your first date.</div>
+      </div>
       <form onsubmit="return false;">
         <div class="form-row">
           <div class="form-group"><label class="form-label">First Name *</label><input class="form-input" type="text" placeholder="Anna"></div>
@@ -2663,7 +2803,7 @@
         <div class="form-group">
           <label class="form-checkbox"><input type="checkbox"> I have read and agree to the privacy policy and club regulations.</label>
         </div>
-        <button type="submit" class="form-submit">Send Registration</button>
+        <button type="submit" class="form-submit" id="join-submit-btn">Send Registration</button>
       </form>
     </div>
   </div>
@@ -2750,12 +2890,12 @@
       <div class="about-value-card">
         <img src="val_community.png" class="about-val-icon" alt="Community">
         <div class="about-val-title">Community</div>
-        <p class="about-val-desc">Resilience and discipline are the foundation of everything we do on the mat. Our athletes show up for each other — on match days and on ordinary Tuesdays.</p>
+        <p class="about-val-desc">Resilience and discipline are the foundation of everything we do on the mat. Our athletes show up for each other.</p>
       </div>
       <div class="about-value-card">
         <img src="val_safety.png" class="about-val-icon" alt="Safety">
         <div class="about-val-title">Safety</div>
-        <p class="about-val-desc">Every session is structured to ensure athletes feel secure and fully supported. All coaches hold current first-aid and cheerleading certifications.</p>
+        <p class="about-val-desc">Every session is structured to ensure athletes feel secure and fully supported. Our experienced coaches put safety first in everything they do.</p>
       </div>
       <div class="about-value-card">
         <img src="val_inclusivity.png" class="about-val-icon" alt="Inclusivity">
@@ -2788,39 +2928,39 @@
     <div class="container">
       <div class="eyebrow">The Team Behind the Team</div>
       <h2 class="title" style="color:var(--navy); margin-bottom:8px;">Our Coaches</h2>
-      <p style="margin-bottom:32px;">Certified, passionate, and committed to bringing out the best in every athlete.</p>
+      <p style="margin-bottom:32px;">Experienced, passionate, and committed to bringing out the best in every athlete.</p>
     </div>
     <div class="coaches-grid" style="padding-top:0;">
-      <div class="coach-card" onclick="openCoachModal('Sophie van der Berg','Head Coach','SV','Sophie has been coaching cheerleading for over 10 years and has led Hikari Elite since the club\'s founding. She holds NCA Level 3 and KNGU Advanced certification and is a first-aid instructor. Under her leadership, Hikari Elite won the UCA Spirit Stick in 2021.')">
+      <div class="coach-card" onclick="openCoachModal('Sophie van der Berg','Head Coach','SV','Sophie has been coaching cheerleading for over 10 years and has led Hikari\'s competitive teams since the club\'s founding. A former member of the Dutch National Cheerleading Team and a national championship winner, she brings elite-level experience to every session.')">
         <div class="coach-card-img"><div class="coach-initials">SV</div></div>
         <div class="coach-card-body">
           <div class="coach-name">Sophie van der Berg</div>
           <div class="coach-role">Head Coach · Blaze</div>
-          <p class="coach-bio">NCA Level 3 certified. 10+ years coaching competitive cheerleading in the Netherlands.</p>
+          <p class="coach-bio">Former Dutch National Team member. 10+ years coaching competitive cheerleading in the Netherlands.</p>
         </div>
       </div>
-      <div class="coach-card" onclick="openCoachModal('Marcus de Groot','Assistant Coach · Stunts','MG','Marcus specialises in stunting and has a background in gymnastics. He joined Hikari in 2019 and now leads all stunting progressions across the competitive teams. He holds NCA Level 2 and is a certified gymnastics instructor.')">
+      <div class="coach-card" onclick="openCoachModal('Marcus de Groot','Assistant Coach · Stunts','MG','Marcus specialises in stunting and has a background in gymnastics. He joined Hikari in 2019 and now leads all stunting progressions across the competitive teams. His hands-on experience as a competitive cheerleader gives him a deep understanding of athlete development.')">
         <div class="coach-card-img" style="background:linear-gradient(160deg,#1a3050,#243a6e);"><div class="coach-initials">MG</div></div>
         <div class="coach-card-body">
           <div class="coach-name">Marcus de Groot</div>
           <div class="coach-role">Assistant Coach · Stunts</div>
-          <p class="coach-bio">Gymnastics background, NCA Level 2. Leads all stunting progressions at Hikari.</p>
+          <p class="coach-bio">Gymnastics background and competitive cheer experience. Leads all stunting progressions at Hikari.</p>
         </div>
       </div>
-      <div class="coach-card" onclick="openCoachModal('Lena Bakker','Youth Coach · Nova','LB','Lena coaches our youngest athletes in Nova. Her background in primary education makes her exceptional with children aged 7–11. She holds NCA Level 1, EHBO certification, and completes yearly safeguarding training.')">
+      <div class="coach-card" onclick="openCoachModal('Lena Bakker','Youth Coach · Nova','LB','Lena coaches our youngest athletes in Nova. Her background in primary education makes her exceptional with children aged 7–11. She brings warmth, structure, and a genuine love of cheerleading to every session.')">
         <div class="coach-card-img" style="background:linear-gradient(160deg,#243060,#1C2B5E);"><div class="coach-initials">LB</div></div>
         <div class="coach-card-body">
           <div class="coach-name">Lena Bakker</div>
           <div class="coach-role">Youth Coach · Nova</div>
-          <p class="coach-bio">Former primary school teacher. NCA Level 1, EHBO certified. Specialises in young athlete development.</p>
+          <p class="coach-bio">Former primary school teacher with cheer experience. Specialises in young athlete development.</p>
         </div>
       </div>
-      <div class="coach-card" onclick="openCoachModal('Daan Visser','Tumbling Coach','DV','Daan brings a high-level gymnastics background to Hikari, running all tumbling and conditioning programmes across every team. He joined in 2021 and has significantly elevated the technical floor across the club. KNGU Turnen certified.')">
+      <div class="coach-card" onclick="openCoachModal('Daan Visser','Tumbling Coach','DV','Daan brings a high-level gymnastics background to Hikari, running all tumbling and conditioning programmes across every team. He joined in 2021 and has significantly elevated the technical floor across the club.')">
         <div class="coach-card-img" style="background:linear-gradient(160deg,#1e2a5e,#2a3070);"><div class="coach-initials">DV</div></div>
         <div class="coach-card-body">
           <div class="coach-name">Daan Visser</div>
           <div class="coach-role">Tumbling Coach · All Teams</div>
-          <p class="coach-bio">KNGU Turnen certified. Runs all tumbling and conditioning across every team at Hikari.</p>
+          <p class="coach-bio">High-level gymnastics background. Runs all tumbling and conditioning across every team at Hikari.</p>
         </div>
       </div>
     </div>
@@ -2891,31 +3031,31 @@
   <div class="events-page-grid">
     <div>
       <!-- OPEN GYM SECTION -->
-      <div class="event-card" style="border-bottom:1px solid var(--border); margin-bottom:0; padding-bottom:28px;">
-        <div class="event-date-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;">
-          <span style="font-size:22px; line-height:1;">↻</span>
-          <span style="font-family:'Bebas Neue',sans-serif; font-size:13px; color:var(--gold); letter-spacing:.08em; line-height:1;">TUE</span>
-          <span style="font-size:9px; color:rgba(255,255,255,.5); letter-spacing:.06em; text-transform:uppercase;">& SAT</span>
+      <div class="event-card" style="border:1px solid var(--border); border-radius:4px; padding:24px 24px 24px 0; margin-bottom:0;">
+        <div class="event-date-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; margin-left:24px;">
+          <span style="font-family:'Bebas Neue',sans-serif; font-size:16px; color:var(--gold); letter-spacing:.06em; line-height:1;">TUE</span>
+          <span style="font-size:9px; color:rgba(255,255,255,.7); letter-spacing:.06em; text-transform:uppercase; line-height:1.4;">——</span>
+          <span style="font-family:'Bebas Neue',sans-serif; font-size:16px; color:var(--gold); letter-spacing:.06em; line-height:1;">SAT</span>
         </div>
         <div>
           <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px; flex-wrap:wrap;">
             <div class="event-name" style="margin-bottom:0;">Open Gym</div>
-            <span class="event-type-chip" style="background:rgba(28,43,94,.07); color:var(--navy);">Recurring</span>
+            <span class="event-type-chip" style="background:rgba(28,43,94,.07); color:var(--navy); margin-bottom:0;">Recurring</span>
           </div>
           <p class="event-detail" style="margin-bottom:14px;">Open to all Hikari athletes as part of their membership. External athletes welcome on a drop-in basis. · Koperslagerstraat 8, Rotterdam</p>
           <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:center;">
             <div style="display:flex; gap:16px; flex-wrap:wrap;">
               <span style="font-size:12px; color:var(--muted);">Tue <strong style="color:var(--navy);">20:00–22:00</strong></span>
               <span style="font-size:12px; color:var(--muted);">Sat <strong style="color:var(--navy);">10:00–12:00</strong></span>
-              <span style="font-size:12px; color:var(--muted);">Members <strong style="color:var(--navy);">Free</strong></span>
-              <span style="font-size:12px; color:var(--muted);">Guests <strong style="color:var(--navy);">€8</strong></span>
+              <span style="font-size:12px; color:var(--muted);">Members <strong style="color:var(--navy);">free · no booking needed</strong></span>
+              <span style="font-size:12px; color:var(--muted);">Guests: drop-in <strong style="color:var(--navy);">€8</strong> · monthly pass <strong style="color:var(--navy);">€25</strong></span>
             </div>
             <button class="btn btn-outline" onclick="openGymBooking()" style="padding:8px 20px; font-size:13px; margin-left:auto;">Book a Spot →</button>
           </div>
         </div>
       </div>
 
-      <div class="eyebrow" style="margin-bottom:20px;">Upcoming</div>
+      <div class="eyebrow" style="margin-bottom:20px; margin-top:36px;">Upcoming</div>
 
       <div class="event-card" style="cursor:pointer;" onclick="showEvent('openday')">
         <div class="event-date-box"><div class="event-date-day">14</div><div class="event-date-month">Sep</div></div>
@@ -2994,9 +3134,28 @@
     </div>
   </div>
   <div class="ed-meta-strip">
-    <div class="ed-meta-item">📅 <span id="ed-date"></span></div>
-    <div class="ed-meta-item">🕐 <span id="ed-time"></span></div>
-    <div class="ed-meta-item">📍 <span id="ed-location"></span></div>
+    <div class="ed-info-cards">
+      <div class="ed-info-card">
+        <div class="ed-info-card-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <div>
+          <div class="ed-info-card-label">Date &amp; Time</div>
+          <div class="ed-info-card-value" id="ed-date"></div>
+          <div class="ed-info-card-sub" id="ed-time"></div>
+        </div>
+      </div>
+      <div class="ed-info-card">
+        <div class="ed-info-card-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        </div>
+        <div>
+          <div class="ed-info-card-label">Location</div>
+          <div class="ed-info-card-value" id="ed-location"></div>
+          <a class="ed-info-card-link" id="ed-maps-link" href="#" target="_blank" rel="noopener">Open in Google Maps →</a>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="ed-body">
     <div>
@@ -3023,82 +3182,97 @@
 
   <div class="filter-bar">
     <div class="container">
-      <button class="filter-btn active">All</button>
-      <button class="filter-btn">Clothing</button>
-      <button class="filter-btn">Accessories</button>
-      <button class="filter-btn">Uniforms</button>
+      <button class="filter-btn active" data-filter="all" onclick="filterShop(this)">All</button>
+      <button class="filter-btn" data-filter="clothing" onclick="filterShop(this)">Clothing</button>
+      <button class="filter-btn" data-filter="accessories" onclick="filterShop(this)">Accessories</button>
     </div>
   </div>
 
   <div class="shop-grid">
-    <div class="product-card" onclick="showProduct('hoodie')">
-      <div class="product-img">🧥<div class="product-new">New</div></div>
+    <div class="product-card" data-cat="clothing" onclick="showProduct('sweat_uni')">
+      <div class="product-img" style="background-image:url('merch_sweatshirt.png');"></div>
       <div class="product-body">
         <div class="product-cat">Clothing</div>
-        <div class="product-name">Hikari Hoodie</div>
+        <div class="product-name">Sweatshirt Unisex</div>
         <div class="product-price">€45 <span>Navy / Gold</span></div>
       </div>
     </div>
-    <div class="product-card" onclick="showProduct('tee')">
-      <div class="product-img">👕</div>
+    <div class="product-card" data-cat="clothing" onclick="showProduct('sweat_youth')">
+      <div class="product-img" style="background-image:url('merch_sweatshirt.png');"></div>
       <div class="product-body">
         <div class="product-cat">Clothing</div>
-        <div class="product-name">Training Tee</div>
+        <div class="product-name">Sweatshirt Youth</div>
+        <div class="product-price">€38 <span>Navy / Gold</span></div>
+      </div>
+    </div>
+    <div class="product-card" data-cat="clothing" onclick="showProduct('tee_man')">
+      <div class="product-img" style="background-image:url('merch_tshirt.png');"></div>
+      <div class="product-body">
+        <div class="product-cat">Clothing</div>
+        <div class="product-name">T-shirt Men</div>
         <div class="product-price">€22 <span>Navy / White</span></div>
       </div>
     </div>
-    <div class="product-card" onclick="showProduct('shorts')">
-      <div class="product-img">🩳</div>
+    <div class="product-card" data-cat="clothing" onclick="showProduct('tee_woman')">
+      <div class="product-img" style="background-image:url('merch_tshirt.png');"></div>
       <div class="product-body">
         <div class="product-cat">Clothing</div>
-        <div class="product-name">Shorts</div>
-        <div class="product-price">€18 <span>Black</span></div>
+        <div class="product-name">T-shirt Women</div>
+        <div class="product-price">€22 <span>Navy / White</span></div>
       </div>
     </div>
-    <div class="product-card" onclick="showProduct('bow')">
-      <div class="product-img">🎀<div class="product-new">New</div></div>
+    <div class="product-card" data-cat="clothing" onclick="showProduct('tee_child')">
+      <div class="product-img" style="background-image:url('merch_tshirt.png');"></div>
+      <div class="product-body">
+        <div class="product-cat">Clothing</div>
+        <div class="product-name">T-shirt Child</div>
+        <div class="product-price">€18 <span>Navy / White</span></div>
+      </div>
+    </div>
+    <div class="product-card" data-cat="clothing" onclick="showProduct('tee_nomads')">
+      <div class="product-img" style="background-image:url('merch_tshirt_nomads.png'); position:relative;"><div class="product-new">Team</div></div>
+      <div class="product-body">
+        <div class="product-cat">Clothing</div>
+        <div class="product-name">Nomads T-shirt</div>
+        <div class="product-price">€24 <span>Navy / Gold</span></div>
+      </div>
+    </div>
+    <div class="product-card" data-cat="clothing" onclick="showProduct('tee_rivals')">
+      <div class="product-img" style="background-image:url('merch_tshirt_rivals.png'); position:relative;"><div class="product-new">Team</div></div>
+      <div class="product-body">
+        <div class="product-cat">Clothing</div>
+        <div class="product-name">Rivals T-shirt</div>
+        <div class="product-price">€24 <span>Navy / Gold</span></div>
+      </div>
+    </div>
+    <div class="product-card" data-cat="clothing" onclick="showProduct('beanie')">
+      <div class="product-img" style="background-image:url('merch_beanie.png');"></div>
+      <div class="product-body">
+        <div class="product-cat">Clothing</div>
+        <div class="product-name">Beanie</div>
+        <div class="product-price">€16 <span>Navy / Gold</span></div>
+      </div>
+    </div>
+    <div class="product-card" data-cat="accessories" onclick="showProduct('socks')">
+      <div class="product-img" style="background-image:url('merch_socks.png');"></div>
+      <div class="product-body">
+        <div class="product-cat">Accessories</div>
+        <div class="product-name">Socks</div>
+        <div class="product-price">€8 <span>White / Navy / Gold</span></div>
+      </div>
+    </div>
+    <div class="product-card" data-cat="accessories" onclick="showProduct('bow')">
+      <div class="product-img" style="background-image:url('merch_bow.png');"></div>
       <div class="product-body">
         <div class="product-cat">Accessories</div>
         <div class="product-name">Competition Bow</div>
-        <div class="product-price">€12 <span>Gold / Navy</span></div>
-      </div>
-    </div>
-    <div class="product-card" onclick="showProduct('backpack')">
-      <div class="product-img">🎒</div>
-      <div class="product-body">
-        <div class="product-cat">Accessories</div>
-        <div class="product-name">Club Backpack</div>
-        <div class="product-price">€38 <span>Navy</span></div>
-      </div>
-    </div>
-    <div class="product-card" onclick="showProduct('bottle')">
-      <div class="product-img">💧</div>
-      <div class="product-body">
-        <div class="product-cat">Accessories</div>
-        <div class="product-name">Water Bottle</div>
-        <div class="product-price">€14 <span>White / Gold print</span></div>
-      </div>
-    </div>
-    <div class="product-card" onclick="showProduct('keyring')">
-      <div class="product-img">✨</div>
-      <div class="product-body">
-        <div class="product-cat">Accessories</div>
-        <div class="product-name">Keyring</div>
-        <div class="product-price">€6</div>
-      </div>
-    </div>
-    <div class="product-card" onclick="showProduct('uniform')">
-      <div class="product-img" style="background:linear-gradient(135deg,#1C2B5E 0%, #2a3d6e 100%); color:var(--gold);">★</div>
-      <div class="product-body">
-        <div class="product-cat">Uniforms</div>
-        <div class="product-name">Competition Uniform</div>
-        <div class="product-price">By order <span>Contact us</span></div>
+        <div class="product-price">€12 <span>White / Rhinestone</span></div>
       </div>
     </div>
   </div>
 
   <div style="text-align:center; padding:20px 48px 60px; color:var(--muted); font-size:13px;">
-    Shipping within the Netherlands: €4.95. Free pickup at training. Questions? <span style="color:var(--navy); cursor:pointer; font-weight:500;">shop@hikaricheer.nl</span>
+    Merch is delivered at training — no shipping available. Questions? <span style="color:var(--navy); cursor:pointer; font-weight:500;">shop@hikaricheer.nl</span>
   </div>
 </div>
 
@@ -3110,7 +3284,15 @@
     <span style="font-size:13px; color:var(--navy); cursor:pointer; font-weight:500;" onclick="showPage('shop')">← Back to Shop</span>
   </div>
   <div class="product-detail-hero">
-    <div class="pd-image" id="pd-image-el">🧥<span class="product-new" id="pd-new-badge" style="display:none;">New</span></div>
+    <div class="pd-gallery">
+      <div class="pd-main-img" id="pd-main-img">
+        <span id="pd-emoji-fallback" style="pointer-events:none;"></span>
+        <span class="product-new" id="pd-new-badge" style="display:none; pointer-events:none;">New</span>
+        <button class="pd-arrow pd-arrow-prev" id="pd-prev" onclick="galleryNav(-1)">&#8249;</button>
+        <button class="pd-arrow pd-arrow-next" id="pd-next" onclick="galleryNav(1)">&#8250;</button>
+      </div>
+      <div class="pd-thumbs" id="pd-thumbs"></div>
+    </div>
     <div class="pd-info">
       <div class="pd-cat" id="pd-cat">Clothing</div>
       <div class="pd-name" id="pd-name">Hikari Hoodie</div>
@@ -3118,7 +3300,10 @@
       <div class="pd-colors" id="pd-colors">Navy / Gold</div>
 
       <div id="pd-sizes-section">
-        <div class="pd-label">Size</div>
+        <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:8px;">
+          <div class="pd-label" style="margin-bottom:0;">Size</div>
+          <span id="pd-size-guide-link" onclick="openSizeChart()" style="display:none; font-size:12px; color:var(--navy); cursor:pointer; font-weight:600; text-decoration:underline; text-underline-offset:2px;">Size guide →</span>
+        </div>
         <div class="pd-sizes" id="pd-sizes"></div>
       </div>
 
@@ -3137,7 +3322,7 @@
       </div>
 
       <div class="pd-desc" id="pd-desc"></div>
-      <div class="pd-shipping">📦 €4.95 shipping within NL · Free pickup at training · <span style="color:var(--navy); cursor:pointer;">shop@hikaricheer.nl</span></div>
+      <div class="pd-shipping">🏋️ Merch is delivered at training — no shipping available · Questions? <span style="color:var(--navy); cursor:pointer;">shop@hikaricheer.nl</span></div>
     </div>
   </div>
 
@@ -3147,6 +3332,16 @@
       <ul id="pd-details-list" style="margin-top:16px; display:flex; flex-direction:column; gap:8px; padding:0; list-style:none;"></ul>
     </div>
   </section>
+</div>
+
+<!-- Size Chart Modal -->
+<div id="size-chart-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:3000; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; overflow-y:auto;">
+  <div style="background:white; border-radius:4px; padding:32px; width:560px; max-width:100%; position:relative; margin:auto;">
+    <button onclick="closeSizeChart()" style="position:absolute; top:16px; right:16px; background:none; border:none; font-size:22px; cursor:pointer; color:#999; line-height:1;">×</button>
+    <div id="size-chart-title" style="font-family:'Bebas Neue',sans-serif; font-size:26px; color:var(--navy); margin-bottom:6px;"></div>
+    <div id="size-chart-note" style="font-size:13px; color:#666; margin-bottom:20px;"></div>
+    <div id="size-chart-tables"></div>
+  </div>
 </div>
 
 <!-- ══════════════════════════════════════════
@@ -3368,7 +3563,7 @@
       <div style="background:var(--navy); border-radius:4px; padding:40px 48px; display:flex; justify-content:space-between; align-items:center; gap:32px; flex-wrap:wrap;">
         <div>
           <div style="font-family:'Bebas Neue',sans-serif; font-size:32px; color:var(--white); letter-spacing:.04em; margin-bottom:8px;">Become a Sponsor</div>
-          <p style="color:rgba(255,255,255,.6); max-width:52ch; margin:0;">Support 120+ athletes in Rotterdam, get your brand in front of an engaged sports community, and contribute to a club built on inclusivity and excellence.</p>
+          <p style="color:rgba(255,255,255,.6); max-width:52ch; margin:0;">Support 60+ athletes in Rotterdam, get your brand in front of an engaged sports community, and contribute to a club built on inclusivity and excellence.</p>
         </div>
         <button class="btn btn-primary" onclick="showContact('press')">Get in Touch</button>
       </div>
@@ -3515,11 +3710,15 @@
   <footer>
     <div class="footer-grid">
       <div class="footer-brand">
-        <img src="hikari_icon.png" alt="Hikari Cheerleading" style="height:52px; width:auto; margin-bottom:14px; display:block;">
+        <img src="hikari_logo_icon.png" alt="Hikari Cheerleading" style="height:52px; width:auto; margin-bottom:14px; display:block;">
         <p>Named after the Japanese word for "light" (光), we are a home for every athlete in Rotterdam — regardless of starting point.</p>
-        <div style="margin-top:20px; display:flex; gap:12px;">
-          <span style="color:rgba(255,255,255,.4); font-size:20px; cursor:pointer;">📸</span>
-          <span style="color:rgba(255,255,255,.4); font-size:20px; cursor:pointer;">👍</span>
+        <div style="margin-top:20px; display:flex; gap:14px; align-items:center;">
+          <a href="https://www.tiktok.com/@hikari_cheerleading?is_from_webapp=1&sender_device=pc" target="_blank" style="color:white; display:flex; align-items:center; opacity:.75; transition:opacity .2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity='.75'">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.32 6.32 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/></svg>
+          </a>
+          <a href="https://www.instagram.com/hikari_cheerleading?utm_source=ig_web_button_share_sheet&vrfl=ZDNlZDc0MzIxNw==" target="_blank" style="color:white; display:flex; align-items:center; opacity:.75; transition:opacity .2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity='.75'">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
         </div>
       </div>
       <div class="footer-col">
@@ -3566,9 +3765,8 @@
     <div class="modal-body">
       <p id="modalBio">Bio text here.</p>
       <div class="modal-cert">
-        <span class="cert-chip">NCA Level 3</span>
-        <span class="cert-chip">KNGU Advanced</span>
-        <span class="cert-chip">EHBO Certified</span>
+        <span class="cert-chip">Dutch National Team</span>
+        <span class="cert-chip">National Champion</span>
       </div>
     </div>
   </div>
@@ -3600,10 +3798,10 @@
         '1 session per week, 1 hour',
         'No try-out — all welcome',
         'Fun, structured skill-building',
-        'Supervised by certified coaches',
+        'Supervised by experienced coaches',
         'Performance opportunities at club events',
       ],
-      pricing: ['1 training session per week', 'KNGU accident insurance', 'Access to all club events', 'Coaching by certified staff'],
+      pricing: ['1 training session per week', 'Access to all Open Gym sessions', 'KNGU accident insurance', 'Access to all club events', 'Coaching by experienced staff'],
     },
     nebula: {
       name: 'Nebula',
@@ -3631,7 +3829,7 @@
         'Joint training with Eclipse on Fridays',
         'Performance opportunities throughout the year',
       ],
-      pricing: ['1 training session per week', 'KNGU accident insurance', 'Access to all club events', 'Coaching by certified staff'],
+      pricing: ['1 training session per week', 'Access to all Open Gym sessions', 'KNGU accident insurance', 'Access to all club events', 'Coaching by experienced staff'],
     },
     eclipse: {
       name: 'Eclipse',
@@ -3659,7 +3857,7 @@
         'Full competition routine including stunts & tumbling',
         'Compete at NL regional and national level',
       ],
-      pricing: ['2 training sessions per week', 'KNGU accident insurance', 'Access to all club events', 'Competition entry included'],
+      pricing: ['2 training sessions per week', 'Access to all Open Gym sessions', 'KNGU accident insurance', 'Access to all club events', 'Competition entry included'],
     },
     halo: {
       name: 'Halo',
@@ -3688,7 +3886,7 @@
         'Access to Open Gym sessions for extra training',
         'Relaxed, welcoming team culture',
       ],
-      pricing: ['1 training session per week', 'Access to Open Gym sessions', 'KNGU accident insurance', 'Access to all club events', 'Coaching by certified staff'],
+      pricing: ['1 training session per week', 'Access to Open Gym sessions', 'KNGU accident insurance', 'Access to all club events', 'Coaching by experienced staff'],
     },
     blaze: {
       name: 'Blaze',
@@ -3717,7 +3915,7 @@
         'National and international competition travel',
         'World Cup sub-group for eligible athletes',
       ],
-      pricing: ['2 training sessions per week', 'KNGU accident insurance', 'Competition entry costs included', 'Access to all club events'],
+      pricing: ['2 training sessions per week', 'Access to all Open Gym sessions', 'KNGU accident insurance', 'Competition entry costs included', 'Access to all club events'],
     },
   };
 
@@ -3752,31 +3950,34 @@
     document.querySelector('#page-team-detail .td-about2').textContent = t.about2;
 
     // what to expect list
-    const wtList = document.querySelector('#page-team-detail .td-expect-list');
-    wtList.innerHTML = t.whatToExpect.map(item =>
-      `<li style="font-size:14px;color:var(--muted);padding-left:20px;position:relative;"><span style="position:absolute;left:0;color:var(--gold);">✦</span> ${item}</li>`
-    ).join('');
-
     // pricing box
     document.querySelector('#page-team-detail .price-amount').textContent = t.price;
     document.querySelector('#page-team-detail .price-period').textContent = t.period;
     const incList = document.querySelector('#page-team-detail .pricing-includes');
     incList.innerHTML = t.pricing.map(i => `<li>${i}</li>`).join('');
 
-    // tryout note
+    // tryout note + trial callout + button label
     const tryNote = document.querySelector('#page-team-detail .td-tryout-note');
-    tryNote.textContent = t.tryout
-      ? 'Try-out required. Contact us for the next try-out date.'
-      : 'No try-out required — register directly and join at the start of the next training block.';
+    const trialCallout = document.querySelector('#page-team-detail .td-trial-callout');
+    const joinBtn = document.querySelector('#page-team-detail .td-join-btn');
+    if (t.tryout) {
+      tryNote.textContent = 'Try-out required. Contact us for the next try-out date.';
+      trialCallout.style.display = 'none';
+      joinBtn.textContent = 'Register for This Team';
+    } else {
+      tryNote.textContent = '';
+      trialCallout.style.display = 'block';
+      joinBtn.textContent = 'Come Try Out →';
+    }
 
     // Selection & Membership section
     const isRec = t.type === 'recreational';
-    document.querySelector('#page-team-detail .td-selection-text').textContent = isRec
-      ? 'There is no selection process to join these teams, they are open to everyone, regardless of whether you have experience with cheerleading or not.'
-      : 'To be part of these teams, athletes must attend a try-out and be selected by coaches. We often organise try-outs in June and September.';
-    document.querySelector('#page-team-detail .td-selection-text2').textContent = isRec
-      ? ''
-      : 'If you missed the try-outs, don\'t worry — there is always a chance to join! Contact us and we will discuss the possibilities.';
+    document.querySelector('#page-team-detail .td-selection-text').textContent = t.tryout
+      ? 'To be part of this team, athletes must attend a try-out and be selected by coaches. We often organise try-outs in June and September.'
+      : 'There is no try-out to join this team — everyone is welcome, regardless of experience. New athletes start with 2 free trial lessons to get a feel for the team before committing to membership.';
+    document.querySelector('#page-team-detail .td-selection-text2').textContent = t.tryout
+      ? 'If you missed the try-outs, don\'t worry — there is always a chance to join! Contact us and we will discuss the possibilities.'
+      : 'After your 2 trial sessions, you and your coach will discuss whether this team is the right fit. If you decide to continue, you\'ll be asked to sign up for a membership.';
 
     document.querySelector('#page-team-detail .td-membership-intro').textContent = isRec
       ? 'Recreational membership is collected via direct debit. You can choose from three options:'
@@ -4076,6 +4277,7 @@
     document.getElementById('ed-date').textContent = e.date;
     document.getElementById('ed-time').textContent = e.time;
     document.getElementById('ed-location').textContent = e.location;
+    document.getElementById('ed-maps-link').href = 'https://maps.google.com/?q=' + encodeURIComponent(e.location);
 
     // description — preserve newlines
     const descEl = document.getElementById('ed-description');
@@ -4134,8 +4336,7 @@
     document.getElementById('pm-step-2').style.display = 'none';
     document.getElementById('pm-name').value = '';
     document.getElementById('pm-email').value = '';
-    document.getElementById('payment-overlay').style.display = 'block';
-    document.getElementById('payment-modal').style.display = 'block';
+    document.getElementById('payment-overlay').style.display = 'flex';
   }
 
   function pmContinue() {
@@ -4165,51 +4366,171 @@
 
   function closePayment() {
     document.getElementById('payment-overlay').style.display = 'none';
-    document.getElementById('payment-modal').style.display = 'none';
   }
 
-  let _gymIsMember = true;
-  let _gymSession = 'Tuesday 20:00–22:00';
+  let _gymType = 'single';
+  let _gymSelectedDates = new Set();
+
+  const _gymDayConfig = { 2: { label: 'Tue', time: '20:00–22:00' }, 6: { label: 'Sat', time: '10:00–12:00' } };
+  const _gymMonths = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const _gymMonthsFull = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
   function openGymBooking() {
-    _gymIsMember = true;
-    _gymSession = 'Tuesday 20:00–22:00';
-    document.getElementById('gym-step-1').style.display = 'block';
-    document.getElementById('gym-step-2').style.display = 'none';
-    document.getElementById('gym-overlay').style.display = 'block';
-    document.getElementById('gym-modal').style.display = 'block';
-    document.getElementById('gym-payment-note').style.display = 'none';
-    document.getElementById('gym-submit-btn').textContent = 'Confirm Booking';
-    document.getElementById('gym-name').value = '';
-    document.getElementById('gym-email').value = '';
-    // reset selection state
-    document.getElementById('gym-member-yes').style.border = '2px solid var(--navy)';
-    document.getElementById('gym-member-no').style.border = '2px solid var(--border)';
-    document.querySelectorAll('.gym-session-opt').forEach((o, i) => {
-      o.style.border = i === 0 ? '2px solid var(--navy)' : '2px solid var(--border)';
+    _gymType = 'single';
+    _gymSelectedDates = new Set();
+    ['gym-step-1','gym-step-dates','gym-step-monthly','gym-step-contact','gym-step-done'].forEach(id => {
+      document.getElementById(id).style.display = 'none';
     });
+    document.getElementById('gym-step-1').style.display = 'block';
+    document.getElementById('gym-type-single').style.border = '2px solid var(--navy)';
+    document.getElementById('gym-type-monthly').style.border = '2px solid var(--border)';
+    document.getElementById('gym-overlay').style.display = 'flex';
   }
 
   function closeGymBooking() {
     document.getElementById('gym-overlay').style.display = 'none';
-    document.getElementById('gym-modal').style.display = 'none';
   }
 
-  function selectGymSession(el, session) {
-    _gymSession = session;
-    document.querySelectorAll('.gym-session-opt').forEach(o => {
-      o.style.border = '2px solid var(--border)';
+  function selectGymType(type) {
+    _gymType = type;
+    document.getElementById('gym-type-single').style.border = type === 'single' ? '2px solid var(--navy)' : '2px solid var(--border)';
+    document.getElementById('gym-type-monthly').style.border = type === 'monthly' ? '2px solid var(--navy)' : '2px solid var(--border)';
+  }
+
+  function gymTypeNext() {
+    document.getElementById('gym-step-1').style.display = 'none';
+    if (_gymType === 'monthly') {
+      // Fill today's date and reset consent
+      const today = new Date();
+      const formatted = `${today.getDate()} ${_gymMonthsFull[today.getMonth()]} ${today.getFullYear()}`;
+      document.getElementById('gym-monthly-start-date').textContent = formatted;
+      document.getElementById('gym-monthly-consent').checked = false;
+      const btn = document.getElementById('gym-monthly-pay-btn');
+      btn.disabled = true; btn.style.opacity = '.5';
+      document.getElementById('gym-step-monthly').style.display = 'block';
+    } else {
+      buildGymDateList();
+      document.getElementById('gym-step-dates').style.display = 'block';
+    }
+  }
+
+  function gymBack(from) {
+    ['gym-step-dates','gym-step-monthly','gym-step-contact'].forEach(id => {
+      document.getElementById(id).style.display = 'none';
     });
-    el.style.border = '2px solid var(--navy)';
+    if (from === 'contact') {
+      document.getElementById('gym-step-dates').style.display = 'block';
+    } else {
+      document.getElementById('gym-step-1').style.display = 'block';
+    }
   }
 
-  function setGymMember(isMember) {
-    _gymIsMember = isMember;
-    document.getElementById('gym-member-yes').style.border = isMember ? '2px solid var(--navy)' : '2px solid var(--border)';
-    document.getElementById('gym-member-no').style.border = !isMember ? '2px solid var(--navy)' : '2px solid var(--border)';
-    document.getElementById('gym-payment-note').style.display = isMember ? 'none' : 'block';
-    document.getElementById('gym-submit-btn').textContent = isMember ? 'Confirm Booking' : 'Continue to Mollie →';
+  function buildGymDateList() {
+    _gymSelectedDates = new Set();
+    const container = document.getElementById('gym-dates-list');
+    container.innerHTML = '';
+    const today = new Date(); today.setHours(0,0,0,0);
+    const end = new Date(today); end.setMonth(end.getMonth() + 3);
+    const datesByMonth = {};
+    const d = new Date(today);
+    d.setDate(d.getDate() + 1);
+    while (d <= end) {
+      if (_gymDayConfig[d.getDay()]) {
+        const mKey = d.getFullYear() + '-' + d.getMonth();
+        if (!datesByMonth[mKey]) datesByMonth[mKey] = { label: _gymMonthsFull[d.getMonth()] + ' ' + d.getFullYear(), dates: [] };
+        datesByMonth[mKey].dates.push(new Date(d));
+      }
+      d.setDate(d.getDate() + 1);
+    }
+    Object.values(datesByMonth).forEach(group => {
+      const heading = document.createElement('div');
+      heading.style.cssText = 'font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:12px 0 8px;';
+      heading.textContent = group.label;
+      container.appendChild(heading);
+      group.dates.forEach(date => {
+        const cfg = _gymDayConfig[date.getDay()];
+        // Use local date string to avoid UTC timezone shift
+        const dateKey = date.getFullYear() + '-' + String(date.getMonth()+1).padStart(2,'0') + '-' + String(date.getDate()).padStart(2,'0');
+        const row = document.createElement('div');
+        row.style.cssText = 'display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border:1px solid var(--border); border-radius:4px; margin-bottom:6px; cursor:pointer; transition:border-color .15s;';
+        const chk = document.createElement('div');
+        chk.style.cssText = 'width:20px;height:20px;border:2px solid var(--border);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;';
+        const label = document.createElement('div');
+        label.innerHTML = '<span style="font-weight:600; font-size:14px;">' + cfg.label + ' ' + date.getDate() + ' ' + _gymMonths[date.getMonth()] + '</span><span style="font-size:12px; color:var(--muted); margin-left:10px;">' + cfg.time + '</span>';
+        row.appendChild(label);
+        row.appendChild(chk);
+        row.onclick = () => toggleGymDate(dateKey, cfg, row, chk);
+        container.appendChild(row);
+      });
+    });
+    updateGymSummary();
   }
+
+  function toggleGymDate(key, cfg, row, chk) {
+    if (_gymSelectedDates.has(key)) {
+      _gymSelectedDates.delete(key);
+      row.style.borderColor = 'var(--border)';
+      row.style.background = '';
+      chk.textContent = '';
+      chk.style.borderColor = 'var(--border)';
+      chk.style.color = '';
+    } else {
+      _gymSelectedDates.add(key);
+      row.style.borderColor = 'var(--navy)';
+      row.style.background = '#f0f4ff';
+      chk.textContent = '✓';
+      chk.style.borderColor = 'var(--navy)';
+      chk.style.color = 'var(--navy)';
+      chk.style.fontWeight = '700';
+    }
+    updateGymSummary();
+  }
+
+  function updateGymSummary() {
+    const n = _gymSelectedDates.size;
+    document.getElementById('gym-summary-text').textContent = n === 0 ? 'No sessions selected' : `${n} session${n>1?'s':''} selected`;
+    document.getElementById('gym-summary-price').textContent = `€${n * 8}`;
+    const btn = document.getElementById('gym-add-cart-btn');
+    btn.disabled = n === 0;
+    btn.style.opacity = n === 0 ? '0.5' : '1';
+  }
+
+  function gymDatesNext() {
+    const n = _gymSelectedDates.size;
+    if (n === 0) return;
+    // Build summary text
+    const lines = [..._gymSelectedDates].map(key => {
+      const parts = key.split('-');
+      const d = new Date(+parts[0], +parts[1]-1, +parts[2]);
+      const cfg = _gymDayConfig[d.getDay()];
+      return (cfg ? cfg.label + ' ' + d.getDate() + ' ' + _gymMonths[d.getMonth()] + ' · ' + cfg.time : key);
+    }).join('<br>');
+    document.getElementById('gym-contact-summary').innerHTML =
+      `<strong>${n} session${n>1?'s':''} · €${n*8}</strong><br><span style="color:var(--muted);font-size:12px;margin-top:4px;display:block;">${lines}</span>`;
+    document.getElementById('gym-pay-btn').textContent = `Pay with Mollie → (€${n*8})`;
+    document.getElementById('gym-step-dates').style.display = 'none';
+    document.getElementById('gym-step-contact').style.display = 'block';
+  }
+
+  function gymMonthlyConsentChange() {
+    const checked = document.getElementById('gym-monthly-consent').checked;
+    const btn = document.getElementById('gym-monthly-pay-btn');
+    btn.disabled = !checked;
+    btn.style.opacity = checked ? '1' : '.5';
+  }
+
+  function gymPayNow(type) {
+    ['gym-step-monthly','gym-step-contact'].forEach(id => {
+      document.getElementById(id).style.display = 'none';
+    });
+    document.getElementById('gym-done-title').textContent = type === 'monthly' ? 'Pass Confirmed!' : 'Booking Confirmed!';
+    document.getElementById('gym-done-msg').textContent = type === 'monthly'
+      ? 'Your monthly pass is active. Just show up any Tuesday or Saturday!'
+      : `Your ${_gymSelectedDates.size} session${_gymSelectedDates.size>1?'s are':' is'} booked. See you on the mat!`;
+    document.getElementById('gym-step-done').style.display = 'block';
+  }
+
+  function submitGymBooking() {} // legacy stub
 
   function submitGymBooking() {
     const email = document.getElementById('gym-email').value || 'your email';
@@ -4220,62 +4541,196 @@
   }
 
   const PRODUCTS = {
-    hoodie: {
-      name: 'Hikari Hoodie', cat: 'Clothing', price: '€45', colors: 'Navy / Gold', isNew: true, emoji: '🧥',
+    sweat_uni: {
+      name: 'Sweatshirt Unisex', cat: 'Clothing', price: '€45', colors: 'Navy / Gold', emoji: '🧥', images: ['merch_sweatshirt.png', 'merch_sweatshirt_2.png', 'merch_sweatshirt_3.png'],
       sizes: ['XS','S','M','L','XL','XXL'],
       cta: 'Add to Cart',
-      desc: 'The official Hikari club hoodie. Heavyweight 350g fleece, embroidered chest logo, kangaroo pocket. Runs true to size.',
-      details: ['350g fleece, 80% cotton / 20% polyester','Embroidered Hikari logo on chest','Kangaroo pocket','Ribbed cuffs and hem','Wash at 30°C, do not tumble dry','Available in Navy with Gold logo'],
+      desc: 'The official Hikari club sweatshirt in a relaxed unisex fit. Soft fleece lining, embroidered logo, kangaroo pocket. Runs true to size.',
+      details: ['350g fleece, 80% cotton / 20% polyester','Embroidered Hikari logo on chest','Kangaroo pocket','Ribbed cuffs and hem','Wash at 30°C, do not tumble dry'],
+      sizeChartKey: 'sweat_uni',
     },
-    tee: {
-      name: 'Training Tee', cat: 'Clothing', price: '€22', colors: 'Navy / White', emoji: '👕',
-      sizes: ['XS','S','M','L','XL','XXL'],
+    sweat_youth: {
+      name: 'Sweatshirt Youth', cat: 'Clothing', price: '€38', colors: 'Navy / Gold', emoji: '🧥', images: ['merch_sweatshirt.png', 'merch_sweatshirt_2.png', 'merch_sweatshirt_3.png'],
+      sizes: ['6–8y','8–10y','10–12y','12–14y','14–16y'],
       cta: 'Add to Cart',
-      desc: 'Lightweight performance tee for training. Moisture-wicking fabric keeps you comfortable through every drill.',
-      details: ['160g performance fabric, 100% polyester','Printed Hikari logo on chest','Slim athletic fit','Moisture-wicking','Machine washable at 40°C'],
+      desc: 'The Hikari sweatshirt in a youth cut. Same quality fleece as the adult version, sized for younger athletes.',
+      details: ['350g fleece, 80% cotton / 20% polyester','Embroidered Hikari logo on chest','Kangaroo pocket','Ribbed cuffs and hem','Wash at 30°C, do not tumble dry'],
+      sizeChartKey: 'sweat_youth',
     },
-    shorts: {
-      name: 'Training Shorts', cat: 'Clothing', price: '€18', colors: 'Black', emoji: '🩳',
-      sizes: ['XS','S','M','L','XL','XXL'],
+    tee_man: {
+      name: 'T-shirt Men', cat: 'Clothing', price: '€22', colors: 'Navy / White', emoji: '👕', images: ['merch_tshirt.png', 'merch_tshirt_2.png'],
+      sizes: ['XS','S','M','L','XL','2XL','3XL','4XL','5XL'],
       cta: 'Add to Cart',
-      desc: 'Club training shorts with a comfortable elastic waistband and side pockets. Ideal for practice and open gym.',
-      details: ['Elastic waistband with drawstring','Side pockets','Length: approx. 20cm above knee','100% polyester','Machine washable at 40°C'],
+      desc: 'Get your own Hikari Cheerleading Club T-shirt and show off your skills in style! Crewneck design with printed Hikari logo.',
+      details: ['Crewneck','100% polyester','Wash at max 30°C, inside out','Do not tumble dry — preserves print quality','Delivered at training — no shipping available','⚠️ No returns or exchanges — please check sizing carefully'],
+      sizeChartKey: 'tee_man',
+    },
+    tee_woman: {
+      name: 'T-shirt Women', cat: 'Clothing', price: '€22', colors: 'Navy / White', emoji: '👕', images: ['merch_tshirt.png', 'merch_tshirt_2.png'],
+      sizes: ['XS','S','M','L','XL','2XL'],
+      cta: 'Add to Cart',
+      desc: 'Get your own Hikari Cheerleading Club T-shirt and show off your skills in style! Crewneck design with printed Hikari logo.',
+      details: ['Crewneck','100% polyester','Wash at max 30°C, inside out','Do not tumble dry — preserves print quality','Delivered at training — no shipping available','⚠️ No returns or exchanges — please check sizing carefully'],
+      sizeChartKey: 'tee_woman',
+    },
+    tee_child: {
+      name: 'T-shirt Child', cat: 'Clothing', price: '€18', colors: 'Navy / White', emoji: '👕', images: ['merch_tshirt.png', 'merch_tshirt_2.png'],
+      sizes: ['XS (3–4y)','S (5–6y)','M (7–8y)','L (9–11y)','XL (12–13y)'],
+      cta: 'Add to Cart',
+      desc: 'Get your own Hikari Cheerleading Club T-shirt and show off your skills in style! Crewneck design with printed Hikari logo, sized for young athletes.',
+      details: ['Crewneck','100% polyester','Wash at max 30°C, inside out','Do not tumble dry — preserves print quality','Delivered at training — no shipping available','⚠️ No returns or exchanges — please check sizing carefully'],
+      sizeChartKey: 'tee_child',
+    },
+    tee_nomads: {
+      name: 'Nomads T-shirt', cat: 'Clothing', price: '€24', colors: 'Navy / Gold', emoji: '👕', images: ['merch_tshirt_nomads.png', 'merch_tshirt_nomads_2.png'],
+      sizes: ['XS','S','M','L','XL','2XL','3XL','4XL','5XL'],
+      cta: 'Add to Cart',
+      desc: 'Official Hikari Nomads team t-shirt. Crewneck with front and back Nomads design.',
+      details: ['Crewneck','100% polyester','Wash at max 30°C, inside out','Do not tumble dry — preserves print quality','Delivered at training — no shipping available','⚠️ No returns or exchanges — please check sizing carefully'],
+      sizeChartKey: 'tee_man',
+    },
+    tee_rivals: {
+      name: 'Rivals T-shirt', cat: 'Clothing', price: '€24', colors: 'Navy / Gold', emoji: '👕', images: ['merch_tshirt_rivals.png', 'merch_tshirt_rivals_2.png'],
+      sizes: ['XS','S','M','L','XL','2XL','3XL','4XL','5XL'],
+      cta: 'Add to Cart',
+      desc: 'Official Hikari Rivals team t-shirt. Crewneck with front and back Rivals design.',
+      details: ['Crewneck','100% polyester','Wash at max 30°C, inside out','Do not tumble dry — preserves print quality','Delivered at training — no shipping available','⚠️ No returns or exchanges — please check sizing carefully'],
+      sizeChartKey: 'tee_man',
+    },
+    beanie: {
+      name: 'Beanie', cat: 'Accessories', price: '€16', colors: 'Navy / Gold', emoji: '🧢', images: ['merch_beanie.png'],
+      noSizes: true,
+      cta: 'Add to Cart',
+      desc: 'Soft ribbed beanie with embroidered Hikari H logo. One size fits most.',
+      details: ['100% acrylic knit','Embroidered Hikari H on cuff','One size fits most','Hand wash recommended'],
+    },
+    socks: {
+      name: 'Socks', cat: 'Accessories', price: '€8', colors: 'White / Navy / Gold', emoji: '🧦', images: ['merch_socks.png', 'merch_socks_2.png', 'merch_socks_3.png'],
+      sizes: ['S (35–38)','M (39–42)','L (43–46)'],
+      cta: 'Add to Cart',
+      desc: 'Hikari club socks with subtle logo detail on the ankle. Great for training or everyday wear.',
+      details: ['75% cotton, 20% polyester, 5% elastane','Reinforced heel and toe','Hikari emblem on ankle','Machine washable at 40°C'],
     },
     bow: {
-      name: 'Competition Bow', cat: 'Accessories', price: '€12', colors: 'Gold / Navy', isNew: true, emoji: '🎀',
+      name: 'Competition Bow', cat: 'Accessories', price: '€12', colors: 'White / Rhinestone', emoji: '🎀', images: ['merch_bow.png', 'merch_bow_2.png'],
+      noSizes: true,
       cta: 'Add to Cart',
       desc: 'Official Hikari competition bow in club colours. Required for all competitive team performances.',
       details: ['Official club colours: Gold and Navy','Pre-tied, clip fastening','One size fits all','Suitable for all hair types'],
     },
-    backpack: {
-      name: 'Club Backpack', cat: 'Accessories', price: '€38', colors: 'Navy', emoji: '🎒',
-      cta: 'Add to Cart',
-      desc: 'Spacious club backpack with dedicated shoe compartment. Fits all your training gear and competition essentials.',
-      details: ['Embroidered Hikari logo','Dedicated shoe / wet clothes compartment','Padded laptop sleeve (up to 15")','Side bottle pocket','Approx. 30L capacity'],
+  };
+
+  const SIZE_CHARTS = {
+    sweat_uni: {
+      note: 'Measurements refer to body measurements in cm. The garment runs true to size.',
+      tables: [
+        {
+          label: '',
+          headers: ['Size', 'XS', 'S', 'M', 'L', 'XL', 'XXL'],
+          rows: [
+            ['Chest (cm)', '84–88', '88–92', '92–96', '96–100', '100–104', '104–108'],
+            ['Waist (cm)', '70–74', '74–78', '78–82', '82–86', '86–90', '90–94'],
+            ['Body length (cm)', '64', '66', '68', '70', '72', '74'],
+          ]
+        }
+      ]
     },
-    bottle: {
-      name: 'Water Bottle', cat: 'Accessories', price: '€14', colors: 'White / Gold print', emoji: '💧',
-      cta: 'Add to Cart',
-      desc: 'Double-walled stainless steel bottle keeps drinks cold for 24 hours. Hikari logo in gold.',
-      details: ['500ml capacity','Double-walled stainless steel','Keeps cold 24h / warm 12h','Leak-proof lid','Dishwasher safe lid, hand wash bottle'],
+    sweat_youth: {
+      note: 'Measurements refer to body measurements in cm.',
+      tables: [
+        {
+          label: '',
+          headers: ['Size', '6–8y', '8–10y', '10–12y', '12–14y', '14–16y'],
+          rows: [
+            ['Height (cm)', '116–128', '128–140', '140–152', '152–164', '164–176'],
+            ['Chest (cm)', '62–67', '67–72', '72–77', '77–82', '82–87'],
+            ['Body length (cm)', '46', '49', '52', '55', '58'],
+          ]
+        }
+      ]
     },
-    keyring: {
-      name: 'Keyring', cat: 'Accessories', price: '€6', colors: 'Gold', emoji: '✨',
-      cta: 'Add to Cart',
-      desc: 'Enamel keyring featuring the Hikari H emblem. A small piece of club pride for everyday carry.',
-      details: ['Hard enamel on zinc alloy','Gold plating','Approx. 3cm diameter','Split ring attachment'],
+    tee_man: {
+      note: 'Garment measurements in cm. Measure the item flat.',
+      tables: [
+        {
+          label: '',
+          headers: ['Size', 'XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL'],
+          rows: [
+            ['Length (cm)', '67.5', '70', '72.5', '75', '77.5', '80', '82.5', '85', '87.5'],
+            ['Width (cm)',  '44.5', '48', '51.5', '55', '58.5', '62', '65.5', '69', '72.5'],
+          ]
+        }
+      ]
     },
-    uniform: {
-      name: 'Competition Uniform', cat: 'Uniforms', price: 'By order', colors: 'Contact us for sizing', emoji: '★',
-      emojiStyle: 'background:linear-gradient(135deg,#1C2B5E,#2a3d6e); color:var(--gold);',
-      cta: 'Contact Us',
-      ctaAction: "showContact('other')",
-      noSizes: true,
-      noQty: true,
-      desc: 'Official Hikari competition uniform. Ordered on behalf of the club at the start of each season. Contact us to register your interest or for sizing guidance.',
-      details: ['Custom-fit competition bodysuit','Club colours: Navy and Gold','Rhinestone detailing','Made to order — lead time 6–8 weeks','Only available to registered club members'],
+    tee_woman: {
+      note: 'Garment measurements in cm. Measure the item flat.',
+      tables: [
+        {
+          label: '',
+          headers: ['Size', 'XS', 'S', 'M', 'L', 'XL', '2XL'],
+          rows: [
+            ['Length (cm)', '65', '67', '69', '71', '73', '75'],
+            ['Width (cm)',  '40', '44', '48', '52', '56', '60'],
+          ]
+        }
+      ]
+    },
+    tee_child: {
+      note: 'Garment measurements in cm. Measure the item flat.',
+      tables: [
+        {
+          label: '',
+          headers: ['Size', 'XS (3–4y)', 'S (5–6y)', 'M (7–8y)', 'L (9–11y)', 'XL (12–13y)'],
+          rows: [
+            ['Length (cm)',       '45', '50', '55', '60', '65'],
+            ['Width (cm)',        '33', '36', '39', '52', '44.5'],
+            ['Sleeve length (cm)','14', '15', '16', '17', '18'],
+          ]
+        }
+      ]
     },
   };
+
+  let _currentSizeChartKey = null;
+
+  function openSizeChart() {
+    const p = PRODUCTS[document.getElementById('pd-name').dataset.productId];
+    if (!p || !p.sizeChartKey) return;
+    const chart = SIZE_CHARTS[p.sizeChartKey];
+    if (!chart) return;
+    _currentSizeChartKey = p.sizeChartKey;
+
+    document.getElementById('size-chart-title').textContent = p.name + ' — Size Guide';
+    document.getElementById('size-chart-note').textContent = chart.note || '';
+
+    const container = document.getElementById('size-chart-tables');
+    container.innerHTML = chart.tables.map(t => {
+      const thCells = t.headers.map((h, i) =>
+        `<th style="padding:9px 14px; text-align:${i===0?'left':'center'}; font-size:12px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--navy); border-bottom:2px solid var(--navy); white-space:nowrap;">${h}</th>`
+      ).join('');
+      const rows = t.rows.map((row, ri) =>
+        `<tr style="background:${ri%2===0?'#f9f8f6':'white'};">${row.map((cell, ci) =>
+          `<td style="padding:8px 14px; text-align:${ci===0?'left':'center'}; font-size:13px; color:${ci===0?'#333':'#555'}; font-weight:${ci===0?'600':'400'}; border-bottom:1px solid #eee;">${cell}</td>`
+        ).join('')}</tr>`
+      ).join('');
+      return `${t.label ? `<div style="font-size:12px; font-weight:700; color:var(--gold); text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px;">${t.label}</div>` : ''}
+      <div style="overflow-x:auto; margin-bottom:20px;"><table style="width:100%; border-collapse:collapse; min-width:360px;">
+        <thead><tr>${thCells}</tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>`;
+    }).join('');
+
+    const overlay = document.getElementById('size-chart-overlay');
+    overlay.style.display = 'flex';
+  }
+
+  function closeSizeChart() {
+    document.getElementById('size-chart-overlay').style.display = 'none';
+  }
+
+  document.getElementById('size-chart-overlay').addEventListener('click', function(e) {
+    if (e.target === this) closeSizeChart();
+  });
 
   let _pdQty = 1;
   let _pdCurrentCta = null;
@@ -4292,23 +4747,26 @@
     document.getElementById('pd-price').textContent = p.price;
     document.getElementById('pd-colors').textContent = p.colors || '';
 
-    // image
-    const imgEl = document.getElementById('pd-image-el');
-    imgEl.style.cssText = p.emojiStyle ? p.emojiStyle + ' aspect-ratio:1; display:flex; align-items:center; justify-content:center; font-size:120px; position:relative;' : '';
-    imgEl.childNodes[0].textContent = p.emoji;
+    // gallery
+    _galleryImages = p.images && p.images.length ? p.images : [];
+    _galleryIndex = 0;
+    renderGallery(p);
     const badge = document.getElementById('pd-new-badge');
     badge.style.display = p.isNew ? 'block' : 'none';
 
     // sizes
     const sizesSection = document.getElementById('pd-sizes-section');
     const sizesEl = document.getElementById('pd-sizes');
+    const sizeGuideLink = document.getElementById('pd-size-guide-link');
     if (p.sizes && p.sizes.length) {
       sizesSection.style.display = 'block';
       sizesEl.innerHTML = p.sizes.map(s =>
         `<div class="pd-size" onclick="selectSize(this)">${s}</div>`
       ).join('');
+      sizeGuideLink.style.display = p.sizeChartKey ? 'inline' : 'none';
     } else {
       sizesSection.style.display = 'none';
+      sizeGuideLink.style.display = 'none';
     }
 
     // qty
@@ -4327,8 +4785,84 @@
     // details list
     const dl = document.getElementById('pd-details-list');
     dl.innerHTML = (p.details || []).map(d =>
-      `<li style="font-size:14px; color:#555; padding-left:20px; position:relative;"><span style="position:absolute;left:0;color:var(--gold);">✦</span> ${d}</li>`
+      d.startsWith('⚠️')
+        ? `<li style="font-size:13px; color:#8a5200; background:#fff8ee; border:1px solid #f5d9a0; border-radius:3px; padding:8px 12px; margin-top:4px; list-style:none;">${d}</li>`
+        : `<li style="font-size:14px; color:#555; padding-left:20px; position:relative;"><span style="position:absolute;left:0;color:var(--gold);">✦</span> ${d}</li>`
     ).join('');
+  }
+
+  function filterShop(btn) {
+    const filter = btn.dataset.filter;
+    btn.closest('.filter-bar').querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('#page-shop .product-card').forEach(card => {
+      card.style.display = (filter === 'all' || card.dataset.cat === filter) ? '' : 'none';
+    });
+  }
+
+  let _galleryImages = [];
+  let _galleryIndex = 0;
+
+  function renderGallery(p) {
+    const mainEl = document.getElementById('pd-main-img');
+    const thumbsEl = document.getElementById('pd-thumbs');
+    const emojiEl = document.getElementById('pd-emoji-fallback');
+    const badge = document.getElementById('pd-new-badge');
+    const prevBtn = document.getElementById('pd-prev');
+    const nextBtn = document.getElementById('pd-next');
+
+    badge.style.display = p.isNew ? 'block' : 'none';
+
+    if (_galleryImages.length > 0) {
+      // Photo gallery mode
+      emojiEl.textContent = '';
+      setGalleryFrame(_galleryIndex);
+
+      // Thumbnails
+      if (_galleryImages.length > 1) {
+        thumbsEl.style.display = 'flex';
+        thumbsEl.innerHTML = _galleryImages.map((img, i) =>
+          `<div class="pd-thumb${i===0?' active':''}" style="background-image:url('${img}');" onclick="galleryGoTo(${i})"></div>`
+        ).join('');
+      } else {
+        thumbsEl.style.display = 'none';
+      }
+
+      prevBtn.style.display = _galleryImages.length > 1 ? 'flex' : 'none';
+      nextBtn.style.display = _galleryImages.length > 1 ? 'flex' : 'none';
+    } else {
+      // Emoji fallback
+      mainEl.style.backgroundImage = '';
+      mainEl.style.cssText = p.emojiStyle
+        ? p.emojiStyle + ' min-height:360px; display:flex; align-items:center; justify-content:center; font-size:120px; position:relative;'
+        : 'min-height:360px; display:flex; align-items:center; justify-content:center; font-size:120px; position:relative;';
+      emojiEl.textContent = p.emoji || '';
+      thumbsEl.style.display = 'none';
+      prevBtn.style.display = 'none';
+      nextBtn.style.display = 'none';
+    }
+  }
+
+  function setGalleryFrame(i) {
+    const mainEl = document.getElementById('pd-main-img');
+    mainEl.style.cssText = `background-image:url('${_galleryImages[i]}'); background-size:contain; background-repeat:no-repeat; background-position:center; min-height:360px; position:relative;`;
+    // update thumb highlights
+    document.querySelectorAll('.pd-thumb').forEach((t, ti) => {
+      t.classList.toggle('active', ti === i);
+    });
+    // update arrows
+    document.getElementById('pd-prev').style.display = _galleryImages.length > 1 ? 'flex' : 'none';
+    document.getElementById('pd-next').style.display = _galleryImages.length > 1 ? 'flex' : 'none';
+  }
+
+  function galleryNav(dir) {
+    _galleryIndex = (_galleryIndex + dir + _galleryImages.length) % _galleryImages.length;
+    setGalleryFrame(_galleryIndex);
+  }
+
+  function galleryGoTo(i) {
+    _galleryIndex = i;
+    setGalleryFrame(i);
   }
 
   function selectSize(el) {
@@ -4348,6 +4882,23 @@
     showPage('join');
     const sel = document.getElementById('join-team-select');
     if (sel && id) sel.value = id;
+
+    // Show trial notice for non-tryout teams
+    const team = id && TEAMS[id];
+    const isTrial = team && !team.tryout;
+    const notice = document.getElementById('join-trial-notice');
+    const heading = document.getElementById('join-form-heading');
+    const submitBtn = document.getElementById('join-submit-btn');
+    const pageTitle = document.getElementById('join-page-title');
+    const pageIntro = document.getElementById('join-page-intro');
+
+    if (notice) notice.style.display = isTrial ? 'block' : 'none';
+    if (heading) heading.textContent = isTrial ? 'Book Your Trial Lessons' : 'Registration Form';
+    if (submitBtn) submitBtn.textContent = isTrial ? 'Sign Up for Trial' : 'Send Registration';
+    if (pageTitle) pageTitle.innerHTML = isTrial ? 'Come<br>Try Out' : 'Join<br>Hikari';
+    if (pageIntro) pageIntro.textContent = isTrial
+      ? 'Fill in the form and we\'ll confirm your two free trial sessions. No commitment needed until you decide you want to join.'
+      : 'Fill in the form and we\'ll be in touch to find the right team for you.';
   }
 
   function showContact(subject) {
