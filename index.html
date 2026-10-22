@@ -139,8 +139,9 @@
 
   /* Big logo inside the hero — sits at very top of hero-left, left-aligned with text */
   .hero-big-logo {
-    width: 140px;
+    width: 220px;
     margin-bottom: 24px;
+    margin-left: -28px;
     display: block;
   }
 
@@ -1408,8 +1409,8 @@
     .phone-section-inner { grid-template-columns: 1fr; gap: 40px; padding: 0 20px; }
     .phone-section-header { padding: 0 20px; margin-bottom: 32px; }
     .phone-section-header h2 { font-size: 36px; }
-    .phone-frame { width: 180px; }
-    .phone-section-left { order: 2; }
+    .phone-frame { width: 260px; margin: 0 auto; }
+    .phone-section-left { order: 2; display: flex; justify-content: center; }
     .phone-section-right { order: 1; }
     .phone-level-title { font-size: 20px; }
     .phone-level { padding: 20px 0; gap: 14px; }
@@ -1670,6 +1671,22 @@
   }
   .pd-thumb.active { border-color: var(--navy); opacity: 1; }
   .pd-thumb:hover { opacity: 1; }
+  .pd-dots {
+    display: none;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 0 8px;
+    background: rgba(0,0,0,.04);
+    border-top: 1px solid rgba(0,0,0,.07);
+  }
+  .pd-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: rgba(0,0,0,.22);
+    cursor: pointer;
+    transition: background .15s, transform .15s;
+  }
+  .pd-dot.active { background: var(--navy); transform: scale(1.25); }
   /* keep old .pd-image for emoji-only fallback */
   .pd-image {
     background: linear-gradient(135deg, var(--offwhite), #e0dbd3);
@@ -1988,7 +2005,7 @@
       min-height: 100svh;
       justify-content: flex-start;
     }
-    .hero-big-logo { width: 150px; margin-left: 0; margin-right: 0; }
+    .hero-big-logo { width: 150px; margin-left: -19px; margin-right: 0; }
     .hero-actions { margin-top: auto; justify-content: center; align-self: stretch; }
     .hero-stats { align-self: stretch; justify-content: center; margin-top: 16px; padding-top: 20px; }
     nav { height: 56px; }
@@ -2134,23 +2151,7 @@
     }
     .coaches-grid { grid-template-columns: 1fr; }
     .coach-bio { display: none; }
-    /* Shop — horizontal swipe carousel on phones */
-    .shop-grid {
-      display: flex !important;
-      flex-direction: row;
-      overflow-x: scroll;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-      gap: 12px;
-      padding: 20px 20px 28px;
-      scrollbar-width: none;
-    }
-    .shop-grid::-webkit-scrollbar { display: none; }
-    .shop-grid .product-card {
-      flex: 0 0 72vw;
-      max-width: 280px;
-      scroll-snap-align: start;
-    }
+    .shop-grid { grid-template-columns: 1fr 1fr; }
     .values-grid { grid-template-columns: 1fr; }
     .form-row { grid-template-columns: 1fr; }
     .club-info-grid { grid-template-columns: 1fr; }
@@ -2175,11 +2176,14 @@
     .hero-left { padding: 64px 20px 36px; }
     .page-hero h1 { font-size: clamp(36px, 8vw, 52px); }
 
-    /* Product detail — single column, no sticky gallery */
+    /* Product detail — single column, swipe gallery */
     .product-detail-hero { gap: 0; }
     .pd-gallery { min-height: 260px; max-height: 60vw; }
     .pd-main-img { min-height: 220px; }
     .pd-info { padding: 24px 16px; }
+    .pd-arrow { display: none; }
+    .pd-thumbs { display: none !important; }
+    .pd-dots { display: flex !important; }
 
     /* Team detail info strip — 2 per row */
     .info-strip-item { width: 50%; }
@@ -3388,6 +3392,7 @@
         <button class="pd-arrow pd-arrow-next" id="pd-next" onclick="galleryNav(1)">&#8250;</button>
       </div>
       <div class="pd-thumbs" id="pd-thumbs"></div>
+      <div class="pd-dots" id="pd-dots"></div>
     </div>
     <div class="pd-info">
       <div class="pd-cat" id="pd-cat">Clothing</div>
@@ -4773,6 +4778,7 @@
   function renderGallery(p) {
     const mainEl = document.getElementById('pd-main-img');
     const thumbsEl = document.getElementById('pd-thumbs');
+    const dotsEl = document.getElementById('pd-dots');
     const emojiEl = document.getElementById('pd-emoji-fallback');
     const badge = document.getElementById('pd-new-badge');
     const prevBtn = document.getElementById('pd-prev');
@@ -4785,14 +4791,19 @@
       emojiEl.textContent = '';
       setGalleryFrame(_galleryIndex);
 
-      // Thumbnails
       if (_galleryImages.length > 1) {
+        // Thumbnails (desktop)
         thumbsEl.style.display = 'flex';
         thumbsEl.innerHTML = _galleryImages.map((img, i) =>
           `<div class="pd-thumb${i===0?' active':''}" style="background-image:url('${img}');" onclick="galleryGoTo(${i})"></div>`
         ).join('');
+        // Dots (mobile)
+        dotsEl.innerHTML = _galleryImages.map((_, i) =>
+          `<div class="pd-dot${i===0?' active':''}" onclick="galleryGoTo(${i})"></div>`
+        ).join('');
       } else {
         thumbsEl.style.display = 'none';
+        dotsEl.innerHTML = '';
       }
 
       prevBtn.style.display = _galleryImages.length > 1 ? 'flex' : 'none';
@@ -4805,6 +4816,7 @@
         : 'min-height:360px; display:flex; align-items:center; justify-content:center; font-size:120px; position:relative;';
       emojiEl.textContent = p.emoji || '';
       thumbsEl.style.display = 'none';
+      dotsEl.innerHTML = '';
       prevBtn.style.display = 'none';
       nextBtn.style.display = 'none';
     }
@@ -4814,9 +4826,9 @@
     const mainEl = document.getElementById('pd-main-img');
     mainEl.style.cssText = `background-image:url('${_galleryImages[i]}'); background-size:contain; background-repeat:no-repeat; background-position:center; min-height:360px; position:relative;`;
     // update thumb highlights
-    document.querySelectorAll('.pd-thumb').forEach((t, ti) => {
-      t.classList.toggle('active', ti === i);
-    });
+    document.querySelectorAll('.pd-thumb').forEach((t, ti) => t.classList.toggle('active', ti === i));
+    // update dot highlights
+    document.querySelectorAll('.pd-dot').forEach((d, di) => d.classList.toggle('active', di === i));
     // update arrows
     document.getElementById('pd-prev').style.display = _galleryImages.length > 1 ? 'flex' : 'none';
     document.getElementById('pd-next').style.display = _galleryImages.length > 1 ? 'flex' : 'none';
@@ -4831,6 +4843,24 @@
     _galleryIndex = i;
     setGalleryFrame(i);
   }
+
+  // Touch swipe on product image
+  (function() {
+    let _swipeX = null;
+    document.addEventListener('touchstart', function(e) {
+      const el = e.target.closest('#pd-main-img');
+      if (!el) return;
+      _swipeX = e.touches[0].clientX;
+    }, { passive: true });
+    document.addEventListener('touchend', function(e) {
+      if (_swipeX === null) return;
+      const el = e.target.closest('#pd-main-img');
+      if (!el) { _swipeX = null; return; }
+      const dx = e.changedTouches[0].clientX - _swipeX;
+      if (Math.abs(dx) > 40 && _galleryImages.length > 1) galleryNav(dx < 0 ? 1 : -1);
+      _swipeX = null;
+    }, { passive: true });
+  })();
 
   function selectSize(el) {
     el.closest('.pd-sizes').querySelectorAll('.pd-size').forEach(s => s.classList.remove('selected'));
