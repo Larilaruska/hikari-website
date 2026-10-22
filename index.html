@@ -1835,7 +1835,7 @@
   .ed-info-card-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
   .ed-info-card-link { font-size: 13px; color: var(--navy); font-weight: 500; text-decoration: none; display: inline-block; margin-top: 5px; }
   .ed-info-card-link:hover { text-decoration: underline; }
-  @media (max-width: 540px) { .ed-info-cards { grid-template-columns: 1fr; } }
+  /* info-cards already single-column via the 760px block above */
   .ed-body {
     display: grid; grid-template-columns: 1fr 340px; gap: 48px;
     max-width: 1140px; margin: 0 auto; padding: 48px 48px;
@@ -1849,8 +1849,13 @@
   /* payment/gym sheet close button positioning */
   .payment-sheet-body { position: relative; }
   @media (max-width: 760px) {
-    .ed-body { grid-template-columns: 1fr; padding: 32px 20px; }
+    .ed-body { display: block; padding: 24px 20px; }
+    .ed-body > div { width: 100%; margin-bottom: 20px; }
+    .ed-body > div:last-child { margin-bottom: 0; }
     .ed-hero-content { padding: 32px 20px; }
+    .ed-meta-strip { padding: 20px; }
+    .ed-info-cards { grid-template-columns: 1fr; max-width: none; width: 100%; gap: 12px; }
+    .ed-sidebar-card { width: 100%; box-sizing: border-box; margin-bottom: 0; padding: 0; background: none; border-radius: 0; }
   }
 
   /* ────────────────────────────────────────────
@@ -2838,10 +2843,7 @@
           <div class="price-period"></div>
         </div>
         <ul class="pricing-includes"></ul>
-        <div class="td-trial-callout" style="display:none; background:rgba(200,155,42,.18); border:1px solid rgba(200,155,42,.4); border-radius:4px; padding:12px 14px; margin-bottom:14px;">
-          <div style="font-size:14px; font-weight:700; color:var(--gold); letter-spacing:.04em; text-transform:uppercase; margin-bottom:4px;">2 Free Trial Lessons</div>
-          <div style="font-size:14px; color:rgba(255,255,255,.8); line-height:1.5;">Your first 2 sessions are completely free. Come and get a feel for the team — you only commit to membership after that.</div>
-        </div>
+        <p class="td-trial-callout" style="display:none; font-size:14px; color:rgba(255,255,255,.8); line-height:1.5; margin-bottom:14px;">Your first 2 sessions are free — come and get a feel for the team before committing to membership.</p>
         <p class="td-tryout-note" style="font-size:14px; color:rgba(255,255,255,.55); margin-bottom:16px; max-width:none;"></p>
         <button class="btn btn-primary td-join-btn" onclick="showJoin()" style="width:100%; text-align:center;">Register for This Team</button>
       </div>
@@ -2888,7 +2890,7 @@
       <p id="join-page-intro">Fill in the form and we'll be in touch to find the right team for you.</p>
       <ul class="join-reasons">
         <li>No experience needed — we have beginner teams for all ages</li>
-        <li><strong style="white-space:nowrap;">2 free trial lessons</strong> for all new athletes on most teams</li>
+        <li>2 free trial lessons for all new athletes on most teams</li>
         <li>You only commit to membership after your trial — no pressure</li>
         <li>All equipment provided for your first training</li>
       </ul>
@@ -3496,7 +3498,7 @@
         </div>
         <div>
           <div style="background:var(--navy); border-radius:4px; padding:36px; color:var(--white);">
-            <div style="font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:.06em; color:rgba(255,255,255,.5); margin-bottom:4px;">Annual contribution</div>
+            <div style="font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:.04em; color:var(--white); margin-bottom:8px;">Annual contribution</div>
             <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:24px;">
               <div style="font-family:'Bebas Neue',sans-serif; font-size:64px; color:var(--gold); line-height:1; letter-spacing:.02em;">€50</div>
               <div style="font-size:15px; color:var(--white); padding-bottom:6px;">per year</div>
@@ -4403,7 +4405,7 @@
       setTimeout(function() {
         lbl.textContent = 'Share';
         btn.style.borderColor = '';
-        btn.style.color = '';
+        btn.style.color = 'var(--navy)';
       }, 2000);
     }).catch(function() {
       // Fallback: prompt with URL
