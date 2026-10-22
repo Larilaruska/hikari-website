@@ -2021,36 +2021,40 @@
     /* Labels, chips, badges — minimum 13px */
     .eyebrow { font-size: 13px; }
     .hero-stat-label { font-size: 13px; }
-    .meta-chip { font-size: 13px; }
-    .team-link { font-size: 13px; }
-    .event-date-month { font-size: 13px; }
-    .event-type-chip { font-size: 13px; padding: 3px 10px; }
-    .filter-btn { font-size: 13px; }
-    .info-strip-label { font-size: 13px; }
-    .coach-role { font-size: 13px; }
-    .cert-chip { font-size: 13px; }
-    .form-label { font-size: 13px; }
-    .product-cat { font-size: 13px; }
-    .cart-item-meta { font-size: 13px; }
-    .cart-item-remove { font-size: 13px; }
-    .cart-shipping-note { font-size: 13px; }
-    .pd-cat { font-size: 13px; }
-    .pd-label { font-size: 13px; }
-    .pd-size-option { font-size: 13px; }
-    .pd-shipping { font-size: 13px; }
-    .ed-info-card-label { font-size: 13px; }
-    .ed-info-card-sub { font-size: 13px; }
-    .ed-info-card-link { font-size: 13px; }
-    .sleg { font-size: 13px; }
-    .list-time { font-size: 13px; }
-    .list-sub { font-size: 13px; }
-    .lbadge { font-size: 13px; padding: 4px 10px; }
-    .slot-time { font-size: 13px; opacity: .8; }
-    .slot-name { font-size: 13px; }
-    .slot-sub { font-size: 13px; opacity: .75; }
-    .list-day-head span { font-size: 13px; }
+    .meta-chip { font-size: 13px !important; }
+    .team-link { font-size: 13px !important; }
+    .event-date-month { font-size: 13px !important; }
+    .event-type-chip { font-size: 13px !important; padding: 3px 10px !important; }
+    .filter-btn { font-size: 13px !important; }
+    .info-strip-label { font-size: 13px !important; }
+    .coach-role { font-size: 13px !important; }
+    .cert-chip { font-size: 13px !important; }
+    .form-label { font-size: 13px !important; }
+    .product-cat { font-size: 13px !important; }
+    .cart-item-meta { font-size: 13px !important; }
+    .cart-item-remove { font-size: 13px !important; }
+    .cart-shipping-note { font-size: 13px !important; }
+    .pd-cat { font-size: 13px !important; }
+    .pd-label { font-size: 13px !important; }
+    .pd-size-option { font-size: 13px !important; }
+    .pd-shipping { font-size: 13px !important; }
+    .ed-info-card-label { font-size: 13px !important; }
+    .ed-info-card-sub { font-size: 13px !important; }
+    .ed-info-card-link { font-size: 13px !important; }
+    .sleg { font-size: 15px !important; }
+    .sleg-dot { width: 13px !important; height: 13px !important; }
+    .list-time { font-size: 15px !important; }
+    .list-name { font-size: 16px !important; }
+    .list-sub { font-size: 14px !important; }
+    .lbadge { font-size: 14px !important; padding: 5px 12px !important; }
+    .slot-time { font-size: 14px !important; opacity: .9 !important; }
+    .slot-name { font-size: 14px !important; }
+    .slot-sub { font-size: 14px !important; opacity: .85 !important; }
+    .list-day-head { font-size: 20px !important; }
+    .list-day-head span { font-size: 14px !important; }
     .footer-bottom { font-size: 13px; }
     .event-meta { font-size: 13px; }
+    .sched-note { font-size: 12px !important; }
 
     /* Team detail */
     .team-detail-body { grid-template-columns: 1fr; padding: 32px 20px; gap: 32px; }
@@ -2216,8 +2220,9 @@
     gap: 10px;
     margin-bottom: 24px;
   }
-  .sleg { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: var(--text); }
-  .sleg-dot { width: 11px; height: 11px; border-radius: 2px; flex-shrink: 0; }
+  .sleg { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: var(--text); }
+  .sleg-dot { width: 13px; height: 13px; border-radius: 2px; flex-shrink: 0; }
+  .sched-note { font-size: 13px; color: var(--muted); }
 
   .week-grid {
     display: grid;
@@ -2242,9 +2247,9 @@
     transition: transform .12s, box-shadow .12s;
   }
   .slot:hover { transform: translateY(-1px); box-shadow: 0 3px 12px rgba(0,0,0,.15); z-index:1; position:relative; }
-  .slot-time { font-size: 10px; font-weight: 600; opacity: .7; margin-bottom: 3px; line-height: 1; letter-spacing:.02em; }
-  .slot-name { font-size: 12px; font-weight: 600; line-height: 1.3; }
-  .slot-sub  { font-size: 10px; opacity: .65; margin-top: 2px; line-height: 1.2; }
+  .slot-time { font-size: 11px; font-weight: 600; opacity: .8; margin-bottom: 3px; line-height: 1; letter-spacing:.02em; }
+  .slot-name { font-size: 13px; font-weight: 600; line-height: 1.3; }
+  .slot-sub  { font-size: 11px; opacity: .75; margin-top: 2px; line-height: 1.2; }
 
   .s-opengym  { background: #EAE7E0; color: #555; }
   .s-dev      { background: #D4DDF5; color: var(--navy); }
@@ -2291,12 +2296,12 @@
   .lr-comp     { border-left-color: var(--navy); }
   .lr-rivals   { border-left-color: #111D42; }
   .lr-worldcup { border-left-color: var(--gold); }
-  .list-time { font-size: 12px; font-weight: 600; color: var(--muted); white-space: nowrap; }
-  .list-name { font-size: 14px; font-weight: 600; color: var(--navy); }
-  .list-sub  { font-size: 11px; color: var(--muted); margin-top:1px; }
+  .list-time { font-size: 15px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+  .list-name { font-size: 16px; font-weight: 600; color: var(--navy); }
+  .list-sub  { font-size: 14px; color: var(--muted); margin-top:1px; }
   .lbadge {
-    font-size: 10px; font-weight: 600; letter-spacing:.06em; text-transform:uppercase;
-    padding: 3px 8px; border-radius: 2px; white-space: nowrap;
+    font-size: 13px; font-weight: 600; letter-spacing:.06em; text-transform:uppercase;
+    padding: 4px 10px; border-radius: 2px; white-space: nowrap;
   }
   .lb-open { background:#EAE7E0; color:#666; }
   .lb-dev  { background:#D4DDF5; color:var(--navy); }
@@ -2624,58 +2629,58 @@
         <div style="display:grid; grid-template-columns:90px 1fr; border-bottom:1px solid var(--border);">
           <div style="padding:14px 16px; font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:.06em; color:var(--muted); background:var(--offwhite); border-right:1px solid var(--border); display:flex; align-items:center;">Mon</div>
           <div style="padding:10px 14px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-            <span style="background:#EAE7E0;color:#555;font-size:11px;font-weight:600;padding:4px 10px;border-radius:2px;">19:00–22:00 · Open Gym</span>
+            <span style="background:#EAE7E0;color:#555;font-size:14px;font-weight:600;padding:5px 12px;border-radius:2px;">19:00–22:00 · Open Gym</span>
           </div>
         </div>
 
         <div style="display:grid; grid-template-columns:90px 1fr; border-bottom:1px solid var(--border);">
           <div style="padding:14px 16px; font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:.06em; color:var(--muted); background:var(--offwhite); border-right:1px solid var(--border); display:flex; align-items:center;">Tue</div>
           <div style="padding:10px 14px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-            <span style="background:#EAE7E0;color:#555;font-size:11px;font-weight:600;padding:4px 10px;border-radius:2px;">19:00–22:00 · Tumbling &amp; Open Gym</span>
+            <span style="background:#EAE7E0;color:#555;font-size:14px;font-weight:600;padding:5px 12px;border-radius:2px;">19:00–22:00 · Tumbling &amp; Open Gym</span>
           </div>
         </div>
 
         <div style="display:grid; grid-template-columns:90px 1fr; border-bottom:1px solid var(--border);">
           <div style="padding:14px 16px; font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:.06em; color:var(--navy); background:var(--offwhite); border-right:1px solid var(--border); display:flex; align-items:center; font-weight:700;">Wed</div>
           <div style="padding:10px 14px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-            <span style="background:var(--navy);color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:2px;">17:30–19:00 · Eclipse</span>
-            <span style="background:#111D42;color:#C89B2A;font-size:11px;font-weight:600;padding:4px 10px;border-radius:2px;">19:30–21:00 · Blaze</span>
+            <span style="background:var(--navy);color:#fff;font-size:14px;font-weight:600;padding:5px 12px;border-radius:2px;">17:30–19:00 · Eclipse</span>
+            <span style="background:#111D42;color:#C89B2A;font-size:14px;font-weight:600;padding:5px 12px;border-radius:2px;">19:30–21:00 · Blaze</span>
           </div>
         </div>
 
         <div style="display:grid; grid-template-columns:90px 1fr; border-bottom:1px solid var(--border);">
           <div style="padding:14px 16px; font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:.06em; color:var(--muted); background:var(--offwhite); border-right:1px solid var(--border); display:flex; align-items:center;">Thu</div>
           <div style="padding:10px 14px; display:flex; align-items:center;">
-            <span style="font-size:12px; color:var(--muted);">No training</span>
+            <span style="font-size:14px; color:var(--muted);">No training</span>
           </div>
         </div>
 
         <div style="display:grid; grid-template-columns:90px 1fr; border-bottom:1px solid var(--border);">
           <div style="padding:14px 16px; font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:.06em; color:var(--navy); background:var(--offwhite); border-right:1px solid var(--border); display:flex; align-items:center; font-weight:700;">Fri</div>
           <div style="padding:10px 14px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-            <span style="background:#D4DDF5;color:var(--navy);font-size:11px;font-weight:600;padding:4px 10px;border-radius:2px;">17:30–18:30 · Nova</span>
-            <span style="background:#D4DDF5;color:var(--navy);font-size:11px;font-weight:600;padding:4px 10px;border-radius:2px;">18:15–19:45 · Nebula + Eclipse</span>
-            <span style="background:#D4DDF5;color:var(--navy);font-size:11px;font-weight:600;padding:4px 10px;border-radius:2px;">19:30–22:00 · Halo</span>
+            <span style="background:#D4DDF5;color:var(--navy);font-size:14px;font-weight:600;padding:5px 12px;border-radius:2px;">17:30–18:30 · Nova</span>
+            <span style="background:#D4DDF5;color:var(--navy);font-size:14px;font-weight:600;padding:5px 12px;border-radius:2px;">18:15–19:45 · Nebula + Eclipse</span>
+            <span style="background:#D4DDF5;color:var(--navy);font-size:14px;font-weight:600;padding:5px 12px;border-radius:2px;">19:30–22:00 · Halo</span>
           </div>
         </div>
 
         <div style="display:grid; grid-template-columns:90px 1fr; border-bottom:1px solid var(--border);">
           <div style="padding:14px 16px; font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:.06em; color:var(--muted); background:var(--offwhite); border-right:1px solid var(--border); display:flex; align-items:center;">Sat</div>
           <div style="padding:10px 14px; display:flex; align-items:center;">
-            <span style="font-size:12px; color:var(--muted);">No training</span>
+            <span style="font-size:14px; color:var(--muted);">No training</span>
           </div>
         </div>
 
         <div style="display:grid; grid-template-columns:90px 1fr;">
           <div style="padding:14px 16px; font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:.06em; color:var(--navy); background:var(--offwhite); border-right:1px solid var(--border); display:flex; align-items:center; font-weight:700;">Sun</div>
           <div style="padding:10px 14px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-            <span style="background:#111D42;color:#C89B2A;font-size:11px;font-weight:600;padding:4px 10px;border-radius:2px;">10:00–14:00 · Blaze</span>
-            <span style="background:#EAE7E0;color:#555;font-size:11px;font-weight:600;padding:4px 10px;border-radius:2px;">14:00–16:00 · Open Gym</span>
+            <span style="background:#111D42;color:#C89B2A;font-size:14px;font-weight:600;padding:5px 12px;border-radius:2px;">10:00–14:00 · Blaze</span>
+            <span style="background:#EAE7E0;color:#555;font-size:14px;font-weight:600;padding:5px 12px;border-radius:2px;">14:00–16:00 · Open Gym</span>
           </div>
         </div>
 
       </div>
-      <p style="font-size:12px;color:var(--muted);margin-top:12px;">All sessions at Koperslagerstraat 8, Rotterdam. Open Gym is open to all Hikari members.</p>
+      <p class="sched-note" style="color:var(--muted);margin-top:12px;">All sessions at Koperslagerstraat 8, Rotterdam. Open Gym is open to all Hikari members.</p>
     </div>
   </section>
 
@@ -3547,7 +3552,7 @@
     <div class="container">
       <div class="eyebrow">When We Train</div>
       <h1 class="title">Training Schedule</h1>
-      <p>All sessions at Koperslagerstraat 8, Rotterdam, unless communicated otherwise.</p>
+      <p class="sched-note">All sessions at Koperslagerstraat 8, Rotterdam, unless communicated otherwise.</p>
     </div>
   </div>
 
