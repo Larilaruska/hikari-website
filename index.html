@@ -3149,30 +3149,14 @@
 
   <div class="events-page-grid">
     <div>
-      <!-- OPEN GYM SECTION -->
-      <div style="border:1px solid var(--border); border-radius:4px; overflow:hidden; margin-bottom:0;">
-        <!-- Day header -->
-        <div style="background:var(--navy); padding:14px 24px; display:flex; align-items:center; gap:20px;">
-          <div style="display:flex; align-items:center; gap:12px;">
-            <span style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:16px; color:var(--gold); letter-spacing:.06em; line-height:1;">Tuesday</span>
-            <span style="font-size: 13px; color:rgba(255,255,255,.4);">·</span>
-            <span style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:16px; color:var(--gold); letter-spacing:.06em; line-height:1;">Saturday</span>
-          </div>
-          <span class="event-type-chip" style="background:rgba(255,255,255,.1); color:rgba(255,255,255,.7); margin-bottom:0; margin-left:auto;">Recurring</span>
-        </div>
-        <!-- Content -->
-        <div style="padding:20px 24px 24px;">
-          <div class="event-name" style="margin-bottom:6px;">Open Gym</div>
-          <p class="event-detail" style="margin-bottom:16px;">Open to all Hikari athletes as part of their membership. External athletes welcome on a drop-in basis. · Koperslagerstraat 8, Rotterdam</p>
-          <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:center;">
-            <div style="display:flex; gap:16px; flex-wrap:wrap;">
-              <span style="font-size: 13px; color:var(--muted);">Tue <strong style="color:var(--navy);">20:00–22:00</strong></span>
-              <span style="font-size: 13px; color:var(--muted);">Sat <strong style="color:var(--navy);">10:00–12:00</strong></span>
-              <span style="font-size: 13px; color:var(--muted);">Members <strong style="color:var(--navy);">free · no booking needed</strong></span>
-              <span style="font-size: 13px; color:var(--muted);">Guests: drop-in <strong style="color:var(--navy);">€8</strong> · monthly pass <strong style="color:var(--navy);">€25</strong></span>
-            </div>
-            <button class="btn btn-outline" onclick="openGymBooking()" style="padding:8px 20px; font-size:13px; margin-left:auto;">Book a Spot →</button>
-          </div>
+      <div class="eyebrow" style="margin-bottom:20px;">Open Gym</div>
+
+      <div class="event-card" style="cursor:pointer;" onclick="showEvent('opengym')">
+        <div class="event-date-box" style="background:var(--navy); display:flex; align-items:center; justify-content:center; font-size:26px; color:var(--gold);">↻</div>
+        <div>
+          <div class="event-name">Open Gym</div>
+          <span class="event-type-chip" style="margin-bottom:8px; display:inline-block; background:rgba(28,43,94,.1); color:var(--navy);">Recurring</span>
+          <p class="event-detail">Every Tuesday &amp; Saturday · Members free · Guests from €8 drop-in · Koperslagerstraat 8, Rotterdam</p>
         </div>
       </div>
 
@@ -3244,8 +3228,12 @@
 
 <!-- EVENT DETAIL PAGE -->
 <div id="page-event-detail" class="page">
-  <div style="padding:20px max(16px, calc((100vw - 1140px) / 2 + 48px)); background:var(--white); border-bottom:1px solid var(--border);">
-    <span style="font-size:13px; color:var(--navy); cursor:pointer; font-weight:500;" onclick="showPage('events')">← Back to Events</span>
+  <div style="padding:14px max(16px, calc((100vw - 1140px) / 2 + 48px)); background:var(--white); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;">
+    <span style="font-size:13px; color:var(--navy); cursor:pointer; font-weight:500;" onclick="history.replaceState(null,'',location.pathname); showPage('events')">← Back to Events</span>
+    <button id="ed-share-btn" onclick="copyEventLink()" style="display:flex; align-items:center; gap:6px; background:none; border:1px solid var(--border); border-radius:4px; padding:6px 12px; font-size:13px; font-weight:500; color:var(--navy); cursor:pointer;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      <span id="ed-share-label">Share</span>
+    </button>
   </div>
   <div class="event-detail-hero">
     <div class="ed-hero-img" id="ed-hero-img"></div>
@@ -4195,6 +4183,17 @@
   }
 
   const EVENTS = {
+    opengym: {
+      title: 'Open Gym',
+      day: null, month: null, date: 'Every Tuesday & Saturday',
+      time: 'Tue 20:00–22:00  ·  Sat 10:00–12:00',
+      location: 'Koperslagerstraat 8, 3077 MD Rotterdam',
+      type: 'Recurring', typeClass: '',
+      emoji: '🏋️',
+      emojiStyle: 'font-size:80px;',
+      description: 'Open Gym is available to all Hikari members as part of their membership. Use the gym floor to practice skills, work on tumbling, or train outside of regular team sessions.\n\nGuests and external athletes are welcome to join on a drop-in basis — no registration needed for members.\n\nSessions run every Tuesday evening and Saturday morning at our gym in Rotterdam.',
+      registration: 'booking',
+    },
     openday: {
       title: 'Open Training Day',
       day: '14', month: 'Sep', date: '14 September 2026',
@@ -4249,6 +4248,7 @@
     const e = EVENTS[id];
     if (!e) return;
     _currentEventId = id;
+    history.replaceState(null, '', '#event/' + id);
     showPage('event-detail');
 
     // hero
@@ -4286,6 +4286,25 @@
         <div class="form-group"><label class="form-label">Name</label><input class="form-input" id="ed-reg-name" placeholder="Your name"></div>
         <div class="form-group" style="margin-top:12px;"><label class="form-label">Email</label><input class="form-input" id="ed-reg-email" type="email" placeholder="you@example.com"></div>
         <button class="btn btn-primary" style="width:100%; margin-top:16px;" onclick="completeRegistration('${id}')">Register for Free</button>`;
+    } else if (e.registration === 'booking') {
+      regCard.innerHTML = `
+        <div style="font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--navy); letter-spacing:.04em; margin-bottom:4px;">Join a Session</div>
+        <div style="background:rgba(28,43,94,.06); border-radius:4px; padding:12px 14px; margin-bottom:16px;">
+          <div style="font-size:13px; font-weight:600; color:var(--navy); margin-bottom:2px;">Members</div>
+          <div style="font-size:13px; color:var(--muted);">Free · no booking needed, just show up</div>
+        </div>
+        <div style="background:rgba(28,43,94,.06); border-radius:4px; padding:12px 14px; margin-bottom:20px;">
+          <div style="font-size:13px; font-weight:600; color:var(--navy); margin-bottom:6px;">Guests &amp; external athletes</div>
+          <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:2px;">
+            <div style="font-size:13px; color:var(--muted);">Drop-in (per session)</div>
+            <div style="font-size:15px; font-weight:700; color:var(--navy);">€8</div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:baseline;">
+            <div style="font-size:13px; color:var(--muted);">Monthly pass</div>
+            <div style="font-size:15px; font-weight:700; color:var(--navy);">€25</div>
+          </div>
+        </div>
+        <button class="btn btn-primary" style="width:100%;" onclick="openGymBooking()">Book a Spot →</button>`;
     } else {
       regCard.innerHTML = `
         <div style="font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--navy); letter-spacing:.04em; margin-bottom:12px;">Free Entry</div>
@@ -4361,6 +4380,35 @@
   const _gymDayConfig = { 2: { label: 'Tue', time: '20:00–22:00' }, 6: { label: 'Sat', time: '10:00–12:00' } };
   const _gymMonths = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const _gymMonthsFull = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  function copyEventLink() {
+    const url = location.href;
+    navigator.clipboard.writeText(url).then(function() {
+      const lbl = document.getElementById('ed-share-label');
+      const btn = document.getElementById('ed-share-btn');
+      if (!lbl) return;
+      lbl.textContent = 'Copied!';
+      btn.style.borderColor = '#2a7a4a';
+      btn.style.color = '#2a7a4a';
+      setTimeout(function() {
+        lbl.textContent = 'Share';
+        btn.style.borderColor = '';
+        btn.style.color = '';
+      }, 2000);
+    }).catch(function() {
+      // Fallback: prompt with URL
+      prompt('Copy this link:', url);
+    });
+  }
+
+  // On load: if URL has #event/<id>, go straight to that event
+  (function() {
+    const hash = location.hash;
+    if (hash && hash.startsWith('#event/')) {
+      const id = hash.slice(7);
+      if (EVENTS[id]) showEvent(id);
+    }
+  })();
 
   function openGymBooking() {
     _gymType = 'single';
