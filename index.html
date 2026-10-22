@@ -695,6 +695,7 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 24px;
     padding: 40px 0;
+    background: var(--white);
     max-width: 1140px;
     margin: 0 auto;
     padding-left: 48px;
@@ -1116,6 +1117,7 @@
     grid-template-columns: repeat(4, 1fr);
     gap: 24px;
     padding: 40px 48px;
+    background: var(--white);
     max-width: 1140px;
     margin: 0 auto;
   }
@@ -1495,6 +1497,7 @@
     grid-template-columns: repeat(4, 1fr);
     gap: 24px;
     padding: 40px 48px;
+    background: var(--white);
   }
   .product-card {
     background: var(--white);
@@ -1951,6 +1954,9 @@
     overflow-y: auto;
     border-top: 1px solid var(--border);
   }
+  @media (max-width: 760px) {
+    .nav-drawer { top: 56px; } /* match mobile nav height */
+  }
   .nav-drawer.open { display: flex; }
   .nav-drawer a {
     display: block;
@@ -1981,7 +1987,7 @@
     /* Sections */
     .section { padding: 56px 0; }
     .teams-full-grid, .coaches-grid, .shop-grid { padding-left: 20px; padding-right: 20px; }
-    .events-page-grid { padding: 24px 20px; }
+    .events-page-grid { padding: 20px 20px 24px; }
     .cta-band { padding: 48px 20px; }
     .page-hero { padding: 48px 0 32px; margin-bottom: 0; }
     .page-hero .container, .container { padding-left: 20px; padding-right: 20px; }
@@ -1989,6 +1995,11 @@
     .teams-full-grid { padding: 24px 20px; grid-template-columns: 1fr 1fr; gap: 16px; }
     .coaches-grid { grid-template-columns: 1fr 1fr; padding: 24px 20px; gap: 16px; }
     .shop-grid { grid-template-columns: 1fr 1fr; padding: 24px 20px; gap: 16px; }
+    /* No gap between page-hero and first content section */
+    .page-hero + * { margin-top: 0 !important; padding-top: 16px !important; border-top: 1px solid var(--border); position: relative; z-index: 1; }
+    /* No gap between filter-bar and content grid — give grids white bg to match filter-bar */
+    .filter-bar + * { background: var(--white); }
+    .teams-full-grid, .shop-grid, .coaches-grid { background: var(--white); }
     .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
 
     /* Hero */
@@ -2024,6 +2035,7 @@
     .hero-stats { align-self: stretch; justify-content: center; margin-top: 16px; padding-top: 20px; }
     nav { height: 56px; }
     nav { padding: 0 20px; }
+    .page { padding-top: 56px; } /* match nav height — prevents offwhite gap */
     .cart-icon-btn { display: none; }
     .hero-stats { gap: 24px; justify-content: flex-start; margin-top: 28px; padding-top: 24px; }
 
@@ -2220,13 +2232,11 @@
 
     /* Reduce section padding on phones */
     .section { padding: 40px 0; }
-    /* No gap between page-hero and whatever follows */
-    .page-hero + * {
-      margin-top: -1px;
-      border-top: 1px solid rgba(0,0,0,.10);
-      position: relative;
-      z-index: 1;
-    }
+    /* No gap between page-hero and first section (reinforce for small screens) */
+    .page-hero + * { margin-top: 0 !important; padding-top: 14px !important; }
+    /* No offwhite gap between filter-bar and content grids */
+    .filter-bar + * { background: var(--white); }
+    .events-page-grid { padding-top: 14px !important; }
     .container { padding-left: 16px; padding-right: 16px; }
   }
 
