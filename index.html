@@ -1276,7 +1276,7 @@
   }
   .phone-section-subtitle {
     font-family: 'Inter', sans-serif;
-    font-size: 13px;
+    font-size: 15px;
     color: #555;
     line-height: 1.65;
     margin: 0;
@@ -1380,7 +1380,7 @@
   }
   .phone-level-desc {
     font-family: 'Inter', sans-serif;
-    font-size: 13px;
+    font-size: 15px;
     line-height: 1.65;
     color: #555;
     margin: 0;
@@ -1970,7 +1970,7 @@
       min-height: 100svh;
       justify-content: flex-start;
     }
-    .hero-big-logo { width: 110px; margin-left: 0; margin-right: 0; }
+    .hero-big-logo { width: 150px; margin-left: 0; margin-right: 0; }
     .hero-actions { margin-top: auto; justify-content: center; align-self: stretch; }
     .hero-stats { align-self: stretch; justify-content: center; margin-top: 16px; padding-top: 20px; }
     nav { height: 56px; }
@@ -2007,8 +2007,9 @@
     .club-info-item { border-right: none; border-bottom: 1px solid var(--border); }
     .club-info-item:nth-child(odd) { border-right: 1px solid var(--border); }
 
-    /* Body text — readable sizes on mobile */
-    p { font-size: 15px; }
+    /* ── MOBILE MINIMUM FONT SIZES ── */
+    /* Body / paragraph text — !important beats class-specific base rules */
+    p { font-size: 15px !important; }
     .team-card-desc { font-size: 14px; }
     .event-detail { font-size: 14px; }
     .td-terms-block p { font-size: 15px; }
@@ -2017,6 +2018,39 @@
     .join-reasons li { font-size: 15px; }
     .coach-bio-desc { font-size: 14px; }
     .sidebar-card p, .sidebar-card li { font-size: 14px; }
+    /* Labels, chips, badges — minimum 13px */
+    .eyebrow { font-size: 13px; }
+    .hero-stat-label { font-size: 13px; }
+    .meta-chip { font-size: 13px; }
+    .team-link { font-size: 13px; }
+    .event-date-month { font-size: 13px; }
+    .event-type-chip { font-size: 13px; padding: 3px 10px; }
+    .filter-btn { font-size: 13px; }
+    .info-strip-label { font-size: 13px; }
+    .coach-role { font-size: 13px; }
+    .cert-chip { font-size: 13px; }
+    .form-label { font-size: 13px; }
+    .product-cat { font-size: 13px; }
+    .cart-item-meta { font-size: 13px; }
+    .cart-item-remove { font-size: 13px; }
+    .cart-shipping-note { font-size: 13px; }
+    .pd-cat { font-size: 13px; }
+    .pd-label { font-size: 13px; }
+    .pd-size-option { font-size: 13px; }
+    .pd-shipping { font-size: 13px; }
+    .ed-info-card-label { font-size: 13px; }
+    .ed-info-card-sub { font-size: 13px; }
+    .ed-info-card-link { font-size: 13px; }
+    .sleg { font-size: 13px; }
+    .list-time { font-size: 13px; }
+    .list-sub { font-size: 13px; }
+    .lbadge { font-size: 13px; padding: 4px 10px; }
+    .slot-time { font-size: 13px; opacity: .8; }
+    .slot-name { font-size: 13px; }
+    .slot-sub { font-size: 13px; opacity: .75; }
+    .list-day-head span { font-size: 13px; }
+    .footer-bottom { font-size: 13px; }
+    .event-meta { font-size: 13px; }
 
     /* Team detail */
     .team-detail-body { grid-template-columns: 1fr; padding: 32px 20px; gap: 32px; }
@@ -2131,8 +2165,8 @@
     /* Join page */
     .join-left { padding: 40px 16px; }
     .join-right { padding: 32px 16px; }
-    p { font-size: 15px; }
-    .td-terms-block p, .td-membership-list li { font-size: 15px; }
+    p { font-size: 15px !important; }
+    .td-terms-block p, .td-membership-list li { font-size: 15px !important; }
 
     /* My Area sidebar tabs — pill style on mobile */
     .area-sidebar > div { white-space: nowrap; border-radius: 20px !important; font-size: 13px !important; padding: 8px 14px !important; border: 1.5px solid var(--border); flex-shrink: 0; }
