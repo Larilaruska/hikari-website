@@ -509,6 +509,49 @@
     transform: scaleX(-1);
   }
 
+  /* Toast notification */
+  .hikari-toast {
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-16px);
+    background: var(--white);
+    color: var(--navy);
+    font-size: 15px;
+    font-weight: 600;
+    padding: 16px 28px 16px 20px;
+    border-radius: 8px;
+    border-left: 5px solid var(--gold);
+    box-shadow: 0 8px 32px rgba(0,0,0,.18);
+    opacity: 0;
+    transition: opacity .25s ease, transform .25s ease;
+    pointer-events: none;
+    z-index: 9999;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .hikari-toast::before {
+    content: '!';
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    background: var(--gold);
+    color: var(--white);
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+  }
+  .hikari-toast.visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
   /* CTA band */
   .cta-band {
     background: var(--gold);
@@ -1742,7 +1785,7 @@
     text-transform: uppercase; color: var(--navy); margin-bottom: 8px;
   }
   .pd-sizes {
-    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px;
+    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 6px;
   }
   .pd-size {
     min-width: 44px; min-height: 44px; border: 1.5px solid var(--border);
@@ -3425,12 +3468,16 @@
       <div class="pd-price" id="pd-price">€45</div>
       <div class="pd-colors" id="pd-colors">Navy / Gold</div>
 
-      <div id="pd-sizes-section">
+      <div id="pd-sizes-section" style="margin-bottom:22px;">
         <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:8px;">
           <div class="pd-label" style="margin-bottom:0;">Size</div>
           <span id="pd-size-guide-link" onclick="openSizeChart()" style="display:none; font-size: 13px; color:var(--navy); cursor:pointer; font-weight:600; text-decoration:underline; text-underline-offset:2px;">Size guide →</span>
         </div>
         <div class="pd-sizes" id="pd-sizes"></div>
+        <div id="pd-size-error" style="display:none; align-items:center; gap:6px; margin-top:6px; margin-bottom:22px; color:#9b1c1c; font-size:13px; font-weight:500;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Please select a size before adding to cart.
+        </div>
       </div>
 
       <div id="pd-qty-section">
@@ -4131,9 +4178,12 @@
     const sizeEl = document.querySelector('.pd-size.selected');
     const size = sizeEl ? sizeEl.textContent : null;
     if (p.sizes && p.sizes.length && !size) {
-      alert('Please select a size first.');
+      const err = document.getElementById('pd-size-error');
+      if (err) err.style.display = 'flex';
       return;
     }
+    const err = document.getElementById('pd-size-error');
+    if (err) err.style.display = 'none';
     const qty = _pdQty;
     const existing = _cart.find(i => i.id === id && i.size === size);
     if (existing) { existing.qty += qty; }
@@ -4397,6 +4447,21 @@
   const _gymDayConfig = { 2: { label: 'Tue', time: '20:00–22:00' }, 6: { label: 'Sat', time: '10:00–12:00' } };
   const _gymMonths = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const _gymMonthsFull = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  let _toastTimer = null;
+  function showToast(msg) {
+    let toast = document.getElementById('hikari-toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'hikari-toast';
+      toast.className = 'hikari-toast';
+      document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    clearTimeout(_toastTimer);
+    toast.classList.add('visible');
+    _toastTimer = setTimeout(function() { toast.classList.remove('visible'); }, 3000);
+  }
 
   function copyEventLink() {
     const url = location.href;
@@ -4987,6 +5052,8 @@
   function selectSize(el) {
     el.closest('.pd-sizes').querySelectorAll('.pd-size').forEach(s => s.classList.remove('selected'));
     el.classList.add('selected');
+    const err = document.getElementById('pd-size-error');
+    if (err) err.style.display = 'none';
   }
 
   function changeQty(delta) {
