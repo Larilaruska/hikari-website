@@ -1101,14 +1101,16 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0;
-    min-height: 520px;
+    min-height: 580px;
   }
   .about-story-img {
-    background: linear-gradient(135deg, #1a2a50, #2a3d6e);
+    background: #111d42;
     display: flex; align-items: center; justify-content: center;
     font-size: 80px;
-    opacity: .6;
-    min-height: 420px;
+    min-height: 580px;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
   }
   .about-story-text {
     padding: 72px 64px;
@@ -2113,7 +2115,7 @@
 
     /* About */
     .about-story { grid-template-columns: 1fr; }
-    .about-story-img { min-height: 220px; }
+    .about-story-img { min-height: 280px; }
     .about-story-text { padding: 40px 24px; }
     .club-info-grid { grid-template-columns: 1fr 1fr; }
     .club-info-item { border-right: none; border-bottom: 1px solid var(--border); }
@@ -2337,6 +2339,66 @@
 </div>
 </div>
 
+<!-- SHOP CHECKOUT SHEET -->
+<div class="sheet-overlay" id="checkout-overlay" onclick="closeCheckout()">
+<div class="bottom-sheet payment-sheet" id="checkout-modal" onclick="event.stopPropagation()">
+  <div class="sheet-handle"></div>
+  <div class="payment-sheet-body">
+  <button onclick="closeCheckout()" style="position:absolute; top:16px; right:16px; background:none; border:none; cursor:pointer; font-size:20px; color:var(--muted);">✕</button>
+
+  <!-- Step 1: Contact details -->
+  <div id="co-step-1">
+    <h3 style="font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--navy); letter-spacing:.04em; margin-bottom:4px;">Your Details</h3>
+    <p style="font-size:13px; color:var(--muted); margin-bottom:20px;">Step 1 of 2 — Tell us who you are so we can confirm your order.</p>
+    <div class="form-group">
+      <label class="form-label">Full Name</label>
+      <input class="form-input" id="co-name" placeholder="Anna de Vries">
+    </div>
+    <div class="form-group" style="margin-top:12px;">
+      <label class="form-label">Email</label>
+      <input class="form-input" id="co-email" type="email" placeholder="anna@example.com">
+    </div>
+    <div class="form-group" style="margin-top:12px;">
+      <label class="form-label">Phone <span style="font-weight:400; color:var(--muted);">(optional)</span></label>
+      <input class="form-input" id="co-phone" type="tel" placeholder="+31 6 12345678">
+    </div>
+    <div id="co-step1-error" style="display:none; align-items:center; gap:6px; margin-top:12px; color:#9b1c1c; font-size:13px; font-weight:500;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Please fill in your name and email.
+    </div>
+    <button class="btn btn-primary" style="width:100%; margin-top:20px;" onclick="coStep2()">Review Order →</button>
+    <p style="text-align:center; margin-top:12px; font-size:13px;"><span style="color:var(--muted); cursor:pointer;" onclick="closeCheckout()">Cancel</span></p>
+  </div>
+
+  <!-- Step 2: Order summary + payment -->
+  <div id="co-step-2" style="display:none;">
+    <button onclick="coBack()" style="background:none; border:none; cursor:pointer; font-size:13px; color:var(--navy); font-weight:500; padding:0; margin-bottom:16px;">← Back</button>
+    <h3 style="font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--navy); letter-spacing:.04em; margin-bottom:16px;">Order Summary</h3>
+    <div id="co-order-lines" style="border:1px solid var(--border); border-radius:6px; overflow:hidden; margin-bottom:16px;"></div>
+    <div style="display:flex; justify-content:space-between; font-size:15px; font-weight:700; color:var(--navy); margin-bottom:4px;">
+      <span>Total</span><span id="co-total"></span>
+    </div>
+    <div style="font-size:13px; color:var(--muted); margin-bottom:20px;">🏋️ Collected at training — no shipping costs</div>
+    <div style="background:var(--offwhite); border-radius:6px; padding:12px 14px; margin-bottom:20px; font-size:13px; color:var(--muted);">
+      Ordering as <strong id="co-summary-name" style="color:var(--navy);"></strong> · <span id="co-summary-email"></span>
+    </div>
+    <button class="btn btn-primary" style="width:100%;" onclick="coConfirm()">Place Order →</button>
+    <p style="text-align:center; margin-top:10px; font-size:12px; color:var(--muted);">🔒 Secure checkout · Payment processed via Mollie</p>
+  </div>
+
+  <!-- Step 3: Confirmation -->
+  <div id="co-step-3" style="display:none; text-align:center; padding:16px 0;">
+    <div style="font-size:52px; margin-bottom:16px;">🎉</div>
+    <h3 style="font-family:'Bebas Neue',sans-serif; font-size:30px; color:var(--navy); letter-spacing:.04em; margin-bottom:8px;">Order Placed!</h3>
+    <p style="font-size:14px; color:var(--muted); margin-bottom:6px;">Thanks <strong id="co-conf-name" style="color:var(--navy);"></strong> — your order is confirmed.</p>
+    <p style="font-size:13px; color:var(--muted); margin-bottom:24px;">A confirmation has been sent to <strong id="co-conf-email" style="color:var(--navy);"></strong>. Your items will be available at the next training session.</p>
+    <button class="btn btn-primary" style="width:100%;" onclick="coDone()">Done</button>
+  </div>
+
+  </div>
+</div>
+</div>
+
 <!-- OPEN GYM BOOKING SHEET -->
 <div class="sheet-overlay" id="gym-overlay" onclick="closeGymBooking()">
 <div class="bottom-sheet payment-sheet" id="gym-modal" onclick="event.stopPropagation()">
@@ -2447,7 +2509,7 @@
   <div class="cart-footer" id="cart-footer" style="display:none;">
     <div class="cart-subtotal"><span>Subtotal</span><span id="cart-subtotal-val">€0</span></div>
     <div class="cart-shipping-note">🏋️ Delivered at training — no shipping</div>
-    <button class="btn btn-primary" style="width:100%; margin-bottom:10px;">Proceed to Checkout</button>
+    <button class="btn btn-primary" style="width:100%; margin-bottom:10px;" onclick="openCheckout()">Proceed to Checkout</button>
     <button class="btn btn-outline" style="width:100%;" onclick="closeCart()">Continue Shopping</button>
   </div>
 </div>
@@ -3045,7 +3107,7 @@
 
   <!-- Our Story -->
   <div class="about-story">
-    <div class="about-story-img" style="background-image:url('about_circle.png'); background-size:cover; background-position:center bottom;"></div>
+    <div class="about-story-img" style="background-image:url('nationals_team.jpg');"></div>
     <div class="about-story-text">
       <div class="eyebrow">How It All Started</div>
       <h2>We Are Hikari</h2>
@@ -3357,7 +3419,7 @@
 
   <div class="shop-grid">
     <div class="product-card" data-cat="clothing" onclick="showProduct('sweat_uni')">
-      <div class="product-img" style="background-image:url('merch_sweatshirt.png');"></div>
+      <div class="product-img" style="background-image:url('merch_sweatshirt.jpg');"></div>
       <div class="product-body">
         <div class="product-cat">Clothing</div>
         <div class="product-name">Sweatshirt Unisex</div>
@@ -3365,7 +3427,7 @@
       </div>
     </div>
     <div class="product-card" data-cat="clothing" onclick="showProduct('sweat_youth')">
-      <div class="product-img" style="background-image:url('merch_sweatshirt.png');"></div>
+      <div class="product-img" style="background-image:url('merch_sweatshirt.jpg');"></div>
       <div class="product-body">
         <div class="product-cat">Clothing</div>
         <div class="product-name">Sweatshirt Youth</div>
@@ -3373,7 +3435,7 @@
       </div>
     </div>
     <div class="product-card" data-cat="clothing" onclick="showProduct('tee_man')">
-      <div class="product-img" style="background-image:url('merch_tshirt.png');"></div>
+      <div class="product-img" style="background-image:url('merch_tshirt.jpg');"></div>
       <div class="product-body">
         <div class="product-cat">Clothing</div>
         <div class="product-name">T-shirt Men</div>
@@ -3381,7 +3443,7 @@
       </div>
     </div>
     <div class="product-card" data-cat="clothing" onclick="showProduct('tee_woman')">
-      <div class="product-img" style="background-image:url('merch_tshirt.png');"></div>
+      <div class="product-img" style="background-image:url('merch_tshirt.jpg');"></div>
       <div class="product-body">
         <div class="product-cat">Clothing</div>
         <div class="product-name">T-shirt Women</div>
@@ -3389,7 +3451,7 @@
       </div>
     </div>
     <div class="product-card" data-cat="clothing" onclick="showProduct('tee_child')">
-      <div class="product-img" style="background-image:url('merch_tshirt.png');"></div>
+      <div class="product-img" style="background-image:url('merch_tshirt.jpg');"></div>
       <div class="product-body">
         <div class="product-cat">Clothing</div>
         <div class="product-name">T-shirt Child</div>
@@ -3397,7 +3459,7 @@
       </div>
     </div>
     <div class="product-card" data-cat="clothing" onclick="showProduct('tee_nomads')">
-      <div class="product-img" style="background-image:url('merch_tshirt_nomads.png'); position:relative;"><div class="product-new">Team</div></div>
+      <div class="product-img" style="background-image:url('merch_tshirt_nomads.jpg'); position:relative;"><div class="product-new">Team</div></div>
       <div class="product-body">
         <div class="product-cat">Clothing</div>
         <div class="product-name">Nomads T-shirt</div>
@@ -3429,7 +3491,7 @@
       </div>
     </div>
     <div class="product-card" data-cat="accessories" onclick="showProduct('bow')">
-      <div class="product-img" style="background-image:url('merch_bow.png');"></div>
+      <div class="product-img" style="background-image:url('merch_bow.jpg');"></div>
       <div class="product-body">
         <div class="product-cat">Accessories</div>
         <div class="product-name">Competition Bow</div>
@@ -4441,6 +4503,76 @@
     document.getElementById('payment-overlay').classList.remove('open'); document.body.style.overflow='';
   }
 
+  // ── SHOP CHECKOUT ──────────────────────────────────────────
+  function openCheckout() {
+    closeCart();
+    // reset to step 1
+    document.getElementById('co-step-1').style.display = 'block';
+    document.getElementById('co-step-2').style.display = 'none';
+    document.getElementById('co-step-3').style.display = 'none';
+    document.getElementById('co-name').value = '';
+    document.getElementById('co-email').value = '';
+    document.getElementById('co-phone').value = '';
+    document.getElementById('co-step1-error').style.display = 'none';
+    document.getElementById('checkout-overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function coStep2() {
+    const name = document.getElementById('co-name').value.trim();
+    const email = document.getElementById('co-email').value.trim();
+    const err = document.getElementById('co-step1-error');
+    if (!name || !email) { err.style.display = 'flex'; return; }
+    err.style.display = 'none';
+    // build order lines
+    const lines = document.getElementById('co-order-lines');
+    lines.innerHTML = _cart.map((item, i) => {
+      const p = PRODUCTS[item.id];
+      const img = item.image ? `<img src="${item.image}" style="width:44px; height:44px; object-fit:cover; border-radius:4px; flex-shrink:0;">` : `<div style="width:44px; height:44px; background:var(--offwhite); border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0;">${item.emoji||'🛍️'}</div>`;
+      const border = i < _cart.length - 1 ? 'border-bottom:1px solid var(--border);' : '';
+      return `<div style="display:flex; align-items:center; gap:12px; padding:12px 14px; ${border}">
+        ${img}
+        <div style="flex:1; min-width:0;">
+          <div style="font-size:14px; font-weight:600; color:var(--navy); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.name}</div>
+          <div style="font-size:12px; color:var(--muted);">${item.size ? 'Size: ' + item.size + ' · ' : ''}Qty: ${item.qty}</div>
+        </div>
+        <div style="font-size:14px; font-weight:700; color:var(--navy); flex-shrink:0;">€${(item.price * item.qty).toFixed(2).replace('.00','')}</div>
+      </div>`;
+    }).join('');
+    const total = _cart.reduce((s, i) => s + i.price * i.qty, 0);
+    document.getElementById('co-total').textContent = '€' + total.toFixed(2).replace('.00','');
+    document.getElementById('co-summary-name').textContent = name;
+    document.getElementById('co-summary-email').textContent = email;
+    document.getElementById('co-step-1').style.display = 'none';
+    document.getElementById('co-step-2').style.display = 'block';
+  }
+
+  function coBack() {
+    document.getElementById('co-step-2').style.display = 'none';
+    document.getElementById('co-step-1').style.display = 'block';
+  }
+
+  function coConfirm() {
+    const name = document.getElementById('co-name').value.trim();
+    const email = document.getElementById('co-email').value.trim();
+    document.getElementById('co-conf-name').textContent = name;
+    document.getElementById('co-conf-email').textContent = email;
+    document.getElementById('co-step-2').style.display = 'none';
+    document.getElementById('co-step-3').style.display = 'block';
+  }
+
+  function coDone() {
+    _cart = [];
+    renderCart();
+    closeCheckout();
+  }
+
+  function closeCheckout() {
+    document.getElementById('checkout-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  // ────────────────────────────────────────────────────────────
+
   let _gymType = 'single';
   let _gymSelectedDates = new Set();
 
@@ -4661,7 +4793,7 @@
 
   const PRODUCTS = {
     sweat_uni: {
-      name: 'Sweatshirt Unisex', cat: 'Clothing', price: '€45', colors: 'Navy / Gold', emoji: '🧥', images: ['merch_sweatshirt.png', 'merch_sweatshirt_2.png', 'merch_sweatshirt_3.png'],
+      name: 'Sweatshirt Unisex', cat: 'Clothing', price: '€45', colors: 'Navy / Gold', emoji: '🧥', images: ['merch_sweatshirt.jpg', 'merch_sweatshirt_2.jpg', 'merch_sweatshirt_3.jpg'],
       sizes: ['XS','S','M','L','XL','XXL'],
       cta: 'Add to Cart',
       desc: 'The official Hikari club sweatshirt in a relaxed unisex fit. Soft fleece lining, embroidered logo, kangaroo pocket. Runs true to size.',
@@ -4669,7 +4801,7 @@
       sizeChartKey: 'sweat_uni',
     },
     sweat_youth: {
-      name: 'Sweatshirt Youth', cat: 'Clothing', price: '€38', colors: 'Navy / Gold', emoji: '🧥', images: ['merch_sweatshirt.png', 'merch_sweatshirt_2.png', 'merch_sweatshirt_3.png'],
+      name: 'Sweatshirt Youth', cat: 'Clothing', price: '€38', colors: 'Navy / Gold', emoji: '🧥', images: ['merch_sweatshirt.jpg', 'merch_sweatshirt_2.jpg', 'merch_sweatshirt_3.jpg'],
       sizes: ['6–8y','8–10y','10–12y','12–14y','14–16y'],
       cta: 'Add to Cart',
       desc: 'The Hikari sweatshirt in a youth cut. Same quality fleece as the adult version, sized for younger athletes.',
@@ -4677,7 +4809,7 @@
       sizeChartKey: 'sweat_youth',
     },
     tee_man: {
-      name: 'T-shirt Men', cat: 'Clothing', price: '€22', colors: 'Navy / White', emoji: '👕', images: ['merch_tshirt.png', 'merch_tshirt_2.png'],
+      name: 'T-shirt Men', cat: 'Clothing', price: '€22', colors: 'Navy / White', emoji: '👕', images: ['merch_tshirt.jpg', 'merch_tshirt_2.jpg'],
       sizes: ['XS','S','M','L','XL','2XL','3XL','4XL','5XL'],
       cta: 'Add to Cart',
       desc: 'Get your own Hikari Cheerleading Club T-shirt and show off your skills in style! Crewneck design with printed Hikari logo.',
@@ -4685,7 +4817,7 @@
       sizeChartKey: 'tee_man',
     },
     tee_woman: {
-      name: 'T-shirt Women', cat: 'Clothing', price: '€22', colors: 'Navy / White', emoji: '👕', images: ['merch_tshirt.png', 'merch_tshirt_2.png'],
+      name: 'T-shirt Women', cat: 'Clothing', price: '€22', colors: 'Navy / White', emoji: '👕', images: ['merch_tshirt.jpg', 'merch_tshirt_2.jpg'],
       sizes: ['XS','S','M','L','XL','2XL'],
       cta: 'Add to Cart',
       desc: 'Get your own Hikari Cheerleading Club T-shirt and show off your skills in style! Crewneck design with printed Hikari logo.',
@@ -4693,7 +4825,7 @@
       sizeChartKey: 'tee_woman',
     },
     tee_child: {
-      name: 'T-shirt Child', cat: 'Clothing', price: '€18', colors: 'Navy / White', emoji: '👕', images: ['merch_tshirt.png', 'merch_tshirt_2.png'],
+      name: 'T-shirt Child', cat: 'Clothing', price: '€18', colors: 'Navy / White', emoji: '👕', images: ['merch_tshirt.jpg', 'merch_tshirt_2.jpg'],
       sizes: ['XS (3–4y)','S (5–6y)','M (7–8y)','L (9–11y)','XL (12–13y)'],
       cta: 'Add to Cart',
       desc: 'Get your own Hikari Cheerleading Club T-shirt and show off your skills in style! Crewneck design with printed Hikari logo, sized for young athletes.',
@@ -4701,7 +4833,7 @@
       sizeChartKey: 'tee_child',
     },
     tee_nomads: {
-      name: 'Nomads T-shirt', cat: 'Clothing', price: '€24', colors: 'Navy / Gold', emoji: '👕', images: ['merch_tshirt_nomads.png', 'merch_tshirt_nomads_2.png'],
+      name: 'Nomads T-shirt', cat: 'Clothing', price: '€24', colors: 'Navy / Gold', emoji: '👕', images: ['merch_tshirt_nomads.jpg', 'merch_tshirt_nomads_2.jpg'],
       sizes: ['XS','S','M','L','XL','2XL','3XL','4XL','5XL'],
       cta: 'Add to Cart',
       desc: 'Official Hikari Nomads team t-shirt. Crewneck with front and back Nomads design.',
@@ -4731,7 +4863,7 @@
       details: ['75% cotton, 20% polyester, 5% elastane','Reinforced heel and toe','Hikari emblem on ankle','Machine washable at 40°C'],
     },
     bow: {
-      name: 'Competition Bow', cat: 'Accessories', price: '€12', colors: 'White / Rhinestone', emoji: '🎀', images: ['merch_bow.png', 'merch_bow_2.png'],
+      name: 'Competition Bow', cat: 'Accessories', price: '€12', colors: 'White / Rhinestone', emoji: '🎀', images: ['merch_bow.jpg', 'merch_bow_2.jpg'],
       noSizes: true,
       cta: 'Add to Cart',
       desc: 'Official Hikari competition bow in club colours. Required for all competitive team performances.',
