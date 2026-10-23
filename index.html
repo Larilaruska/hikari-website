@@ -1642,6 +1642,30 @@
   .cart-shipping-note { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
 
   /* ────────────────────────────────────────────
+     DETAIL BACK BAR (hide-on-scroll-down)
+  ──────────────────────────────────────────── */
+  .detail-back-bar {
+    position: fixed;
+    top: 76px;
+    left: 0; right: 0;
+    z-index: 200;
+    transform: translateY(0);
+    transition: transform 0.25s ease;
+    will-change: transform;
+  }
+  .detail-back-bar.bar-hidden {
+    transform: translateY(-110%);
+  }
+  /* Spacer holds the height the fixed bar occupies in document flow */
+  .detail-bar-spacer {
+    height: 45px;
+  }
+  @media (max-width: 900px) {
+    .detail-back-bar { top: 56px; }
+    .detail-bar-spacer { height: 41px; }
+  }
+
+  /* ────────────────────────────────────────────
      PRODUCT DETAIL
   ──────────────────────────────────────────── */
   .product-detail-hero {
@@ -1930,6 +1954,32 @@
     margin-bottom: 6px;
   }
   .footer-brand p { font-size: 13px; line-height: 1.6; max-width: 36ch; }
+  .footer-brand-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .footer-socials {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .footer-social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: rgba(255,255,255,.1);
+    opacity: .8;
+    transition: opacity .2s, background .2s;
+    flex-shrink: 0;
+  }
+  .footer-social-link:hover {
+    opacity: 1;
+    background: rgba(255,255,255,.18);
+  }
   .footer-col h4 {
     font-family: 'Inter', sans-serif;
     font-size: 13px;
@@ -2031,11 +2081,123 @@
     border-bottom: none;
   }
 
+  /* ── MOBILE BOTTOM NAV + TOP NAV ADDITIONS ── */
+  /* Back button and My Area btn: hidden on desktop */
+  .nav-back-btn, .nav-myarea-btn { display: none; }
+  /* Bottom nav: hidden on desktop, reset all top-nav inherited styles */
+  #mobile-bottom-nav {
+    display: none;
+    /* reset top-nav rules that target bare <nav> */
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0; right: 0;
+    z-index: 998;
+    background: var(--navy);
+    border-bottom: none;
+    border-top: none;
+    padding: 0;
+    height: auto;
+    box-shadow: none;
+    transition: none;
+    justify-content: stretch;
+  }
+
+  @media (max-width: 900px) {
+    /* ── Bottom nav ── */
+    #mobile-bottom-nav {
+      display: flex;
+      align-items: stretch;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    .mbn-tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: rgba(255,255,255,0.55);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: .02em;
+      padding: 10px 0 6px;
+      transition: color .15s;
+      -webkit-tap-highlight-color: transparent;
+      min-height: 58px;
+    }
+    .mbn-tab svg {
+      width: 22px; height: 22px;
+      stroke: currentColor;
+      flex-shrink: 0;
+    }
+    .mbn-tab.active {
+      color: #ffffff;
+    }
+    /* Body bottom padding so content doesn't hide behind bottom nav */
+    body {
+      padding-bottom: calc(58px + env(safe-area-inset-bottom, 0px));
+    }
+    /* ── Compact top nav layout: [back+logo....][myarea][cart] ── */
+    .nav-hamburger { display: none; }
+    /* Logo takes available space, pushing icons to the right */
+    /* Visibility follows nav state (hidden on transparent home, visible once solid/scrolled) */
+    .nav-logo { flex: 1; }
+    .nav-logo img.logo-icon { height: 34px; }
+    /* Back button: collapses when not visible so logo stays at left edge */
+    .nav-back-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--white);
+      padding: 0;
+      width: 0;
+      overflow: hidden;
+      pointer-events: none;
+      transition: width .2s, opacity .2s, color .15s;
+      flex-shrink: 0;
+    }
+    nav.solid .nav-back-btn,
+    nav.scrolled .nav-back-btn { color: var(--navy); }
+    .nav-back-btn svg { width: 22px; height: 22px; flex-shrink: 0; }
+    .nav-back-btn.visible {
+      width: 36px;
+      padding: 0 6px 0 0;
+      pointer-events: auto;
+    }
+    /* My Area icon */
+    .nav-myarea-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--white);
+      padding: 8px;
+      flex-shrink: 0;
+      transition: color .15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    nav.solid .nav-myarea-btn,
+    nav.scrolled .nav-myarea-btn { color: var(--navy); }
+    .nav-myarea-btn svg { width: 22px; height: 22px; }
+    /* Cart icon re-enabled on mobile */
+    .cart-icon-btn { display: flex !important; }
+    /* Hide detail-back-bar on mobile (top nav back button handles it) */
+    .detail-back-bar, .detail-bar-spacer { display: none; }
+  }
+
   @media (max-width: 900px) {
     /* Nav */
     nav { padding: 0 20px; }
     .nav-links { display: none; }
-    .nav-hamburger { display: flex; }
 
     /* Sections */
     .section { padding: 56px 0; }
@@ -2073,18 +2235,18 @@
       background: linear-gradient(to bottom, rgba(10,18,40,.55) 0%, rgba(10,18,40,.45) 60%, rgba(10,18,40,.7) 100%);
     }
     .hero-left {
-      padding: 68px 24px 48px;
+      padding: 68px 24px 32px;
       text-align: left;
       align-items: flex-start;
       position: relative;
       z-index: 2;
       width: 100%;
       box-sizing: border-box;
-      min-height: 100svh;
+      min-height: calc(100svh - 58px - env(safe-area-inset-bottom, 0px));
       justify-content: flex-start;
     }
     .hero-big-logo { width: 200px; margin-left: -25px; margin-right: 0; }
-    .hero-actions { margin-top: auto; justify-content: center; align-self: stretch; }
+    .hero-actions { margin-top: clamp(48px, 12vh, 120px); justify-content: center; align-self: stretch; flex-wrap: wrap; }
     .hero-stats { align-self: stretch; justify-content: center; margin-top: 16px; padding-top: 20px; }
     nav { height: 56px; }
     nav { padding: 0 20px; }
@@ -2514,8 +2676,31 @@
   </div>
 </div>
 
+<!-- MOBILE MORE SHEET -->
+<div class="sheet-overlay" id="mobile-more-overlay" onclick="closeMobileMore()">
+  <div class="bottom-sheet" id="mobile-more-sheet" onclick="event.stopPropagation()" style="padding:0; border-radius:20px 20px 0 0; overflow:hidden;">
+    <div style="padding:16px 20px 8px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border);">
+      <span style="font-size:15px; font-weight:700; color:var(--navy); letter-spacing:.01em;">More</span>
+      <button onclick="closeMobileMore()" style="background:none;border:none;cursor:pointer;padding:4px;color:var(--muted);font-size:20px;line-height:1;">✕</button>
+    </div>
+    <a onclick="showPage('about');closeMobileMore()" style="display:flex;align-items:center;gap:16px;padding:18px 20px;border-bottom:1px solid var(--border);cursor:pointer;text-decoration:none;color:var(--text);">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="8"/><line x1="12" y1="12" x2="12" y2="16"/></svg>
+      <span style="font-size:16px;font-weight:500;">About</span>
+    </a>
+    <a onclick="showPage('support');closeMobileMore()" style="display:flex;align-items:center;gap:16px;padding:18px 20px;cursor:pointer;text-decoration:none;color:var(--text);">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+      <span style="font-size:16px;font-weight:500;">Support Us</span>
+    </a>
+    <div style="height:env(safe-area-inset-bottom, 0px);"></div>
+  </div>
+</div>
+
 <!-- NAV -->
 <nav>
+  <!-- Mobile back button (hidden on desktop) -->
+  <button class="nav-back-btn" id="nav-back-btn" onclick="mobileNavBack()" aria-label="Back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
   <a class="nav-logo" onclick="showPage('home')">
     <img class="logo-icon" src="hikari_logo_icon.png" alt="Hikari">
   </a>
@@ -2529,12 +2714,40 @@
     <li><a onclick="showPage('myarea')" id="nav-myarea">My Area</a></li>
     <li><a onclick="showPage('join')" id="nav-join" class="nav-join">Join Us</a></li>
   </ul>
+  <!-- Mobile My Area icon (hidden on desktop) -->
+  <button class="nav-myarea-btn" id="nav-myarea-btn" onclick="showPage('myarea')" aria-label="My Area">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+  </button>
   <button class="cart-icon-btn" onclick="openCart()" aria-label="Cart">
     <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
     <span class="cart-badge" id="cart-badge">0</span>
   </button>
   <button class="nav-hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Menu">
     <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav id="mobile-bottom-nav" aria-label="Main navigation">
+  <button class="mbn-tab" id="mbn-home" onclick="showPage('home')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><polyline points="9 21 9 12 15 12 15 21"/></svg>
+    <span>Home</span>
+  </button>
+  <button class="mbn-tab" id="mbn-teams" onclick="showPage('teams')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="3"/><circle cx="17" cy="8" r="2.5"/><path d="M2 20c0-3.3 3.1-6 7-6s7 2.7 7 6"/><path d="M19 14c1.7.5 3 2 3 4"/></svg>
+    <span>Teams</span>
+  </button>
+  <button class="mbn-tab" id="mbn-events" onclick="showPage('events')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    <span>Events</span>
+  </button>
+  <button class="mbn-tab" id="mbn-shop" onclick="showPage('shop')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+    <span>Shop</span>
+  </button>
+  <button class="mbn-tab" id="mbn-more" onclick="openMobileMore()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    <span>More</span>
   </button>
 </nav>
 
@@ -2907,9 +3120,10 @@
      TEAM DETAIL PAGE
 ══════════════════════════════════════════ -->
 <div id="page-team-detail" class="page">
-  <div style="padding:12px max(16px, calc((100vw - 1140px) / 2 + 48px)); background:var(--white); border-bottom:1px solid var(--border); font-size:13px; color:var(--muted);">
+  <div class="detail-back-bar" style="padding:12px max(16px, calc((100vw - 1140px) / 2 + 48px)); background:var(--white); border-bottom:1px solid var(--border); font-size:13px; color:var(--muted);">
     <span onclick="showPage('teams')" style="cursor:pointer; color:var(--navy);">← All Teams</span>
   </div>
+  <div class="detail-bar-spacer"></div>
 
   <div class="team-detail-hero">
     <div class="td-hero-info">
@@ -3253,6 +3467,16 @@
       </div>
     </div>
   </section>
+
+  <div class="cta-band" style="background:linear-gradient(135deg,#111D42,#1C2B5E);">
+    <div class="cta-band-inner">
+      <div>
+        <h2 class="title" style="color:#fff;">Love what we do?</h2>
+        <p style="color:rgba(255,255,255,.75);">Hikari is a non-profit run entirely by volunteers. Your support keeps the club going for every athlete.</p>
+      </div>
+      <button class="btn btn-primary" onclick="showPage('support')">Support the Club →</button>
+    </div>
+  </div>
 </div>
 
 <!-- ══════════════════════════════════════════
@@ -3348,13 +3572,14 @@
 
 <!-- EVENT DETAIL PAGE -->
 <div id="page-event-detail" class="page">
-  <div style="padding:14px max(16px, calc((100vw - 1140px) / 2 + 48px)); background:var(--white); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;">
+  <div class="detail-back-bar" style="padding:12px max(16px, calc((100vw - 1140px) / 2 + 48px)); background:var(--white); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;">
     <span style="font-size:13px; color:var(--navy); cursor:pointer; font-weight:500;" onclick="history.replaceState(null,'',location.pathname); showPage('events')">← Back to Events</span>
     <button id="ed-share-btn" onclick="copyEventLink()" style="display:flex; align-items:center; gap:6px; background:none; border:1px solid var(--border); border-radius:4px; padding:6px 12px; font-size:13px; font-weight:500; color:var(--navy); cursor:pointer;">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
       <span id="ed-share-label">Share</span>
     </button>
   </div>
+  <div class="detail-bar-spacer"></div>
   <div class="event-detail-hero">
     <div class="ed-hero-img" id="ed-hero-img"></div>
     <div class="ed-hero-content">
@@ -3509,9 +3734,10 @@
      PRODUCT DETAIL PAGE
 ══════════════════════════════════════════ -->
 <div id="page-product-detail" class="page">
-  <div style="padding:20px max(16px, calc((100vw - 1140px) / 2 + 48px)); background:var(--white); border-bottom:1px solid var(--border);">
+  <div class="detail-back-bar" style="padding:12px max(16px, calc((100vw - 1140px) / 2 + 48px)); background:var(--white); border-bottom:1px solid var(--border);">
     <span style="font-size:13px; color:var(--navy); cursor:pointer; font-weight:500;" onclick="showPage('shop')">← Back to Shop</span>
   </div>
+  <div class="detail-bar-spacer"></div>
   <div class="product-detail-hero">
     <div class="pd-gallery">
       <div class="pd-main-img" id="pd-main-img">
@@ -3803,16 +4029,18 @@
   <footer>
     <div class="footer-grid">
       <div class="footer-brand">
-        <img src="hikari_logo_icon.png" alt="Hikari Cheerleading" style="height:52px; width:auto; margin-bottom:14px; display:block;">
-        <p>Named after the Japanese word for "light" (光), we are a home for every athlete in Rotterdam — regardless of starting point.</p>
-        <div style="margin-top:20px; display:flex; gap:14px; align-items:center;">
-          <a href="https://www.tiktok.com/@hikari_cheerleading?is_from_webapp=1&sender_device=pc" target="_blank" style="color:white; display:flex; align-items:center; opacity:.75; transition:opacity .2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity='.75'">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.32 6.32 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/></svg>
-          </a>
-          <a href="https://www.instagram.com/hikari_cheerleading?utm_source=ig_web_button_share_sheet&vrfl=ZDNlZDc0MzIxNw==" target="_blank" style="color:white; display:flex; align-items:center; opacity:.75; transition:opacity .2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity='.75'">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-          </a>
+        <div class="footer-brand-top">
+          <img src="hikari_logo_icon.png" alt="Hikari Cheerleading" style="height:52px; width:auto; display:block;">
+          <div class="footer-socials">
+            <a href="https://www.tiktok.com/@hikari_cheerleading?is_from_webapp=1&sender_device=pc" target="_blank" class="footer-social-link" aria-label="TikTok">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.32 6.32 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/></svg>
+            </a>
+            <a href="https://www.instagram.com/hikari_cheerleading?utm_source=ig_web_button_share_sheet&vrfl=ZDNlZDc0MzIxNw==" target="_blank" class="footer-social-link" aria-label="Instagram">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            </a>
+          </div>
         </div>
+        <p style="margin-top:14px;">Named after the Japanese word for "light" (光), we are a home for every athlete in Rotterdam — regardless of starting point.</p>
       </div>
       <div class="footer-col">
         <h4>Club</h4>
@@ -4100,9 +4328,13 @@
       : 'Competition memberships are non-refundable.';
 
     showPage('team-detail');
+    setMobileBack('teams');
   }
 
   const _nav = document.querySelector('nav');
+
+  // Set initial bottom nav active tab (home is active on load)
+  updateBottomNav('home');
 
   // Inject shared footer into every page once
   (function injectFooters() {
@@ -4115,18 +4347,53 @@
     });
   })();
 
+  // Track where back button should go on mobile
+  let _mobileBackTarget = null;
+
+  function mobileNavBack() {
+    if (_mobileBackTarget) showPage(_mobileBackTarget);
+  }
+
+  function setMobileBack(targetPage) {
+    _mobileBackTarget = targetPage;
+    const btn = document.getElementById('nav-back-btn');
+    if (btn) btn.classList.toggle('visible', !!targetPage);
+  }
+
+  function updateBottomNav(id) {
+    // map page id → bottom tab id
+    const tabMap = {
+      'home': 'mbn-home',
+      'teams': 'mbn-teams', 'team-detail': 'mbn-teams',
+      'events': 'mbn-events', 'event-detail': 'mbn-events',
+      'shop': 'mbn-shop', 'product-detail': 'mbn-shop',
+    };
+    document.querySelectorAll('.mbn-tab').forEach(t => t.classList.remove('active'));
+    const tabId = tabMap[id];
+    if (tabId) { const t = document.getElementById(tabId); if (t) t.classList.add('active'); }
+  }
+
   function showPage(id) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     const el = document.getElementById('page-' + id);
     if (el) {
       el.classList.add('active');
       window.scrollTo(0,0);
+      _lastScrollY = 0;
+      // Always show back bar when arriving at a detail page
+      const bar = el.querySelector('.detail-back-bar');
+      if (bar) bar.classList.remove('bar-hidden');
       _isHome = (id === 'home');
       if (_nav) {
         _nav.classList.remove('scrolled');
         _nav.classList.toggle('solid', !_isHome);
       }
     }
+    // Mobile back button: hide on non-detail pages
+    const detailPages = ['team-detail', 'event-detail', 'product-detail'];
+    if (!detailPages.includes(id)) setMobileBack(null);
+    // Update bottom nav active tab
+    updateBottomNav(id);
     document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
     const navMap = {
       'home':'nav-home','teams':'nav-teams','team-detail':'nav-teams',
@@ -4166,6 +4433,9 @@
   let _isHome = true;
   const _tickerTrack = document.querySelector('.ticker-track');
   const _parallaxBg = document.querySelector('.parallax-bg');
+  // Hide-on-scroll-down back bar
+  let _lastScrollY = 0;
+  let _scrollTicking = false;
   window.addEventListener('scroll', () => {
     if (_isHome) _nav.classList.toggle('scrolled', window.scrollY > 60);
     if (_tickerTrack) {
@@ -4182,7 +4452,33 @@
         _parallaxBg.style.transform = `translateY(${shift}px)`;
       }
     }
+    // Smart back bar: hide when scrolling down, show when scrolling up
+    if (!_scrollTicking) {
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        const bar = document.querySelector('.page.active .detail-back-bar');
+        if (bar) {
+          if (y > _lastScrollY && y > 80) {
+            bar.classList.add('bar-hidden');
+          } else {
+            bar.classList.remove('bar-hidden');
+          }
+        }
+        _lastScrollY = y;
+        _scrollTicking = false;
+      });
+      _scrollTicking = true;
+    }
   }, { passive: true });
+
+  function openMobileMore() {
+    document.getElementById('mobile-more-overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMobileMore() {
+    document.getElementById('mobile-more-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
 
   function toggleDrawer() {
     const drawer = document.getElementById('nav-drawer');
@@ -4379,6 +4675,7 @@
     _currentEventId = id;
     history.replaceState(null, '', '#event/' + id);
     showPage('event-detail');
+    setMobileBack('events');
 
     // hero
     const heroImg = document.getElementById('ed-hero-img');
@@ -4987,6 +5284,7 @@
     const p = PRODUCTS[id];
     if (!p) return;
     showPage('product-detail');
+    setMobileBack('shop');
 
     document.getElementById('pd-cat').textContent = p.cat;
     const pdNameEl = document.getElementById('pd-name');
