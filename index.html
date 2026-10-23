@@ -2191,7 +2191,7 @@
     /* Cart icon re-enabled on mobile */
     .cart-icon-btn { display: flex !important; }
     /* Hide detail-back-bar on mobile (top nav back button handles it) */
-    .detail-back-bar, .detail-bar-spacer { display: none; }
+    .detail-back-bar, .detail-bar-spacer { display: none !important; }
   }
 
   @media (max-width: 900px) {
@@ -3572,16 +3572,17 @@
 
 <!-- EVENT DETAIL PAGE -->
 <div id="page-event-detail" class="page">
-  <div class="detail-back-bar" style="padding:12px max(16px, calc((100vw - 1140px) / 2 + 48px)); background:var(--white); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;">
+  <div class="detail-back-bar" style="padding:12px max(16px, calc((100vw - 1140px) / 2 + 48px)); background:var(--white); border-bottom:1px solid var(--border);">
     <span style="font-size:13px; color:var(--navy); cursor:pointer; font-weight:500;" onclick="history.replaceState(null,'',location.pathname); showPage('events')">← Back to Events</span>
-    <button id="ed-share-btn" onclick="copyEventLink()" style="display:flex; align-items:center; gap:6px; background:none; border:1px solid var(--border); border-radius:4px; padding:6px 12px; font-size:13px; font-weight:500; color:var(--navy); cursor:pointer;">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-      <span id="ed-share-label">Share</span>
-    </button>
   </div>
   <div class="detail-bar-spacer"></div>
   <div class="event-detail-hero">
     <div class="ed-hero-img" id="ed-hero-img"></div>
+    <!-- Share button: top-right of hero, filled white pill -->
+    <button id="ed-share-btn" onclick="copyEventLink()" style="position:absolute; top:16px; right:20px; z-index:3; display:flex; align-items:center; gap:7px; background:#ffffff; border:none; border-radius:99px; padding:8px 16px; font-size:13px; font-weight:600; color:#111d42; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,.25); transition:background .15s;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      <span id="ed-share-label">Share</span>
+    </button>
     <div class="ed-hero-content">
       <span class="event-type-chip" id="ed-type-chip" style="margin-bottom:12px; display:inline-block;"></span>
       <div class="ed-title" style="font-family:'Bebas Neue',sans-serif; font-size:clamp(40px,5vw,64px); color:white; line-height:1; margin-bottom:0;" id="ed-title"></div>
@@ -4894,22 +4895,72 @@
 
   function copyEventLink() {
     const url = location.href;
-    navigator.clipboard.writeText(url).then(function() {
-      const lbl = document.getElementById('ed-share-label');
-      const btn = document.getElementById('ed-share-btn');
-      if (!lbl) return;
-      lbl.textContent = 'Copied!';
-      btn.style.borderColor = '#2a7a4a';
-      btn.style.color = '#2a7a4a';
-      setTimeout(function() {
-        lbl.textContent = 'Share';
-        btn.style.borderColor = '';
-        btn.style.color = 'var(--navy)';
-      }, 2000);
-    }).catch(function() {
-      // Fallback: prompt with URL
-      prompt('Copy this link:', url);
-    });
+    const btn = document.getElementById('ed-share-btn');
+    const lbl = document.getElementById('ed-share-label');
+
+    function showCopiedFeedback(success) {
+      if (!lbl || !btn) return;
+      lbl.textContent = success ? 'Link copied!' : 'Share';
+      btn.style.background = success ? '#111d42' : '#ffffff';
+      btn.style.color = success ? '#ffffff' : '#111d42';
+      if (success) {
+        setTimeout(function() {
+          lbl.textContent = 'Share';
+          btn.style.background = '#ffffff';
+          btn.style.color = '#111d42';
+        }, 2200);
+      }
+    }
+
+    function doCopy() {
+      // Show immediate reaction on click
+      lbl.textContent = 'Copying…';
+      btn.style.background = '#e8eaf0';
+
+      // Try modern clipboard API first
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(function() {
+          showCopiedFeedback(true);
+        }).catch(function() {
+          execCopy();
+        });
+      } else {
+        execCopy();
+      }
+    }
+
+    function execCopy() {
+      // Fallback for sandboxed/restricted environments
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = url;
+        ta.style.cssText = 'position:fixed;top:-999px;left:-999px;opacity:0;';
+        document.body.appendChild(ta);
+        ta.focus(); ta.select();
+        const ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        showCopiedFeedback(ok);
+      } catch(e) {
+        showCopiedFeedback(false);
+        prompt('Copy this link:', url);
+      }
+    }
+
+    // Native share sheet on mobile; fall back to copy if it fails or isn't available
+    if (navigator.share && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
+      navigator.share({
+        title: document.getElementById('ed-title') ? document.getElementById('ed-title').textContent : 'Hikari Event',
+        text: 'Check out this event at Hikari Cheerleading',
+        url: url,
+      }).catch(function(err) {
+        // User dismissed (AbortError) — no feedback needed; any other error → copy
+        if (err && err.name !== 'AbortError') doCopy();
+      });
+      return;
+    }
+
+    // Desktop: copy link with visual feedback
+    doCopy();
   }
 
   // On load: if URL has #event/<id>, go straight to that event
